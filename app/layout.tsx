@@ -20,8 +20,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Override with NEXT_PUBLIC_SITE_URL when deploying under a custom domain
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://qwetls.github.io/aha-lang-docs/";
+// Override with NEXT_PUBLIC_SITE_URL when using a custom domain
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://aha-lang.vercel.app/";
 
 export const metadata: Metadata = {
   title: {

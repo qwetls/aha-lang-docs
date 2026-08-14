@@ -1,5 +1,5 @@
 // @note generateStructuredData creates JSON-LD structured data for search engines
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://qwetls.github.io/aha-lang-docs/";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://aha-lang.vercel.app/";
 
 // @note generateStructuredData creates JSON-LD structured data for search engines
 export function WebsiteStructuredData() {
