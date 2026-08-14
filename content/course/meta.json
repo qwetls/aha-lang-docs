@@ -1,0 +1,11 @@
+{
+  "title": "Course",
+  "pages": [
+    "01-apa-itu-kompiler",
+    "02-lexer-dan-token",
+    "03-parser-dan-ast",
+    "04-sistem-tipe",
+    "05-codegen-llvm",
+    "06-jit-dan-coba-aha"
+  ]
+}

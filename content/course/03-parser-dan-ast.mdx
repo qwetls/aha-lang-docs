@@ -1,0 +1,113 @@
+---
+title: "Parser dan AST"
+description: "Parser menyusun token menjadi Abstract Syntax Tree (AST) — representasi pohon dari struktur program."
+icon: Braces
+---
+
+# Parser dan AST
+
+Setelah lexer menghasilkan token, tibalah giliran **parser**: menyusun token menjadi **AST** (*Abstract Syntax Tree*) — sebuah pohon yang mewakili struktur program secara hierarkis.
+
+## Kenapa Pohon?
+
+Pertimbangkan ekspresi `2 + 3 * 4`. Kalau dievaluasi dari kiri ke kanan, hasilnya `(2 + 3) * 4 = 20`. Tapi aturan matematika bilang *perkalian didahulukan*: `2 + (3 * 4) = 14`.
+
+Parser menangkap aturan ini lewat struktur pohon:
+
+```text
+BinaryOp(+)
+├── left: Int(2)
+└── right: BinaryOp(*)
+    ├── left: Int(3)
+    └── right: Int(4)
+```
+
+Dengan pohon ini, evaluasi mengikuti bentuk pohon dari dalam ke luar — dan hasilnya otomatis benar: `3 * 4` dihitung dulu.
+
+## Dari Token ke Pohon
+
+Token dari baris `let x = 2 + 3;`:
+
+```text
+Let  Identifier("x")  Equals  Int(2)  Plus  Int(3)  Semicolon
+```
+
+Parser mengonsumsi token satu per satu, dan membangun:
+
+```text
+LetStatement
+├── name: "x"
+└── value: BinaryOp(+)
+    ├── left: Int(2)
+    └── right: Int(3)
+```
+
+## Tingkat Presedensi
+
+Parser AHA! Lang menghormati presedensi operator standar. Contoh:
+
+```rust
+let a = 2 + 3 * 4;   // a = 14, karena * lebih dulu
+let b = (2 + 3) * 4; // b = 20, kurung mengubah struktur
+```
+
+Presedensi diimplementasikan sebagai rantai fungsi parsing — masing-masing bertanggung jawab untuk satu tingkat operator:
+
+```rust
+// ilustrasi: ekspresi dibangun dari tingkat terendah ke tertinggi
+fn parse_expression()  { parse_logical() }
+fn parse_logical()     { parse_comparison() }
+fn parse_comparison()  { parse_additive() }
+fn parse_additive()    { parse_multiplicative() }
+fn parse_multiplicative() { parse_unary() }
+fn parse_unary()       { parse_primary() }
+```
+
+## AST di AHA! Lang
+
+Setiap konstruksi bahasa punya node AST-nya sendiri. Di AHA! Lang, beberapa contoh node:
+
+| Node | Mewakili |
+|------|----------|
+| `Program` | Seluruh program, berisi daftar statement |
+| `LetStatement` | Deklarasi `let` |
+| `BinaryOp` | Operasi biner seperti `+`, `==`, `&&` |
+| `IfExpression` | `if`/`else` — di AHA! ia produces *nilai* |
+| `WhileLoop` | Perulangan `while` |
+| `CallExpression` | Panggilan fungsi |
+| `Assignment` | Penugasan ke variabel yang sudah ada |
+
+Contoh AST untuk program kecil:
+
+```rust
+let n = if x > 5 { 10 } else { 20 };
+```
+
+```text
+LetStatement
+└── value: IfExpression
+    ├── condition: BinaryOp(>)
+    │   ├── left: Identifier(x)
+    │   └── right: Int(5)
+    ├── then: Int(10)
+    └── else: Int(20)
+```
+
+## Kesalahan Parsing
+
+Parser adalah lapisan pertama yang bisa menolak program dengan pesan yang menunjukkan **posisi persis** kesalahan — misalnya:
+
+```rust
+let x = 5 + ;   // ERROR: ekspresi tidak lengkap setelah operator +
+```
+
+Karena parser paham struktur, ia bisa memberi tahu kamu di mana konstruksi yang diharapkan tidak ditemukan.
+
+## Ringkasan
+
+1. Parser mengubah token menjadi pohon (AST).
+2. Presedensi operator direpresentasikan lewat bentuk pohon.
+3. Setiap konstruksi bahasa punya node AST.
+4. Error struktural dideteksi di tahap ini.
+
+Lanjut ke [Sistem Tipe](/course/04-sistem-tipe) — bagaimana AHA! Lang memeriksa konsistensi tipe sebelum menjalankan program.

@@ -1,0 +1,64 @@
+---
+title: "Apa Itu Kompiler?"
+description: "Mengenal peran kompiler dalam ekosistem pemrograman dan perjalanan dari kode sumber ke kode mesin."
+icon: Cpu
+---
+
+# Apa Itu Kompiler?
+
+**Kompiler** adalah program yang menerjemahkan kode sumber — yang ditulis manusia dalam bahasa tingkat tinggi — menjadi kode yang bisa dijalankan mesin.
+
+Bayangkan kamu menulis surat dalam Bahasa Indonesia dan meminta penerjemah mengubahnya ke Bahasa Inggris. Kompiler melakukan hal serupa: ia membaca teks, memahami strukturnya, lalu menghasilkan keluaran dalam "bahasa" lain.
+
+## Perjalanan Kode Sumber
+
+Sebuah kompiler modern bekerja dalam beberapa tahap besar:
+
+| Tahap | Tugas | Analogi |
+|-------|-------|---------|
+| **Lexing** | Memecah teks menjadi token | Memecah kalimat menjadi kata |
+| **Parsing** | Menyusun token menjadi pohon (AST) | Menyusun kata menjadi kalimat sesuai tata bahasa |
+| **Analisis semantik & tipe** | Memeriksa makna dan konsistensi tipe | Memeriksa apakah kalimat masuk akal |
+| **Code generation** | Menghasilkan kode mesin | Menulis versi terjemahan akhir |
+| **Optimasi** | Memperbaiki performa kode | Menyunting terjemahan agar lebih ringkas |
+
+## Kompiler vs Interpreter
+
+Keduanya menerjemahkan kode, tapi dengan gaya berbeda:
+
+- **Kompiler** (seperti AHA! Lang): menerjemahkan seluruh program ke kode mesin, lalu menjalankannya.
+- **Interpreter** (seperti Python): menerjemahkan dan langsung menjalankan baris per baris.
+
+Kompiler biasanya lebih cepat saat program berjalan, karena kerja penerjemahan sudah selesai di awal.
+
+## Contoh: Apa yang Dilihat Kompiler?
+
+Kode sumber:
+
+```rust
+let x = 2 + 3;
+print(x);
+```
+
+Setelah di-*lex*, baris pertama menjadi token:
+`let`, `x`, `=`, `2`, `+`, `3`, `;`
+
+Setelah di-*parse*, token itu menjadi pohon:
+
+```text
+Assignment
+├── name: x
+└── value: BinaryOp(+)
+    ├── left: Int(2)
+    └── right: Int(3)
+```
+
+Pohon inilah yang disebut **AST** — *Abstract Syntax Tree* — yang akan kita pelajari lebih dalam di pelajaran berikutnya.
+
+## Kenapa Kompiler Perlu Kamu Pahami?
+
+Memahami kompiler membuatmu lebih percaya diri menulis kode di bahasa apa pun: kamu tahu persis apa yang terjadi di balik setiap sintaks, kenapa error muncul, dan bagaimana bahasa dirancang.
+
+Kompiler AHA! Lang ditulis dalam **Rust** dan memanfaatkan **LLVM** untuk menghasilkan kode mesin — total sekitar ribuan baris kode yang mudah diikuti.
+
+Silakan lanjut ke pelajaran berikutnya: [Lexer dan Token](/course/02-lexer-dan-token).

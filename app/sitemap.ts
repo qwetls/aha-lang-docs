@@ -1,10 +1,10 @@
 import { MetadataRoute } from "next";
-import { source } from "@/lib/source";
+import { source, blogSource, courseSource } from "@/lib/source";
 
 export const dynamic = "force-static";
 
-// Override with NEXT_PUBLIC_SITE_URL when deploying under a custom domain
-const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://qwetls.github.io/aha-lang-docs/").replace(/\/$/, "");
+// Override with NEXT_PUBLIC_SITE_URL when using a custom domain
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://aha-lang.vercel.app/").replace(/\/$/, "");
 
 // @note generateSitemap creates sitemap.xml for search engines with all pages
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -14,6 +14,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1
+    },
+    {
+      url: `${siteUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8
+    },
+    {
+      url: `${siteUrl}/course`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8
     }
   ];
 
@@ -29,5 +41,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     };
   });
 
-  return [...routes, ...docsRoutes];
+  // @note add blog posts and course lessons
+  const blogAndCourse: MetadataRoute.Sitemap = [...blogSource.getPages(), ...courseSource.getPages()].map((page) => ({
+    url: `${siteUrl}${page.url}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly",
+    priority: 0.7
+  }));
+
+  return [...routes, ...docsRoutes, ...blogAndCourse];
 }

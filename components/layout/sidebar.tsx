@@ -11,6 +11,8 @@ const navItems = [
   { href: "/introduction", label: "Introduction" },
   { href: "/getting-started", label: "Getting Started" },
   { href: "/language-tour", label: "Language Tour" },
+  { href: "/course", label: "Course" },
+  { href: "/blog", label: "Blog" },
 ];
 
 const guidesItems = [

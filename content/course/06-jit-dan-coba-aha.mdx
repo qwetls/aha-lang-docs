@@ -1,0 +1,114 @@
+---
+title: "JIT dan Mencoba AHA!"
+description: "Merangkai semuanya: JIT compilation, cara membangun AHA! Lang dari source, dan program pertama kamu."
+icon: Rocket
+---
+
+# JIT dan Mencoba AHA!
+
+Semua tahap telah dibahas: lexer, parser, sistem tipe, dan codegen LLVM. Pelajaran terakhir ini merangkainya: bagaimana AHA! Lang menjalankan program, dan bagaimana kamu mencobanya sendiri.
+
+## Apa Itu JIT?
+
+**JIT** (*Just-In-Time compilation*) berarti kode mesin dihasilkan *saat dibutuhkan*, lalu langsung dieksekusi. Alur program AHA! Lang:
+
+```text
+teks sumber
+   ↓ lexer
+token
+   ↓ parser
+AST
+   ↓ type check
+AST yang tervalidasi
+   ↓ codegen (LLVM IR)
+kode mesin (via LLVM JIT)
+   ↓ eksekusi
+hasil program
+```
+
+Karena LLVM mengoptimasi IR sebelum menghasilkan kode mesin, program AHA! Lang berjalan cepat meski dikompilasi "on the fly".
+
+## Membangun AHA! Lang
+
+AHA! Lang ditulis dalam Rust. Untuk membangun dari source:
+
+```sh
+git clone https://github.com/qwetls/aha-lang
+cd aha-lang
+cargo build --release
+```
+
+Test suite dijalankan dengan:
+
+```sh
+cargo test
+```
+
+Ratusan test otomatis memverifikasi lexer, parser, sistem tipe, dan integrasi end-to-end (JIT) — semuanya juga dijalankan di CI untuk setiap commit.
+
+## Program Pertamamu
+
+Buat file `halo.aha`:
+
+```rust
+let nama = "dunia";
+
+print("halo, " + nama + "!");
+```
+
+Jalankan dengan (setelah build):
+
+```sh
+./target/release/aha halo.aha
+```
+
+## Ekspresi: Gaya Khas AHA!
+
+Salah satu ciri khas AHA! Lang — yang dibahas di blog kami — adalah kontrol alur yang menghasilkan nilai:
+
+```rust
+let x = 10;
+let y = 20;
+
+let hasil = if x > y {
+    "x lebih besar"
+} else {
+    "y lebih besar"
+};
+
+print(hasil); // "y lebih besar"
+```
+
+Semuanya ekspresi, semuanya nilai.
+
+## Eksperimen di Sini
+
+Coba modifikasi contoh berikut di pikiranmu — atau langsung di terminal:
+
+```rust
+let a = 6;
+let b = 7;
+
+// logika menghasilkan Int 0/1, sehingga bisa diaritmetikakan
+let jumlah = (a > b) + (a != b) + (a >= b) * 2;
+
+print(jumlah); // berapa hasilnya?
+```
+
+- `(a > b)` → `0`
+- `(a != b)` → `1`
+- `(a >= b)` → `0`, dikali `2` → `0`
+- total: `0 + 1 + 0 = 1`
+
+## Selamat! 🎉
+
+Kamu baru saja menyelesaikan perjalanan dari teks ke kode mesin: **lexing → parsing → type checking → codegen → eksekusi JIT**. Kamu kini memahami apa yang terjadi di balik layar setiap bahasa pemrograman.
+
+### Apa Berikutnya?
+
+- Pelajari sintaks lebih lengkap di [Language Tour](/language-tour).
+- Baca panduan [Getting Started](/getting-started) untuk detail instalasi.
+- Jelajahi [Builtins](/builtins) dan [Functions](/functions).
+- Lihat arsitektur internal di [Architecture](/architecture).
+
+Terima kasih sudah mengikuti course ini — selamat menulis kode dalam AHA! Lang!
