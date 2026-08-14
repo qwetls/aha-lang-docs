@@ -1,11 +1,15 @@
 {
   "title": "Course",
   "pages": [
-    "01-apa-itu-kompiler",
-    "02-lexer-dan-token",
-    "03-parser-dan-ast",
-    "04-sistem-tipe",
-    "05-codegen-llvm",
-    "06-jit-dan-coba-aha"
+    "01-apa-itu-aha-lang",
+    "02-hello-world",
+    "03-variabel-dan-tipe",
+    "04-operator-dan-ekspresi",
+    "05-string",
+    "06-if-else",
+    "07-while",
+    "08-for",
+    "09-fungsi",
+    "10-proyek-kecil"
   ]
 }

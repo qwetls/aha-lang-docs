@@ -14,7 +14,7 @@ export default function BlogPage() {
         <div>
           <h1 className="text-[32px] leading-[1.15] font-bold tracking-tight mb-3 text-[#1c1917] dark:text-white">Blog</h1>
           <p className="text-[#78716c] dark:text-white/45 text-[15px]">
-            Pembaruan rilis, catatan pengembangan, dan pemikiran seputar AHA! Lang.
+            Roadmap, pembaruan rilis, tutorial, dan pemikiran seputar AHA! Lang.
           </p>
         </div>
 

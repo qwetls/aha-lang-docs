@@ -14,7 +14,7 @@ export default function CoursePage() {
             Course
           </h1>
           <p className="text-[#78716c] dark:text-white/45 text-[15px]">
-            Belajar cara kerja kompiler dari nol dengan AHA! Lang — mulai dari lexer, parser, sampai codegen LLVM.
+            Belajar menulis kode AHA! Lang dari nol — 10 pelajaran bertahap, dari Hello, World sampai proyek kecil.
           </p>
         </div>
 

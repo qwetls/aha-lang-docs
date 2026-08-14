@@ -1,0 +1,98 @@
+---
+title: "Menulis Kode AHA! Lang yang Bersih dan Mudah Dibaca"
+description: "Praktik menulis kode yang jelas: nama bermakna, fungsi kecil, if-ekspresi, dan sedikit komentar yang tepat."
+icon: ListTodo
+date: 2026-08-08
+---
+
+# Menulis Kode AHA! Lang yang Bersih dan Mudah Dibaca
+
+"Easy to read" bukan hanya slogan — ia adalah janji desain. Tapi bahasa yang mudah dibaca tidak otomatis membuat kodemu mudah dibaca. Diperlukan sedikit disiplin. Ini dia kebiasaan yang paling berdampak.
+
+## 1. Beri Nama yang Bermakna
+
+Kode dibaca jauh lebih sering daripada ditulis. Nama yang baik menjelaskan diri sendiri:
+
+```rust
+// ❌ Apa ini?
+let a = 30000;
+let b = 10;
+let c = a - (a * b / 100);
+
+// ✅ Jelas
+let total_belanja = 30000;
+let diskon_persen = 10;
+let bayar = total_belanja - (total_belanja * diskon_persen / 100);
+```
+
+Aturan praktis: jika kamu harus membaca isinya untuk tahu artinya, namanya kurang baik.
+
+## 2. Pecah Logika Jadi Fungsi Kecil
+
+Fungsi yang panjang dan melakukan banyak hal sulit dibaca dan diuji. Pecah menjadi fungsi kecil yang punya satu tanggung jawab:
+
+```rust
+fn kelipatan_dari(angka, pembagi) {
+    angka % pembagi == 0
+}
+
+fn label_angka(n) {
+    if kelipatan_dari(n, 15) {
+        "FizzBuzz"
+    } else {
+        if kelipatan_dari(n, 3) {
+            "Fizz"
+        } else {
+            if kelipatan_dari(n, 5) {
+                "Buzz"
+            } else {
+                "Angka biasa"
+            }
+        }
+    }
+}
+```
+
+Setiap fungsi menjawab satu pertanyaan: *apakah kelipatan?*, *apa labelnya?* — dan bisa dibaca sendiri-sendiri.
+
+## 3. Manfaatkan if sebagai Ekspresi
+
+Gaya AHA! Lang paling khas: biarkan `if` menghasilkan nilai, jangan isi variabel di dalam cabang:
+
+```rust
+// ❌ Dua langkah yang bisa salah
+let diskon = 0;
+if total > 100000 {
+    diskon = total / 10;
+} else {
+    diskon = 0;
+}
+
+// ✅ Satu ekspresi, satu nilai
+let diskon = if total > 100000 { total / 10 } else { 0 };
+```
+
+## 4. Komentari "Kenapa", Bukan "Apa"
+
+Kode yang baik sudah menjelaskan dirinya. Komentar paling berharga adalah yang menjelaskan **alasan** di balik keputusan:
+
+```rust
+// Diskon dikunci di 10% selama bulan promo — lihat keputusan rapat 2026-08-01
+let diskon = if total > 100000 { total / 10 } else { 0 };
+```
+
+Ketika kode berubah, komentar sering terlupakan. Semakin sedikit komentar yang mengulangi kode, semakin sedikit yang bisa basi.
+
+## 5. Konsisten Itu Lebih Penting dari Sempurna
+
+Pilih satu gaya dan gunakan konsisten: spasi di dalam kurung kurawal blok, titik koma di setiap statement, nama variabel `snake_case` seperti pada contoh-contoh di docs. Konsistensi membuat pembaca tidak terkejut.
+
+## Checklist Sebelum Menyimpan File
+
+- [ ] Apakah nama variabel dan fungsi menjelaskan isinya?
+- [ ] Apakah setiap fungsi punya satu tanggung jawab?
+- [ ] Apakah `if` dipakai sebagai ekspresi di tempat yang masuk akal?
+- [ ] Apakah komentar hanya menjelaskan "kenapa"?
+- [ ] Bisakah kamu membacanya keras-keras dengan lancar?
+
+Ingat: kamu menulis kode sekali, tapi membacanya berkali-kali — dan orang lain juga membacanya. Buat pengalaman membaca itu menyenangkan.

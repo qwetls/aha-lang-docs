@@ -1,0 +1,101 @@
+---
+title: "Variabel dan Tipe Data"
+description: "Menyimpan data dengan let, mengenal Int, Bool, dan String, serta cara mengubah nilai variabel."
+icon: ListTodo
+---
+
+# Variabel dan Tipe Data
+
+Program yang berguna harus bisa **menyimpan data**. Di AHA! Lang, kita menyimpan data dalam **variabel** — wadah bernama yang berisi nilai.
+
+## Membuat Variabel dengan `let`
+
+```rust
+let umur = 25;
+let nama = "Budi";
+let sudah_lulus = true;
+```
+
+Pola dasarnya:
+
+```text
+let <nama> = <nilai>;
+```
+
+- `let` adalah kata kunci untuk mendeklarasikan variabel.
+- `<nama>` adalah nama yang kamu pilih sendiri.
+- `<nilai>` adalah data yang ingin disimpan.
+
+## Tipe Data Dasar
+
+Setiap nilai di AHA! Lang punya **tipe** — kategori data yang menentukan apa yang bisa dilakukan padanya:
+
+| Tipe | Isi | Contoh |
+|------|-----|--------|
+| `Int` | Bilangan bulat 64-bit | `42`, `-7`, `0`, `1000000` |
+| `Bool` | Nilai kebenaran | `true`, `false` |
+| `String` | Teks | `"halo"`, `"AHA! Lang"` |
+
+Penting: kamu **tidak perlu menulis tipe** saat mendeklarasikan — kompiler menyimpulkannya dari nilainya. Ini disebut *type inference*.
+
+## Menampilkan Nilai Variabel
+
+```rust
+let umur = 25;
+
+print(umur);           // 25 — variabel Int
+print_str("Umur: ");   // Umur:
+```
+
+## Aturan Penamaan
+
+Nama variabel bisa huruf, angka, dan underscore `_`:
+
+- Boleh: `umur`, `my_var2`, `_private`
+- Tidak boleh: `2umur` (diawali angka), `umur 2` (mengandung spasi)
+- Hindari nama yang sama dengan kata kunci seperti `if`, `let`, `while` — mereka punya arti khusus di AHA!
+
+Gunakan nama yang **jelas dan deskriptif**. `total_belanja` jauh lebih baik daripada `x` jika yang kamu simpan adalah total belanja.
+
+## Mengubah Nilai Variabel
+
+Berbeda dengan beberapa bahasa lain yang `let`-nya kekal, di AHA! Lang variabel bisa **diubah** dengan operator penetapan `=`:
+
+```rust
+let skor = 10;
+print(skor); // 10
+
+skor = 15;   // ubah nilainya
+print(skor); // 15
+
+skor = skor + 5; // baca lama, hitung, simpan baru
+print(skor);     // 20
+```
+
+Cara membaca `skor = skor + 5;`:
+
+1. Ambil nilai `skor` yang lama (10).
+2. Tambahkan 5 → 15.
+3. Simpan hasilnya kembali ke `skor`.
+
+Pola menambah nilai seperti ini sangat umum — kamu akan sering melihatnya bersama perulangan.
+
+## Variabel di Dalam Ekspresi
+
+Variabel bisa dipakai di mana pun sebuah nilai dibutuhkan:
+
+```rust
+let harga = 15000;
+let jumlah = 3;
+let total = harga * jumlah;
+
+print(total); // 45000
+```
+
+## Latihan
+
+1. Buat variabel `kampus` berisi nama kampusmu, lalu cetak dengan `print_str`.
+2. Buat dua variabel `a = 8` dan `b = 12`, lalu cetak hasil `a + b`, `a * b`, dan `b - a`.
+3. Buat variabel `counter = 0`, tambahkan 1 tiga kali (tanpa mengubah angka 0 di baris awal), lalu cetak nilainya.
+
+Lanjut ke [Operator dan Ekspresi](/course/04-operator-dan-ekspresi)

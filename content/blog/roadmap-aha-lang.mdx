@@ -1,0 +1,74 @@
+---
+title: "Roadmap AHA! Lang: Ke Mana Langkah Berikutnya?"
+description: "Status rilis 1.x yang sudah jadi, rencana Phase 2 — dari generics sampai self-hosting — dan cara ikut berkontribusi."
+icon: Rocket
+date: 2026-08-15
+---
+
+# Roadmap AHA! Lang: Ke Mana Langkah Berikutnya?
+
+Setiap bahasa yang serius butuh peta jalan yang jujur. Ini dia roadmap AHA! Lang — apa yang sudah tercapai di rilis 1.x, dan apa yang sedang dibidik di Phase 2.
+
+## ✅ Sudah Terwujud (v1.x)
+
+Fondasi bahasa lengkap dan diuji oleh 305+ test otomatis di CI:
+
+- **Lexer & Pratt parser** dengan pelaporan error yang jelas
+- **Tipe `Int`, `Bool`, `String`** dengan type-checking pass di compile-time
+- **Operator**: aritmetika, perbandingan, `&&`/`||`, prefix, assignment
+- **Kontrol alur**: `if`/`else` (ekspresi), `while`, `for a..b`, `break`/`continue`
+- **Fungsi**: parameter, `return`, forward references, mutual recursion, string param & return
+- **String struct**: konkatenasi aman, `==`/`!=`, `len()` O(1)
+- **Array literals & indexing** (codegen)
+- **Builtins**: `print`, `print_str`, `abs`, `min`, `max`, `len`
+- **Eksekusi JIT** via LLVM
+- **CLI**: `--file`, `--emit-ir`, `--version`
+- **Ekstensi VS Code** untuk syntax highlighting (`editors/vscode`)
+- **CI pipeline**: `cargo check`, tes otomatis, `cargo build --release`
+
+## 🚧 Sedang dalam Pengerjaan (Phase 2)
+
+Inilah yang paling menarik — arah besar bahasa ke depan:
+
+### 1. Struct Codegen & Field Access
+
+Struct sudah bisa di-parse; langkah selanjutnya adalah codegen penuh dan akses field di runtime. Ini membuka jalan ke data terstruktur yang sesungguhnya.
+
+### 2. Type Inference & Annotations
+
+Sistem tipe akan diperkaya: inferensi yang lebih cerdas dan kemungkinan menulis anotasi tipe secara eksplisit — kendali penuh bagi pengembang yang menginginkannya.
+
+### 3. Generics / Parametric Types
+
+Menulis kode sekali, bekerja untuk banyak tipe: `Vec<T>`, fungsi generik, dan koleksi yang aman tipenya.
+
+### 4. Module System & Package Manager
+
+`aha install` — ekosistem paket untuk membagikan dan memakai pustaka. Ini adalah pintu gerbang menuju proyek berskala besar.
+
+### 5. Resource Lifetimes
+
+Manajemen memori manual yang aman — tanpa garbage collector, tanpa kebocoran memori, dengan kecepatan native. Visi ambisius yang membedakan AHA! dari bahasa lain.
+
+### 6. Actor-Model Concurrency
+
+Konkurensi dengan message passing dan async/await — memanfaatkan banyak inti prosesor tanpa sakit kepala.
+
+### 7. Self-Hosting
+
+Tujuan akhir yang paling mulia: **kompiler AHA! Lang ditulis dalam AHA! Lang sendiri**. Saat tercapai, bahasa ini membuktikan kedewasaannya.
+
+## Kenapa Roadmap Ini Penting?
+
+Roadmap bukan sekadar daftar keinginan — ia adalah komitmen arah. Setiap rilis (1.3.0, 1.4.0, ...) muncul dari daftar ini, dan setiap item disertai test yang menjaga kualitas.
+
+## Ingin Berkontribusi?
+
+AHA! Lang adalah proyek open source (MIT). Cara terbaik untuk mulai:
+
+1. **Baca kode**: kompiler hanya ~ribuan baris Rust — mulai dari `src/main.rs`.
+2. **Cari issue**: bug report dan ide fitur di [GitHub Issues](https://github.com/qwetls/aha-lang/issues).
+3. **Kirim PR**: panduan lengkap ada di [CONTRIBUTING.md](https://github.com/qwetls/aha-lang/blob/main/CONTRIBUTING.md).
+4. **Beri tahu kami**: fitur apa yang paling kamu butuhkan? Roadmap ini bisa berubah — dan pendapatmu bagian dari perubahan itu.
+
+Visi kami sederhana: bahasa yang *easy to read, powerful to wield* — dan kamu bisa ikut mewujudkannya.

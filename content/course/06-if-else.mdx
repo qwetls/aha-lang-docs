@@ -1,0 +1,121 @@
+---
+title: "Keputusan dengan if / else"
+description: "Membuat program bercabang: if/else di AHA! Lang adalah ekspresi yang menghasilkan nilai."
+icon: Blocks
+---
+
+# Keputusan dengan if / else
+
+Program yang menarik harus bisa **mengambil keputusan**: "jika hujan, bawa payung". Di AHA! Lang, keputusan ditulis dengan `if` dan `else`.
+
+## Bentuk Dasar
+
+```rust
+let nilai = 80;
+
+if nilai >= 70 {
+    print_str("Lulus\n");
+} else {
+    print_str("Tidak lulus\n");
+}
+```
+
+Struktur:
+
+```text
+if <kondisi> {
+    ...kode kalau kondisi benar...
+} else {
+    ...kode kalau kondisi salah...
+}
+```
+
+- Kondisi adalah sebuah ekspresi yang menghasilkan `1` (benar) atau `0` (salah) — biasanya perbandingan.
+- Blok `else` boleh dihilangkan jika tidak dibutuhkan.
+
+## if / else adalah Ekspresi
+
+Inilah keistimewaan AHA! Lang: **`if`/`else` menghasilkan sebuah nilai**. Nilai itu adalah hasil dari ekspresi terakhir di cabang yang dijalankan.
+
+```rust
+let x = 10;
+let y = 20;
+
+let terbesar = if x > y { x } else { y };
+
+print(terbesar); // 20
+```
+
+Tidak ada variabel yang diisi di dalam cabang — cabang **menghasilkan** nilainya langsung. Program jadi lebih pendek dan lebih jelas.
+
+Bandingkan dengan gaya imperatif biasa (yang juga bisa):
+
+```rust
+let terbesar = 0;
+if x > y {
+    terbesar = x;
+} else {
+    terbesar = y;
+}
+```
+
+Kedua cara valid, tapi versi ekspresi tanpa `terbesar`-awal yang bisa salah dimengerti.
+
+## Cabang Bertingkat
+
+Cabang `else` bisa berisi `if` lagi — untuk keputusan berjenjang:
+
+```rust
+let nilai = 85;
+
+// nilai: A jika >= 85, B jika >= 70, selain itu C
+let grade = if nilai >= 85 {
+    "A"
+} else {
+    if nilai >= 70 {
+        "B"
+    } else {
+        "C"
+    }
+};
+
+print_str(grade + "\n"); // A
+```
+
+Perhatikan: setiap cabang mengembalikan string, jadi variabel `grade` bertipe `String`.
+
+## Menggabungkan Kondisi
+
+Kombinasikan beberapa kondisi dengan `&&` dan `||`:
+
+```rust
+let umur = 20;
+let punya_ktp = 1;
+
+if umur >= 17 && punya_ktp == 1 {
+    print_str("Boleh membuat KTP\n");
+}
+```
+
+## Sistem Nilai AHA! yang Komposisional
+
+Karena `if` adalah ekspresi dan hasil logika adalah `Int`, semuanya bisa dirangkai dengan bebas:
+
+```rust
+let x = 42;
+
+// Inspirasi "Fizz" dari FizzBuzz: kelipatan 3
+let label = if x % 3 == 0 { "Fizz" } else { "Bukan Fizz" };
+
+print_str(label + "\n");
+```
+
+Ini adalah salah satu hal yang membuat AHA! Lang terasa seperti "alfabet yang bisa dikomposisikan".
+
+## Latihan
+
+1. Tulis program yang mencetak "Genap" atau "Ganjil" berdasarkan sebuah variabel angka (petunjuk: `angka % 2`).
+2. Buat fungsi `tanda(n)` yang mengembalikan `"Positif"` jika `n > 0`, `"Negatif"` jika `n < 0`, dan `"Nol"` jika `n == 0`. (Petunjuk: cabang bertingkat.)
+3. Gunakan `if` sebagai ekspresi: simpan dalam variabel `diskon` — `10` jika `total > 100000`, selain itu `0` — lalu cetak `total - diskon`.
+
+Lanjut ke [Perulangan dengan while](/course/07-while)

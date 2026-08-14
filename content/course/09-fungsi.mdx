@@ -1,0 +1,164 @@
+---
+title: "Fungsi: Kode yang Bisa Dipakai Ulang"
+description: "Membungkus logika dalam fn: parameter, nilai kembali, return lebih awal, dan fungsi yang saling memanggil."
+icon: Code2
+---
+
+# Fungsi: Kode yang Bisa Dipakai Ulang
+
+Semakin besar program, semakin penting untuk tidak menulis kode yang sama berulang-ulang. **Fungsi** menyelesaikan ini: sepotong kode bernama yang bisa dipanggil kapan saja.
+
+## Membuat Fungsi Pertama
+
+```rust
+fn sapa() {
+    print_str("Halo, dunia!\n");
+}
+
+sapa();
+sapa();
+```
+
+Output:
+
+```text
+Halo, dunia!
+Halo, dunia!
+```
+
+Struktur:
+
+```text
+fn <nama fungsi>(<parameter opsional>) {
+    ...isi fungsi...
+}
+```
+
+## Parameter: Input untuk Fungsi
+
+Fungsi bisa menerima **parameter** — nilai yang diberikan saat dipanggil:
+
+```rust
+fn sapa_nama(nama) {
+    print_str("Halo, " + nama + "!\n");
+}
+
+sapa_nama("Budi");
+sapa_nama("Dina");
+```
+
+Output:
+
+```text
+Halo, Budi!
+Halo, Dina!
+```
+
+Parameter pada contoh `sapa_nama` bekerja seperti variabel yang otomatis terisi nilai dari pemanggilan.
+
+## Nilai Kembalian
+
+Fungsi bisa **mengembalikan nilai**. Caranya: tulis ekspresi (tanpa titik koma) di akhir fungsi — nilai ekspresi itulah yang dikembalikan:
+
+```rust
+fn tambah(a, b) {
+    a + b
+}
+
+let hasil = tambah(3, 4);
+print(hasil); // 7
+
+print(tambah(10, 20)); // 30
+```
+
+Perhatikan: `a + b` di baris terakhir **tanpa titik koma** — itu cara AHA! Lang menyatakan "inilah nilai kembalian".
+
+Nilai kembalian bisa langsung dipakai dalam ekspresi lain — persis seperti nilai biasa.
+
+## return untuk Keluar Lebih Awal
+
+Kadang kamu ingin berhenti di tengah fungsi karena suatu kondisi. Gunakan `return`:
+
+```rust
+fn harga_ongkir(total) {
+    if total >= 100000 {
+        return 0;    // gratis ongkir, langsung keluar
+    }
+    15000           // selain itu, ongkir tetap
+}
+
+print(harga_ongkir(200000)); // 0
+print(harga_ongkir(5000));   // 15000
+```
+
+## Fungsi Bisa Memakai Fungsi Lain
+
+Fungsi bisa memanggil fungsi lain — bahkan dirinya sendiri (rekursi) atau secara dua arah (mutual recursion):
+
+```rust
+fn is_even(n) {
+    n % 2 == 0
+}
+
+fn is_odd(n) {
+    if is_even(n) {
+        0
+    } else {
+        1
+    }
+}
+
+print(is_even(10)); // 1
+print(is_odd(10));  // 0
+```
+
+Fungsi bisa dipanggil **sebelum didefinisikan** — AHA! Lang mengurus urutannya. Ini membuat kode bisa dibaca dari atas ke bawah secara natural.
+
+## Menggabungkan Semua Trik
+
+Program lengkap yang menggabungkan apa yang kamu pelajari:
+
+```rust
+fn kelipatan(angka, k) {
+    angka % k == 0
+}
+
+fn label_angka(n) {
+    if kelipatan(n, 15) {
+        "FizzBuzz"
+    } else {
+        if kelipatan(n, 3) {
+            "Fizz"
+        } else {
+            if kelipatan(n, 5) {
+                "Buzz"
+            } else {
+                "Angka biasa"
+            }
+        }
+    }
+}
+
+for i 1..16 {
+    print_str(label_angka(i) + "\n");
+}
+```
+
+Output:
+
+```text
+Angka biasa
+Angka biasa
+Fizz
+...
+FizzBuzz
+```
+
+## Latihan
+
+1. Buat fungsi `kubik(x)` yang mengembalikan `x * x * x`.
+2. Buat fungsi `maksimal(a, b)` yang mengembalikan nilai terbesar — pakai `if` sebagai ekspresi.
+3. Buat fungsi `hitung_mundur(mulai)` yang mencetak `mulai` sampai `1` dengan `while`, lalu `print_str("Go!\n")`.
+4. Buat fungsi `bilangan_prima(n)` yang mengembalikan `1` jika `n` prima dan `0` jika bukan. Petunjuk: bagi `n` dengan semua angka dari `2` sampai `n - 1`; jika ada yang `n % i == 0`, bukan prima. (Tantangan!)
+
+Lanjut ke pelajaran terakhir: [Proyek Kecil](/course/10-proyek-kecil) 🎉

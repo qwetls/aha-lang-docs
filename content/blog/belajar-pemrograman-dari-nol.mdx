@@ -1,0 +1,55 @@
+---
+title: "Belajar Pemrograman dari Nol? Mulai dengan AHA! Lang"
+description: "Kenapa AHA! Lang cocok sebagai bahasa pertama — sintaks minim, umpan balik cepat, dan kamu ikut mempelajari cara kerja kompiler."
+icon: BookOpen
+date: 2026-08-14
+---
+
+# Belajar Pemrograman dari Nol? Mulai dengan AHA! Lang
+
+"Bahasa apa yang sebaiknya kupelajari pertama kali?" — pertanyaan paling sering dari pemula. Jawaban jujur: bahasa pertama yang membuatmu **paham konsep**, bukan yang membingungkanmu dengan sintaks rumit. AHA! Lang dirancang persis untuk itu.
+
+## Kenapa Bahasa Pertama Itu Penting
+
+Bahasa pertama membentuk cara kamu berpikir tentang kode. Kalau bahasa pertamamu rumit, kamu menghabiskan energi untuk sintaks, bukan konsep. AHA! Lang mengambil jalur "Easy to read": sintaks sesingkat mungkin sehingga kamu fokus ke logika.
+
+Lihat perbandingan konsep yang sama — variabel dan keputusan:
+
+```rust
+let nilai = 7;
+let keterangan = if nilai >= 7 { "lulus" } else { "tidak lulus" };
+print_str(keterangan);
+```
+
+Tidak ada deklarasi tipe yang wajib, tidak ada tanda kurung ekstra, tidak ada kata kunci mewah. Yang tersisa adalah **apa yang sebenarnya terjadi**.
+
+## Umpan Balik Cepat itu Penting
+
+Pemula belajar dari umpan balik. Di AHA! Lang, kesalahan tipe — seperti `2 + "teks"` — ditolak **saat kompilasi** dengan pesan yang jelas, sebelum program berjalan. Kamu tidak akan bertanya-tanya "kenapa programku diam saja".
+
+## Kursus khusus untuk Pemula
+
+Kami baru saja merilis [Course](/course) — 10 pelajaran bertahap yang dirancang seperti tutorial bahasa pertama:
+
+| Lesson | Pelajaran |
+|--------|-----------|
+| 1–2 | Pengenalan & Hello, World |
+| 3–5 | Variabel, tipe, operator, string |
+| 6–8 | `if`, `while`, `for` |
+| 9–10 | Fungsi & proyek kecil |
+
+Setiap pelajaran punya latihan, dan pelajaran terakhir mengajakmu membangun tiga proyek klasik: FizzBuzz, deret Fibonacci, dan pengecekan bilangan prima.
+
+## Bonus: Kamu Ikut Belajar Cara Kerja Kompiler
+
+Ini keunggulan yang tidak dimiliki kebanyakan bahasa pertama: AHA! Lang adalah kompiler **beneran** dengan LLVM. Saat kamu mengetik `cargo run --release -- --file program.aha`, kamu bisa melihat pipeline-nya — lexing, parsing, codegen — dan membaca bagaimana bahasa bekerja dari dalam.
+
+Untuk mahasiswa teknik informatika, ini artinya satu kursus: belajar memrogram **dan** sekaligus mengenal arsitektur kompiler. Baca artikel [Mengapa Belajar Kompiler?](/blog/mengapa-belajar-kompiler) untuk sudut pandang yang lebih dalam.
+
+## Mulai Hari Ini
+
+1. Ikuti [Getting Started](/getting-started) untuk menyiapkan lingkungan.
+2. Mulai [Course](/course) dari pelajaran pertama.
+3. Gabung diskusi di [GitHub](https://github.com/qwetls/aha-lang) — komunitas kecil tapi hangat.
+
+Bahasa pertama tidak harus yang paling populer. Ia harus yang paling bisa membuatmu **paham**.
