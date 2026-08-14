@@ -1,4 +1,4 @@
 {
   "title": "Documentation",
-  "pages": ["index", "changelog", "architecture", "---Guides---", "installation", "configuration", "faq/build-errors"]
+  "pages": ["index", "getting-started", "language-tour", "---Guides---", "functions", "strings", "builtins", "architecture", "changelog", "faq"]
 }

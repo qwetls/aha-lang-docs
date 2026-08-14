@@ -1,20 +1,20 @@
 import { docs } from "@/.source/server";
 import { loader } from "fumadocs-core/source";
 import { createElement } from "react";
-import { BookOpen, CircleHelp, Settings, Monitor, Wrench, ListTodo, Blocks } from "lucide-react";
-import { FaWindows, FaLinux } from "react-icons/fa";
+import { BookOpen, CircleHelp, ListTodo, Blocks, Rocket, Code2, Terminal, Cpu, Braces, Zap } from "lucide-react";
 
 // @note maps icon names to components for sidebar
 const icons = {
   BookOpen,
   CircleHelp,
-  Settings,
-  Monitor,
-  Wrench,
-  Windows: FaWindows,
-  Linux: FaLinux,
   ListTodo,
   Blocks,
+  Rocket,
+  Code2,
+  Terminal,
+  Cpu,
+  Braces,
+  Zap,
 };
 
 export const source = loader({

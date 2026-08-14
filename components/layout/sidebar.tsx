@@ -9,20 +9,21 @@ import { useTheme } from "next-themes";
 const navItems = [
   { href: "/", label: "Overview" },
   { href: "/introduction", label: "Introduction" },
-  { href: "/changelog", label: "Changelog" },
-  { href: "/architecture", label: "Architecture" },
+  { href: "/getting-started", label: "Getting Started" },
+  { href: "/language-tour", label: "Language Tour" },
 ];
 
 const guidesItems = [
-  { href: "/installation/windows", label: "Windows Install" },
-  { href: "/installation/linux", label: "Linux Install" },
-  { href: "/configuration", label: "Configuration" },
-  { href: "/faq/build-errors", label: "FAQ" },
+  { href: "/functions", label: "Functions" },
+  { href: "/strings", label: "Strings" },
+  { href: "/builtins", label: "Builtins" },
+  { href: "/architecture", label: "Architecture" },
+  { href: "/changelog", label: "Changelog" },
+  { href: "/faq", label: "FAQ" },
 ];
 
 const externalLinks = [
-  { href: "https://github.com/XeyyzuV2", label: "GitHub" },
-  { href: "https://discord.gg/zzWHgzaF7J", label: "Discord" },
+  { href: "https://github.com/qwetls/aha-lang", label: "GitHub" },
 ];
 
 // @note renders a single nav link with active indicator
@@ -36,8 +37,8 @@ function NavItem({ href, label, onClick }: { href: string; label: string; onClic
         href={href}
         onClick={onClick}
         className={`relative block py-1.5 text-[14px] transition-colors ${
-          isActive 
-            ? "text-[#1c1917] dark:text-white font-semibold" 
+          isActive
+            ? "text-[#1c1917] dark:text-white font-semibold"
             : "text-[#a8a29e] dark:text-white/40 hover:text-[#78716c] dark:hover:text-white/70"
         }`}
       >
@@ -87,12 +88,12 @@ export function Sidebar() {
       <div className="pt-12 md:pt-16 pb-8">
         <Link href="/" className="flex items-center gap-2.5">
           <Image
-            src="https://raw.githubusercontent.com/YoruAkio/ProjectAssets/refs/heads/main/akio/guro/logo.png"
+            src="/logo.png"
             width={28}
             height={28}
-            alt="Gurotopia"
+            alt="AHA! Lang"
           />
-          <span className="text-[15px] font-semibold text-[#1c1917] dark:text-white/90 transition-colors">Gurotopia</span>
+          <span className="text-[15px] font-semibold text-[#1c1917] dark:text-white/90 transition-colors">AHA! Lang</span>
         </Link>
       </div>
 
@@ -145,12 +146,12 @@ export function Sidebar() {
       <div className="fixed top-0 left-0 right-0 z-50 md:hidden flex items-center justify-between px-6 h-14 bg-[#fafaf9]/90 dark:bg-[#0a0a0c]/90 backdrop-blur-md border-b border-stone-200/60 dark:border-white/5 transition-colors">
         <Link href="/" className="flex items-center gap-2">
           <Image
-            src="https://raw.githubusercontent.com/YoruAkio/ProjectAssets/refs/heads/main/akio/guro/logo.png"
+            src="/logo.png"
             width={24}
             height={24}
-            alt="Gurotopia"
+            alt="AHA! Lang"
           />
-          <span className="text-[14px] font-semibold text-[#1c1917] dark:text-white/90">Gurotopia</span>
+          <span className="text-[14px] font-semibold text-[#1c1917] dark:text-white/90">AHA! Lang</span>
         </Link>
         <div className="flex items-center gap-2">
           <ThemeToggle />

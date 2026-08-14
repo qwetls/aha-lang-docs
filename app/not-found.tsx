@@ -48,7 +48,7 @@ export default function NotFound() {
             Back to home
           </Link>
           <Link
-            href="/docs"
+            href="/introduction"
             className="rounded-lg border-2 border-border px-6 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
           >
             View docs

@@ -1,20 +1,15 @@
 // @note generateStructuredData creates JSON-LD structured data for search engines
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://qwetls.github.io/aha-lang-docs/";
+
+// @note generateStructuredData creates JSON-LD structured data for search engines
 export function WebsiteStructuredData() {
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Gurotopia',
+    name: 'AHA! Lang',
     description:
-      'A lightweight, flexible Growtopia private server built from scratch with modern C++',
-    url: 'https://gurotopia.yoruakio.xyz',
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: 'https://gurotopia.yoruakio.xyz/docs?q={search_term_string}',
-      },
-      'query-input': 'required name=search_term_string',
-    },
+      'A modern programming language with an LLVM backend, written in Rust',
+    url: siteUrl,
   };
 
   return (
@@ -30,12 +25,11 @@ export function OrganizationStructuredData() {
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Gurotopia',
-    url: 'https://gurotopia.yoruakio.xyz',
-    logo: 'https://raw.githubusercontent.com/YoruAkio/ProjectAssets/refs/heads/main/akio/guro/logo.png',
+    name: 'AHA! Lang',
+    url: siteUrl,
+    logo: `${siteUrl}logo.png`,
     sameAs: [
-      'https://github.com/gurotopia',
-      'https://discord.gg/zzWHgzaF7J',
+      'https://github.com/qwetls/aha-lang',
     ],
   };
 
@@ -73,18 +67,18 @@ export function SoftwareApplicationStructuredData() {
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: 'Gurotopia',
-    applicationCategory: 'GameServer',
-    operatingSystem: 'Windows, Linux',
+    name: 'AHA! Lang',
+    applicationCategory: 'DeveloperApplication',
+    operatingSystem: 'Linux, Windows, macOS',
     offers: {
       '@type': 'Offer',
       price: '0',
       priceCurrency: 'USD',
     },
     description:
-      'A lightweight, flexible Growtopia private server built from scratch with modern C++',
-    url: 'https://gurotopia.yoruakio.xyz',
-    downloadUrl: 'https://github.com/gurotopia',
+      'A modern programming language with an LLVM backend, written in Rust',
+    url: siteUrl,
+    downloadUrl: 'https://github.com/qwetls/aha-lang',
   };
 
   return (

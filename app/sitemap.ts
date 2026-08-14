@@ -1,13 +1,14 @@
 import { MetadataRoute } from "next";
 import { source } from "@/lib/source";
 
+// Override with NEXT_PUBLIC_SITE_URL when deploying under a custom domain
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://qwetls.github.io/aha-lang-docs/").replace(/\/$/, "");
+
 // @note generateSitemap creates sitemap.xml for search engines with all pages
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://gurotopia.yoruakio.xyz";
-  
   const routes: MetadataRoute.Sitemap = [
     {
-      url: baseUrl,
+      url: siteUrl,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1
@@ -17,9 +18,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // @note add all docs pages to sitemap
   const pages = source.getPages();
   const docsRoutes: MetadataRoute.Sitemap = pages.map((page) => {
-    const cleanUrl = page.url.startsWith('/docs') ? page.url : `/docs/${page.url}`;
+    const cleanUrl = page.url.startsWith('/') ? page.url : `/${page.url}`;
     return {
-      url: `${baseUrl}${cleanUrl}`,
+      url: `${siteUrl}${cleanUrl}`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8

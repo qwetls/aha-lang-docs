@@ -1,0 +1,34 @@
+---
+title: Builtins
+description: The standard builtin functions available in every AHA! program
+icon: Terminal
+---
+
+# Builtins
+
+Every AHA! program gets a small set of standard builtins:
+
+| Builtin | Description |
+|---------|-------------|
+| `print(int)` | Print an integer |
+| `print_str(string)` | Print a string |
+| `len(string)` | String length in O(1) |
+| `abs(x)` | Absolute value |
+| `min(a, b)` | Smaller of two numbers |
+| `max(a, b)` | Larger of two numbers |
+
+## Examples
+
+```aha
+print(42);           // 42
+print_str("hello");  // hello
+print(len("hello")); // 5
+print(abs(-7));      // 7
+print(min(3, 9));    // 3
+print(max(3, 9));    // 9
+```
+
+## Notes
+
+- `print` takes an integer; `print_str` takes a string. `print("hi")` is a compile-time type error — strings go through `print_str`.
+- `len` returns the stored length of the string struct, so it is O(1) regardless of string size.

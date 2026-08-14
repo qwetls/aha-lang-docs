@@ -20,66 +20,65 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Override with NEXT_PUBLIC_SITE_URL when deploying under a custom domain
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://qwetls.github.io/aha-lang-docs/";
+
 export const metadata: Metadata = {
   title: {
-    default: "Gurotopia - Open Source Growtopia Private Server",
-    template: "%s | Gurotopia",
+    default: "AHA! Lang - Easy to read. Powerful to wield.",
+    template: "%s | AHA! Lang",
   },
   description:
-    "A lightweight, flexible Growtopia private server built from scratch with modern C++. Clean code, unique compiler, and maintained by a dedicated community. No bloated dependencies, truly open-source.",
+    "AHA! Lang is a modern programming language with an LLVM backend. A full compiler pipeline in Rust — lexer, Pratt parser, type system, LLVM IR codegen, and JIT execution — built on inkwell with LLVM 14.",
   keywords: [
-    "Growtopia",
-    "private server",
+    "AHA! Lang",
+    "programming language",
+    "compiler",
+    "LLVM",
+    "Rust",
+    "inkwell",
+    "JIT",
     "open source",
-    "C++",
-    "Gurotopia",
-    "game server",
-    "growtopia ps",
-    "growtopia private server source",
-    "growtopia server",
-    "gtps",
-    "modern C++",
-    "lightweight server",
-    "from scratch",
-    "growtopia source code",
+    "AHA language",
+    "compiler design",
+    "expression-oriented",
+    "static typing",
   ],
   authors: [
     {
-      name: "YoruAkio",
-      url: "https://github.com/YoruAkio",
+      name: "qwetls",
+      url: "https://github.com/qwetls",
     },
   ],
-  creator: "YoruAkio",
-  publisher: "Gurotopia Community",
-  metadataBase: new URL("https://gurotopia.yoruakio.xyz"),
+  creator: "qwetls",
+  publisher: "AHA! Lang",
+  metadataBase: new URL(siteUrl),
   alternates: {
     canonical: "/",
   },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://gurotopia.yoruakio.xyz",
-    title: "Gurotopia - Open Source Growtopia Private Server",
+    url: siteUrl,
+    title: "AHA! Lang - Easy to read. Powerful to wield.",
     description:
-      "A lightweight, flexible Growtopia private server built from scratch with modern C++. Clean code, unique compiler, and maintained by a dedicated community.",
-    siteName: "Gurotopia",
+      "A modern programming language with an LLVM backend. A full compiler pipeline in Rust — lexer, Pratt parser, type system, LLVM IR codegen, and JIT execution.",
+    siteName: "AHA! Lang",
     images: [
       {
-        url: "https://raw.githubusercontent.com/YoruAkio/ProjectAssets/refs/heads/main/akio/guro/og_image.png",
+        url: `${siteUrl}logo.png`,
         width: 1200,
         height: 630,
-        alt: "Gurotopia - Open Source Growtopia Private Server",
+        alt: "AHA! Lang - Easy to read. Powerful to wield.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Gurotopia - Open Source Growtopia Private Server",
+    title: "AHA! Lang - Easy to read. Powerful to wield.",
     description:
-      "A lightweight, flexible Growtopia private server built from scratch with modern C++. Clean code, unique compiler, and maintained by a dedicated community.",
-    images: [
-      "https://raw.githubusercontent.com/YoruAkio/ProjectAssets/refs/heads/main/akio/guro/og_image.png",
-    ],
+      "A modern programming language with an LLVM backend. Lexer, Pratt parser, type system, LLVM IR codegen, and JIT execution — compiled in Rust.",
+    images: [`${siteUrl}logo.png`],
   },
   robots: {
     index: true,

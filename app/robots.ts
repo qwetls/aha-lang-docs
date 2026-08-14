@@ -1,13 +1,16 @@
 import { MetadataRoute } from "next";
 
+// Override with NEXT_PUBLIC_SITE_URL when deploying under a custom domain
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://qwetls.github.io/aha-lang-docs/").replace(/\/$/, "");
+
 // @note generateRobots creates robots.txt for search engine crawlers
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/api/", "/private/"]
+      disallow: ["/private/"]
     },
-    sitemap: "https://gurotopia.yoruakio.xyz/sitemap.xml"
+    sitemap: `${siteUrl}/sitemap.xml`
   };
 }

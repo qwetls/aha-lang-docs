@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "guro-website",
+      "name": "aha-lang-website",
       "dependencies": {
         "@base-ui/react": "^1.0.0",
         "class-variance-authority": "^0.7.1",

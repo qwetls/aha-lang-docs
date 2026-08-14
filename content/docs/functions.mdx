@@ -1,0 +1,76 @@
+---
+title: Functions
+description: Functions in AHA! — parameters, return values, forward references, and mutual recursion
+icon: Code2
+---
+
+# Functions
+
+Functions are the building blocks of AHA! programs. They are expression-oriented — the last expression in the body is the return value.
+
+## Defining a Function
+
+```aha
+fn is_even(n) {
+    n % 2 == 0
+}
+```
+
+## Parameters
+
+Parameters are written without type annotations. The type system checks arguments at compile time, so a type mismatch becomes an error at compile time, not at runtime.
+
+```aha
+fn add(a, b) {
+    a + b
+}
+
+print(add(2, 3)); // 5
+```
+
+## Return Values
+
+The last expression of the body is the return value. Functions also support an explicit `return` to exit early — the returned value is type-checked like any other.
+
+## Forward References & Mutual Recursion
+
+Functions can call each other regardless of declaration order, which makes mutual recursion natural:
+
+```aha
+fn is_even(n) {
+    n % 2 == 0
+}
+
+fn is_odd(n) {
+    if is_even(n) { 0 } else { 1 }
+}
+
+let count = 0;
+for i 0..10 {
+    if is_odd(i) {
+        count = count + 1;
+    }
+}
+count // 5
+```
+
+## Strings in Functions
+
+String parameters and return values are fully supported. The compiler runs a pre-pass (`infer_function_return_type`) to infer the return type before code generation, so string-returning functions work just like integer ones.
+
+```aha
+fn greet(name) {
+    "Hello, " + name
+}
+
+print_str(greet("world")); // Hello, world
+```
+
+## Calling Convention
+
+Calling a function is a plain expression — the value can be printed, stored, or used in arithmetic:
+
+```aha
+let doubled = add(5, 5); // 10
+print(doubled * 2);      // 20
+```

@@ -1,152 +1,56 @@
 ---
 title: Changelog
-description: Track all changes and improvements made to Gurotopia
+description: All notable changes to AHA! Lang
 icon: ListTodo
 ---
 
-<Callout type="info">
-  These changes are on the `my-version` branch of [XeyyzuV2/Gurotopia](https://github.com/XeyyzuV2/Gurotopia/tree/my-version).
-</Callout>
+# Changelog
 
-## Security & Stability
+All notable changes to AHA! Lang are documented in this file. You can always build the latest from source — see [Getting Started](/getting-started).
 
-### fix: stability, security and build hardening
+## 1.4.0 — 2026-05-17
 
-Nine foundational fixes to harden the server against crashes and improve project infrastructure:
+### Added
 
-- **main.cpp**: Added null-check on `enet_host_create()` — if binding to the configured port fails the server now prints an error and exits gracefully instead of dereferencing a null pointer and crashing.
-- **Dockerfile**: Rewritten as a multi-stage build (`ubuntu:24.04`), added `WORKDIR`, `EXPOSE 17091/udp` and `443/tcp`. Runtime image only contains runtime libraries (`libssl3t64`, `libmariadb3`) — no compiler toolchain remains.
-- **.gitignore**: Excluded `resources/ctx/server.key` — the TLS private key is now auto-generated via `scripts/gen-cert.sh` for local dev.
-- **Makefile**: Added dependency on `resources/ctx/server.key` so the cert script runs automatically at build time.
-- **world.hpp**: Replaced fixed `int access[20]` C-array with `std::vector<int>` — eliminates buffer overflow risk and removes the arbitrary 20-entry cap.
-- **database**: Added `std::mutex` (`db_mutex`) guarding every `hStmt` operation. The mutex is acquired in the `hStmt` constructor via `lock_guard`, serialising all MariaDB access across the main thread and the detached HTTPS listener thread.
-- Codacy lint badge cleanup.
+- **Type System** (`src/types.rs`): `AhaType` enum (`Int`, `Bool`, `String`, `Void`, `Array`, `Function`) with compile-time type checking via `check_binary_op()` and `check_prefix_op()`
+- **TypedValue**: all codegen expression methods now return a `TypedValue` pairing an LLVM value with its `AhaType`
+- **String Type**: strings are now an LLVM struct `{i8*, i64}` (pointer + length), replacing the unsafe pointer-to-int cast
+- **String Concatenation**: `"hello" + " world"` allocates a new buffer via `malloc`, copies via `memcpy`, null-terminates
+- **String Comparison**: `==` and `!=` on strings use `strcmp` from the C standard library
+- **`len()` builtin**: returns a string's length in O(1) by reading the struct's length field
+- **C Runtime Linkage**: external declarations for `malloc`, `memcpy`, `strlen`, `strcmp`
+- **Block Comments**: `/* ... */` multi-line comments
+- **String Escape Sequences**: `\n`, `\t`, `\\`, `\"`, `\r`, `\0`
+- **Identifier Improvements**: digits after the first character (`my_var2`), underscore prefix (`_private`)
+- **Test Suite**: 84 tests across 4 modules — lexer, parser, type system, and end-to-end JIT
 
-### fix: compile errors and bugs
+### Changed
 
-- `tile_change.cpp`: Fixed `lock_visuals` variable scope (moved declaration before if/else blocks, removed duplicate in the placing block).
-- `init_behaviors.cpp`: Removed null-pointer dereference in `on_roulette_wheel` handler.
-- `world_db.cpp`: Fixed `time_point` construction using `steady_clock::time_point() + milliseconds()`.
+- `Token.r#type` renamed to `Token.kind` — follows Rust convention, eliminates raw identifier syntax
+- Variable scope: flat map → stack of scopes with type tracking
+- `compile_expression()` returns `TypedValue` throughout all expression handlers
+- All output messages and source comments standardized to English
+- README roadmap updated to accurately reflect implementation status
 
-### fix: critical compile errors
+### Fixed
 
-- `registry.hpp`: Changed `struct ENetEvent&` to `ENetEvent&` — ENetEvent is a typedef, `struct` prefix is rejected by conforming compilers.
-- `collision.hpp`: Renamed `namespace collision` to `collision_check` to avoid conflict with `enum collision` at global scope.
-- `world_db.cpp`: Fixed dangling pointer — temporary string in `make_bind_in()` parameters array. Moved blob data to a named `std::string` on the stack.
-- `world_db.hpp`: Added missing `#include <string>`.
-- `init_behaviors.cpp`: Fixed `get_weather_id` signature from `int` to `u_int`.
-- `movement.cpp`: Fixed signed/unsigned comparison (`fg_id < items.size()`).
-- `registry.cpp`: Removed unused includes.
+- `!=` operator produced `"=="` instead of `"!="` (copy-paste error in the lexer)
+- `if` conditions not converted from `i64` to `i1` before `build_conditional_branch`
+- Phi nodes referenced original basic blocks instead of actual end blocks
+- Last expression in program body was compiled twice
+- Functions emitted both implicit and explicit return, causing LLVM "multiple terminators" errors
+- Function compilation could leak scope/builder state on error
+- Parser returned `Expression::Identifier("ERROR")` on parse failure, propagating invalid AST to codegen
 
-### fix: vscode task fix — ucrt64 shell
+### Security
 
-Fixed `.vscode/tasks.json` to use `ucrt64.exe` instead of `bash.exe` for `Ctrl+Shift+B` builds, ensuring the proper MSYS2 UCRT64 environment is loaded.
+- Type mismatches (`"hello" + 5`) now produce compile-time errors instead of undefined runtime behavior
+- All `.unwrap()` calls replaced with `.expect("descriptive context")` for debuggable panics
 
----
+## 1.3.0 — Previous Release
 
-## Modular Item System
-
-### feat: modular item system with registry, properties & collision
-
-Introduced a C++ item behavior framework replacing the hardcoded `switch(item->id)` approach:
-
-**Property flags** (`include/items/properties.hpp`):
-```cpp
-enum item_property : u_char {
-    PROP_DROP_SEED     = 1 << 0,
-    PROP_NO_SEED       = 1 << 1,
-    PROP_DROPLESS      = 1 << 2,
-    PROP_PERMANENT     = 1 << 3,
-    PROP_MULTI_FACING  = 1 << 4,
-    PROP_NO_SHADOW     = 1 << 5,
-    PROP_WRENCHABLE    = 1 << 6,
-    PROP_AUTO_PICKUP   = 1 << 7,
-};
-```
-
-**Category flags** (`enum item_category`):
-- `CAT_RETURN`, `CAT_PUBLIC`, `CAT_HOLIDAY`, `CAT_UNTRADEABLE`, `CAT_SURPRISING_FRUIT`
-
-**Behavior Registry** (`include/items/registry.hpp`):
-```cpp
-// Register a handler for any item ID — one line, no core file edits
-item_registry::register_item(758, on_roulette_wheel, "Roulette Wheel");
-item_registry::register_item(3400, on_love_potion, "Love Potion #8");
-// ... 23 items registered
-```
-
-**Collision System** (`include/items/collision.hpp`):
-```cpp
-namespace collision_check {
-    bool can_place_at(::collision col, const ::pos& player, const ::pos& target);
-    movement_rule get_movement_rule(::collision col);
-    bool is_passable(::collision col, float px, float py, int tx, int ty, bool falling);
-}
-```
-
-Movement rules: `BLOCK`, `PASS`, `PLATFORM`, `SLAB`, `ONE_WAY_X`, `ONE_WAY_Y`, `ACCESS`, `VIP`, `GUILD`, `ACTIVATE`.
-
-### refactor: complete modular item system migration
-
-- `items.hpp`: Replaced old `cat` enum with `#include "items/properties.hpp"`.
-- `drop.cpp`: Uses `item_category::CAT_UNTRADEABLE`.
-- `tile_change.cpp`: Registry-first dispatch — checks `item_registry::get_handler()` before falling through to type-based logic.
-- `movement.cpp`: Integrated collision checking — players can no longer walk through `FULL` collision tiles, and `PLATFORM` tiles block falling-through.
-
-### refactor: move love chests + provider items to registry, cleanup dead code
-
-- Registered all provider items (Chicken 872, Cow 866, Coffee Maker 1632, Sheep 3888, Tea Set 5116, Well 2798, Science Station 928).
-- Registered Dice (456), Roshambo (1300), and love chests (Heartstone 392, GBC 3402, Super GBC 9350) as registry handlers.
-- Removed dead love chest loot code and provider item-ID switch from `tile_change.cpp`.
-
-**Currently registered items (23):**
-
-| ID | Name | Handler |
-|----|------|---------|
-| 758 | Roulette Wheel | `on_roulette_wheel` |
-| 1404 | Door Mover | `on_door_mover` |
-| 822 | Water Bucket | `on_water_bucket` |
-| 1866 | Block Glue | `on_block_glue` |
-| 3062 | Pocket Lighter | `on_pocket_lighter` |
-| 2480 | Megaphone | `on_megaphone` |
-| 408 | Duct Tape | `on_duct_tape` |
-| 3400 | Love Potion #8 | `on_love_potion` |
-| 1488 | Experience Potion | `on_exp_potion` |
-| 3404/3406 | Lollipops | `on_lollipop` |
-| 3478-3492 | Paint Buckets (8) | `on_paint_*` |
-| 1008 | ATM | `on_atm` |
-| 872 | Chicken | `on_provider_drop_next` |
-| 866 | Cow | `on_provider_drop_next` |
-| 1632 | Coffee Maker | `on_provider_drop_next` |
-| 3888 | Sheep | `on_provider_drop_next` |
-| 5116 | Tea Set | `on_provider_tea_set` |
-| 2798 | Well | `on_provider_well` |
-| 928 | Science Station | `on_provider_science` |
-| 456 | Dice | `on_dice` |
-| 1300 | Roshambo | `on_roshambo` |
-| 392 | Heartstone | `on_love_chest` |
-| 3402 | GBC | `on_love_chest` |
-| 9350 | Super GBC | `on_love_chest` |
-
----
-
-## World Persistence
-
-### feat: world save/load to database (persistent worlds)
-
-Added full world persistence via MariaDB `MEDIUMBLOB` serialization:
-
-- **Schema**: `world_state` table with `name VARCHAR(100) PRIMARY KEY`, `owner INT`, `data MEDIUMBLOB`, `updated_at TIMESTAMP`.
-- **Serialization**: Versioned binary format containing all 6000 tiles (fg, bg, state[4], hits[2], tick, label) plus doors, displays, random_blocks, objects, last_object_uid, access list, weather, lock state, and owner.
-- **Save**: `save_world()` called when last player leaves (`quit_to_exit.cpp`) and on graceful shutdown (`safe_disconnect_peers` in `peer.cpp`).
-- **Load**: `load_world()` called on world join (`join_request.cpp`). Falls back to `generate_world()` if no DB data exists.
-
----
-
-## CI & Infrastructure
-
-### ci: activate workflow build setiap push di my-version
-
-- `make.yml`: Filtered branches to `[master, my-version]`, building on both `windows-latest` (MSYS2) and `ubuntu-latest`.
-- `docker.yml`: Filtered branches to `[master, my-version]`, validates `docker build`.
-- `README.md`: Updated badges to point to `XeyyzuV2/Gurotopia` fork.
+- Initial compiler with lexer, parser, codegen
+- Integer, boolean, string (as pointer hack) types
+- If/else, while, for loops
+- Functions with parameters
+- Basic stdlib: print, print_str, abs, min, max

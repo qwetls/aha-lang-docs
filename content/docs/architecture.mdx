@@ -1,327 +1,39 @@
 ---
 title: Architecture
-description: Technical reference for Gurotopia's modular item system, collision, and world persistence
-icon: Blocks
+description: Inside the AHA! compiler — lexer, Pratt parser, type system, LLVM codegen, and JIT
+icon: Cpu
 ---
 
-## Item Property System
+# Compiler Architecture
 
-Every item in Gurotopia is parsed from the official `items.dat` file at startup. The raw `property` byte and `cat` byte in each item definition carry **bitfield flags** that determine item behavior — alongside the `type` enum.
-
-### Property Flags
-
-Defined in `include/items/properties.hpp` as `enum item_property`:
-
-| Flag | Value | Description |
-|------|-------|-------------|
-| `PROP_DROP_SEED` | `1 << 0` (0x01) | Drops a seed variant when smashed |
-| `PROP_NO_SEED` | `1 << 1` (0x02) | Never drops seeds even if type::SEED |
-| `PROP_DROPLESS` | `1 << 2` (0x04) | Never drops a block when smashed |
-| `PROP_PERMANENT` | `1 << 3` (0x08) | Block can't be destroyed normally |
-| `PROP_MULTI_FACING` | `1 << 4` (0x10) | Can face multiple directions |
-| `PROP_NO_SHADOW` | `1 << 5` (0x20) | Tile casts no shadow |
-| `PROP_WRENCHABLE` | `1 << 6` (0x40) | Wrench action opens a dialog |
-| `PROP_AUTO_PICKUP` | `1 << 7` (0x80) | Auto-returns to inventory on break |
-
-### Category Flags
-
-Defined in `enum item_category`:
-
-| Flag | Value | Description |
-|------|-------|-------------|
-| `CAT_RETURN` | `1 << 1` (0x02) | Can't be destroyed, returns to backpack |
-| `CAT_SURPRISING_FRUIT` | `1 << 3` (0x08) | Tree bears surprising fruit |
-| `CAT_PUBLIC` | `1 << 4` (0x10) | Anyone can smash even in locked world |
-| `CAT_HOLIDAY` | `1 << 6` (0x40) | Only creatable during events |
-| `CAT_UNTRADEABLE` | `1 << 7` (0x80) | Cannot be dropped or traded |
-
-### Checking Properties in Code
-
-```cpp
-#include "items/properties.hpp"
-
-// Check a property flag
-if (has_property(*item, item_property::PROP_DROPLESS)) {
-    // item never drops seeds
-}
-
-// Check a category flag
-if (has_category(*item, item_category::CAT_RETURN)) {
-    // item returns to inventory on break
-}
-```
-
-### Item Struct
-
-Defined in `include/database/items.hpp`:
-
-```cpp
-class item {
-public:
-    u_short id{};
-    u_char property{};     // bitfield flags
-    u_char cat{};           // category flags
-    u_char type{};          // item type (FIST, LOCK, SEED, etc.)
-    std::string raw_name{};
-    int ingredient{};
-    u_char collision{};     // collision type
-    u_char hits{};
-    int hit_reset{};
-    u_char cloth_type{};
-    short rarity{};
-    int tick{};             // growth/production timer (seconds)
-    std::string info{};
-    std::array<u_short, 2> splice{};  // splice recipe pair
-};
-```
-
----
-
-## Behavior Registry
-
-The behavior registry replaces hardcoded `switch(item->id)` blocks with a modular registration system. Each item ID gets its own handler function — no more editing core files to add new items.
-
-### Core API
-
-Defined in `include/items/registry.hpp`:
-
-```cpp
-// Register a behavior for a specific item ID
-void item_registry::register_item(
-    u_short item_id,
-    item_behavior_fn fn,
-    const std::string& name = ""
-);
-
-// Lookup — returns nullptr if not registered
-const item_behavior_fn* item_registry::get_handler(u_short item_id);
-```
-
-### Handler Signature
-
-```cpp
-#include "items/registry.hpp"
-
-struct item_context {
-    class peer* pPeer;      // player data
-    class world* world;     // current world
-    class block* block;     // the tile being interacted with
-    const class item* item; // the item definition
-    struct state state;     // tank packet state
-    ENetEvent& event;       // network event
-};
-
-enum class item_action : u_char {
-    NONE,           // continue with default pipeline
-    HANDLED,        // skip remaining defaults
-    BREAK,          // break the block
-    RETURN_ITEM,    // return item to inventory
-    CONSUME,        // consume 1 from inventory
-    CANCEL,         // abort silently
-};
-
-using item_behavior_fn = std::function<item_action(item_context& ctx)>;
-```
-
-### Adding a New Item Behavior
-
-Add the handler and registration in `include/items/init_behaviors.cpp`:
-
-```cpp
-// 1. Write the handler
-static item_action on_my_item(item_context& ctx) {
-    // do something with ctx.block, ctx.pPeer, ctx.world
-    send_varlist(ctx.event.peer, { "OnTalkBubble", ctx.pPeer->netid, "Hello!", 0u, 1u });
-    return item_action::CONSUME;
-}
-
-// 2. Register it
-void register_item_behaviors() {
-    item_registry::register_item(1234, on_my_item, "My Custom Item");
-}
-```
-
-That's it — one function, one registration line. No modifying `tile_change.cpp` or other core files.
-
-### Currently Registered Items
-
-| ID | Name | Handler |
-|----|------|---------|
-| 758 | Roulette Wheel | `on_roulette_wheel` |
-| 1404 | Door Mover | `on_door_mover` |
-| 822 | Water Bucket | `on_water_bucket` |
-| 1866 | Block Glue | `on_block_glue` |
-| 3062 | Pocket Lighter | `on_pocket_lighter` |
-| 2480 | Megaphone | `on_megaphone` |
-| 408 | Duct Tape | `on_duct_tape` |
-| 3400 | Love Potion #8 | `on_love_potion` |
-| 1488 | Experience Potion | `on_exp_potion` |
-| 3404/3406 | Lollipops | `on_lollipop` |
-| 3478-3492 | Paint Buckets (8 colors) | `on_paint_*` |
-| 1008 | ATM | `on_atm` |
-| 872 | Chicken | `on_provider_drop_next` |
-| 866 | Cow | `on_provider_drop_next` |
-| 1632 | Coffee Maker | `on_provider_drop_next` |
-| 3888 | Sheep | `on_provider_drop_next` |
-| 5116 | Tea Set | `on_provider_tea_set` |
-| 2798 | Well | `on_provider_well` |
-| 928 | Science Station | `on_provider_science` |
-| 456 | Dice | `on_dice` |
-| 1300 | Roshambo | `on_roshambo` |
-| 392 | Heartstone | `on_love_chest` |
-| 3402 | GBC | `on_love_chest` |
-| 9350 | Super GBC | `on_love_chest` |
-
----
-
-## Collision System
-
-The collision system lives in `namespace collision_check` (defined in `include/items/collision.hpp`) and uses the existing `enum collision` from items.dat.
-
-### Collision Types (from items.dat)
-
-```cpp
-enum collision : u_char {
-    NO_COLLISION,   // air — free pass
-    FULL,           // solid wall
-    ON_TOP,         // platform — stand on top, jump through
-    IF_ACCESS,      // requires world access
-    TOGGLE,         // toggleable barrier
-    HORIZONTAL,     // one-way (horizontal)
-    IF_VIP,         // VIP entrance
-    VERTICAL,       // one-way (vertical)
-    ADVENTURE_ITEM,
-    ACTIVATE,       // triggers on contact
-    BALLOON_WARZ_TEAM,
-    IF_GUILD,       // guild entrance
-    STEP_ON         // triggered when stepped on
-};
-```
-
-### Movement Rules
-
-```cpp
-namespace collision_check {
-
-enum class movement_rule : u_char {
-    BLOCK,      // solid — cannot pass
-    PASS,       // free — walk through
-    PLATFORM,   // stand on top, jump through from below
-    SLAB,       // half-height block
-    ONE_WAY_X,  // pass from left only
-    ONE_WAY_Y,  // pass from above only
-    ACCESS,     // pass only if in world access list
-    VIP,        // pass only if VIP
-    GUILD,      // pass only if same guild
-    ACTIVATE,   // pass triggers activation
-};
-```
-
-### Collision Check on Place
-
-Used during tile placement in `tile_change.cpp`:
-
-```cpp
-if (!collision_check::can_place_at(item->collision, state.pos, state.punch))
-    return;
-```
-
-### Collision Check on Movement
-
-Integrated in `state/movement.cpp` — prevents walking through solid walls and handles one-way platforms:
-
-```cpp
-collision_check::movement_rule rule = collision_check::get_movement_rule(
-    static_cast<::collision>(item.collision)
-);
-
-if (rule == collision_check::movement_rule::BLOCK) {
-    // Reject movement through solid tiles
-    state_visuals(*event.peer, std::move(state));
-    return;
-}
-```
-
----
-
-## World Persistence
-
-World state is saved to MariaDB as a serialized binary blob. Each world has exactly one row in the `world_state` table.
-
-### Database Schema
-
-Created automatically at startup by `init_world_database()` in `include/database/world_db.cpp`:
-
-```sql
-CREATE TABLE IF NOT EXISTS world_state (
-    name       VARCHAR(100) PRIMARY KEY,
-    owner      INT NOT NULL DEFAULT 0,
-    data       MEDIUMBLOB,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-```
-
-### Serialization Format
-
-The binary format packs the entire world into a versioned blob:
-
-| Section | Size | Description |
-|---------|------|-------------|
-| Version | 1 byte | Format version (currently 1) |
-| Metadata | 16 bytes | owner (4) + is_public (1) + lock_state (1) + min_level (1) + weather_x (4) + weather_y (4) |
-| Access list | 4 + N*4 | count + array of user IDs |
-| Blocks | 4 + N * (4+4+4+1+1+8+label) | count + each tile: fg, bg, state[4], hits[2], tick (ms), label |
-| Doors | 4 + N * (string+string+string+x+y) | count + each door |
-| Displays | 4 + N * (4+4+4) | count + each display |
-| Random blocks | 4 + N * (1+4+4) | count + each random block |
-| Objects | 4 + N * (2+2+4+4+4) + 4 | count + each object + last_object_uid |
-
-### Save/Load Lifecycle
-
-```cpp
-// Load world from DB (in join_request.cpp)
-load_world(*it);
-// If no data, generate fresh world:
-if (empty) generate_world(*it, big_name);
-
-// Save when last player leaves (in quit_to_exit.cpp)
-if (--world->visitors <= 0) {
-    save_world(*world);
-    worlds.erase(world);
-}
-
-// Save all worlds on shutdown (in peer.cpp)
-void safe_disconnect_peers(int code) {
-    for (auto& w : worlds)
-        save_world(w);
-    // ...shutdown sequence...
-}
-```
-
-### Adding New Data to Save
-
-To persist additional world data (e.g., new block fields), update the serialization functions in `include/database/world_db.cpp`:
-
-1. Bump the version byte
-2. Add read/write calls in `serialize_world()` and `deserialize_world()`
-3. Handle the old version gracefully in the deserializer
-
----
-
-## File Layout Summary
+AHA! is a complete compiler in a single binary:
 
 ```
-include/
-├── items/
-│   ├── properties.hpp      # Property + category flag enums
-│   ├── registry.hpp        # Behavior registry class
-│   ├── registry.cpp         # Registry implementation
-│   ├── init_behaviors.hpp  # Registration function declaration
-│   ├── init_behaviors.cpp  # All item handlers + registrations
-│   └── collision.hpp       # Collision checking namespace
-└── database/
-    ├── world.hpp            # World + block structs
-    ├── world.cpp            # World functions
-    ├── world_db.hpp         # Persistence API
-    └── world_db.cpp         # Binary serialization + DB operations
+Source Code → Lexer → Parser (Pratt) → AST → Code Generator → LLVM IR → JIT Execution
 ```
+
+## Stages
+
+| Stage | Module | What it does |
+|-------|--------|--------------|
+| **Lexer** | `src/lexer.rs` | Tokenizes source: identifiers, integers, strings (with escapes), operators, line & block comments |
+| **Parser** | `src/parser.rs` | Pratt parser producing the AST — expression-oriented, with correct operator precedence |
+| **Type System** | `src/types.rs` | `AhaType` + `TypedValue`; compile-time checks for binary and prefix operators |
+| **Codegen** | `src/codegen.rs` | LLVM IR generation via `inkwell`: functions (with return-type inference), loops, strings, arrays, C-runtime linkage |
+| **Driver** | `src/main.rs` | CLI entry point: lex → parse → codegen → print IR → JIT execute |
+
+## Design Notes
+
+- **LLVM 14** through the `inkwell` crate — no hand-rolled backend
+- **Strings** are `{i8*, i64}` structs; `malloc`, `memcpy`, and `strcmp` come from the linked C runtime
+- **TypedValue**: every codegen expression returns both an LLVM value and its `AhaType`, so type errors surface before the IR is built
+- **Booleans compose with math**: all comparison and logical operators produce `i64` `0`/`1`, so `is_even(n) * 100` needs no casts
+- **JIT execution** runs the generated IR inside the compiler process — no separate interpreter
+
+## How a Program Executes
+
+1. The lexer turns source text into a token stream.
+2. The Pratt parser builds an expression-oriented AST with correct precedence.
+3. The type system checks every binary and prefix operation.
+4. Codegen emits LLVM IR (functions, loops, strings, builtin calls) via inkwell.
+5. The driver links and JIT-executes the IR, printing the program result.

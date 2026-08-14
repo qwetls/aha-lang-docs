@@ -8,7 +8,7 @@ import { OverviewContainer } from "@/components/layout/overview-container";
 function useGitHubStars() {
   const [stars, setStars] = useState<number | null>(null);
   useEffect(() => {
-    fetch("https://api.github.com/repos/gurotopia/gurotopia")
+    fetch("https://api.github.com/repos/qwetls/aha-lang")
       .then((r) => r.json())
       .then((d) => {
         if (typeof d.stargazers_count === "number") setStars(d.stargazers_count);
@@ -17,6 +17,16 @@ function useGitHubStars() {
   }, []);
   return stars;
 }
+
+const exampleSource = `// AHA! is expression-oriented — the last expression is the result
+let x = 10;
+let y = 20;
+
+if x > y {
+    x
+} else {
+    y
+}`;
 
 function CopyIcon({ size = 14 }: { size?: number }) {
   return (
@@ -114,7 +124,7 @@ export default function OverviewPage() {
   const stars = useGitHubStars();
 
   const handleCmdCopy = () => {
-    navigator.clipboard.writeText("git clone https://github.com/gurotopia/gurotopia").then(() => {
+    navigator.clipboard.writeText("git clone https://github.com/qwetls/aha-lang").then(() => {
       setCmdCopied(true);
       setTimeout(() => setCmdCopied(false), 1500);
     });
@@ -128,9 +138,9 @@ export default function OverviewPage() {
       <motion.div className="space-y-6" initial="hidden" animate="show">
         <motion.div custom={0} variants={fadeUp}>
           <h1 className="text-[32px] leading-[1.15] font-bold tracking-tight text-[#1c1917] dark:text-white transition-colors">
-            Gurotopia Docs.
+            AHA! Lang.
             <br />
-            <span className="text-[#a8a29e] dark:text-white/45">Built from scratch.</span>
+            <span className="text-[#a8a29e] dark:text-white/45">Easy to read. Powerful to wield.</span>
           </h1>
         </motion.div>
 
@@ -142,7 +152,7 @@ export default function OverviewPage() {
           >
             <span className="flex items-center gap-2 px-3.5">
               <span className="text-[#78716c] dark:text-white/30">$</span>
-              git clone github.com/gurotopia/gurotopia
+              git clone github.com/qwetls/aha-lang
             </span>
             <span className="flex items-center justify-center w-9 h-9 border-l border-white/10 dark:border-white/[0.08] text-[#78716c] dark:text-white/30 group-hover:text-[#a8a29e] dark:group-hover:text-white/55 transition-colors">
               {cmdCopied ? <CheckIcon size={14} /> : <CopyIcon size={14} />}
@@ -151,7 +161,7 @@ export default function OverviewPage() {
 
           {/* github */}
           <a
-            href="https://github.com/gurotopia"
+            href="https://github.com/qwetls/aha-lang"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 h-9 px-3.5 rounded-lg border border-[#e7e5e4] dark:border-white/[0.09] text-[13px] text-[#57534e] dark:text-white/50 hover:border-[#d6d3d1] dark:hover:border-white/20 hover:text-[#1c1917] dark:hover:text-white/80 transition-all"
@@ -170,54 +180,72 @@ export default function OverviewPage() {
         </motion.div>
 
         <motion.div custom={1.5} variants={fadeUp} className="w-full rounded-xl border border-[#e7e5e4] dark:border-white/[0.08] overflow-hidden">
-          <img 
-            src="https://raw.githubusercontent.com/YoruAkio/ProjectAssets/refs/heads/main/akio/guro/gurotopia_banner.png" 
-            alt="Gurotopia Banner" 
-            className="w-full h-auto block select-none scale-[1.2]"
-            draggable={false}
-          />
+          <CodeBlock lang="aha" copyText={exampleSource}>
+            {`// AHA! is expression-oriented — the last expression is the result
+let x = 10;
+let y = 20;
+
+if x > y {
+    x
+} else {
+    y
+}`}
+          </CodeBlock>
+          <p className="px-4 py-2.5 border-t border-stone-200 dark:border-white/[0.08] text-[12px] font-mono text-[#78716c] dark:text-white/40 transition-colors">
+            Program executed successfully. Result: <Token color="#1c1917">20</Token>
+          </p>
         </motion.div>
 
         <motion.div custom={2} variants={fadeUp} className="space-y-3 text-[15px] leading-relaxed text-[#78716c] dark:text-white/45 transition-colors">
           <p>
-            <strong className="text-[#1c1917] dark:text-white/90 pr-1 transition-colors">Gurotopia</strong> is an open-source Growtopia
-            Private Server written in modern C/C++. Not another leaked fork — clean code,
-            a unique compiler, and active community maintenance.
+            <strong className="text-[#1c1917] dark:text-white/90 pr-1 transition-colors">AHA! Lang</strong> is a modern
+            programming language with an LLVM backend. A full compiler pipeline in Rust — lexer, Pratt parser,
+            type system, LLVM IR codegen, and built-in JIT execution — built on inkwell with LLVM 14.
           </p>
           <p>
-            These docs cover everything: setting up on Windows or Linux, server configuration,
-            and troubleshooting common build issues.
+            These docs cover everything: building the compiler from source, a tour of the language,
+            functions &amp; strings, builtins, and the compiler architecture.
           </p>
         </motion.div>
       </motion.div>
 
-      {/* why gurotopia */}
+      {/* why aha! */}
       <motion.div custom={3} variants={fadeUp} initial="hidden" animate="show">
         <div className="flex items-center gap-3 mb-5">
-          <span className="text-[15px] font-semibold text-[#1c1917] dark:text-white transition-colors whitespace-nowrap">Why Gurotopia</span>
+          <span className="text-[15px] font-semibold text-[#1c1917] dark:text-white transition-colors whitespace-nowrap">Why AHA!?</span>
           <div className="h-px flex-1 bg-[#e7e5e4] dark:bg-white/[0.06] transition-colors" />
         </div>
 
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
           <FeatureCard
             icon={<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>}
-            title="Lightweight"
-            description="Compiler + SSL + SQL under 1GB. No bloated deps."
-          />
-          <FeatureCard
-            icon={<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>}
-            title="Modern C++"
-            description="Clean architecture, readable code, proper abstractions."
+            title="LLVM-Powered"
+            description="Compiles to LLVM IR and runs through a built-in JIT — native-level performance from day one."
           />
           <FeatureCard
             icon={<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>}
-            title="From Scratch"
-            description="Not based on leaked code. Genuinely original work."
+            title="Boolean Algebra That Composes"
+            description="==, !=, &&, || all return Int 0/1 — so logic flows straight into arithmetic: is_even(n) * 100 just works."
           />
           <FeatureCard
             icon={<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2" strokeLinecap="round" strokeLinejoin="round" /><path strokeLinecap="round" strokeLinejoin="round" d="M8 21h8M12 17v4" /></svg>}
-            title="Cross-Platform"
-            description="Windows 10/11 and major Linux distros, out of the box."
+            title="Strings Done Right"
+            description="Strings are a real {pointer, length} struct — safe concatenation, ==/!= comparison, and an O(1) len() builtin."
+          />
+          <FeatureCard
+            icon={<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>}
+            title="Expressive Type Discipline"
+            description="First-class Int, Bool, and String with a compile-time type-checking pass. Type errors are caught at compile time, not at runtime."
+          />
+          <FeatureCard
+            icon={<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6V4m0 16v-2m6.36-10.36l-1.42 1.42M7.06 17.94l-1.42 1.42M20 12h-2M6 12H4m13.94-5.94l-1.42 1.42M7.06 6.06L5.64 4.64M8 12a4 4 0 118 0 4 4 0 01-8 0z" /></svg>}
+            title="Modern Control Flow"
+            description="if/else, while, and for loops with break/continue. Functions with parameters, return, forward references, and mutual recursion."
+          />
+          <FeatureCard
+            icon={<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="8" rx="2" strokeLinecap="round" strokeLinejoin="round" /><rect x="2" y="14" width="20" height="8" rx="2" strokeLinecap="round" strokeLinejoin="round" /><path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.01M6 18h.01" /></svg>}
+            title="Honest Tooling"
+            description="A clean CLI (--file, --emit-ir, --version), a VS Code syntax-highlighting extension, and a CI pipeline running 305+ tests on every commit."
           />
         </div>
       </motion.div>
@@ -225,20 +253,20 @@ export default function OverviewPage() {
       {/* next steps */}
       <motion.div custom={4} variants={fadeUp} initial="hidden" animate="show">
         <p className="text-[14px] text-[#78716c] dark:text-white/45 transition-colors">
-          Ready to get started? Pick your platform:
+          Ready to dive in? Start here:
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           <Link
-            href="/installation/windows"
+            href="/getting-started"
             className="flex items-center gap-2 h-9 px-4 rounded-lg border border-[#e7e5e4] dark:border-white/[0.09] text-[13px] text-[#57534e] dark:text-white/70 hover:border-[#d6d3d1] dark:hover:border-white/20 hover:text-[#1c1917] dark:hover:text-white transition-colors"
           >
-            Windows →
+            Getting Started →
           </Link>
           <Link
-            href="/installation/linux"
+            href="/language-tour"
             className="flex items-center gap-2 h-9 px-4 rounded-lg border border-[#e7e5e4] dark:border-white/[0.09] text-[13px] text-[#57534e] dark:text-white/70 hover:border-[#d6d3d1] dark:hover:border-white/20 hover:text-[#1c1917] dark:hover:text-white transition-colors"
           >
-            Linux →
+            Language Tour →
           </Link>
           <Link
             href="/introduction"

@@ -6,12 +6,12 @@ export const baseOptions: BaseLayoutProps = {
     title: (
       <div className="flex items-center gap-2">
         <Image
-          src="https://raw.githubusercontent.com/YoruAkio/ProjectAssets/refs/heads/main/akio/guro/logo.png"
+          src="/logo.png"
           width={32}
           height={32}
-          alt="Gurotopia"
+          alt="AHA! Lang"
         />
-        <span>Gurotopia</span>
+        <span>AHA! Lang</span>
       </div>
     ),
   },
@@ -22,20 +22,30 @@ export const baseOptions: BaseLayoutProps = {
       active: 'nested-url',
     },
     {
-      text: 'Changelog',
-      url: '/docs/changelog',
+      text: 'Getting Started',
+      url: '/getting-started',
       active: 'nested-url',
     },
     {
-      text: 'Architecture',
-      url: '/docs/architecture',
+      text: 'Language Tour',
+      url: '/language-tour',
+      active: 'nested-url',
+    },
+    {
+      text: 'Builtins',
+      url: '/builtins',
+      active: 'nested-url',
+    },
+    {
+      text: 'Changelog',
+      url: '/changelog',
       active: 'nested-url',
     },
     {
       text: 'FAQ',
-      url: '/docs/faq/build-errors',
+      url: '/faq',
       active: 'nested-url',
     },
   ],
-  githubUrl: 'https://github.com/XeyyzuV2',
+  githubUrl: 'https://github.com/qwetls/aha-lang',
 };
