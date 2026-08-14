@@ -10,7 +10,7 @@ Functions are the building blocks of AHA! programs. They are expression-oriented
 
 ## Defining a Function
 
-```aha
+```rust
 fn is_even(n) {
     n % 2 == 0
 }
@@ -20,7 +20,7 @@ fn is_even(n) {
 
 Parameters are written without type annotations. The type system checks arguments at compile time, so a type mismatch becomes an error at compile time, not at runtime.
 
-```aha
+```rust
 fn add(a, b) {
     a + b
 }
@@ -36,7 +36,7 @@ The last expression of the body is the return value. Functions also support an e
 
 Functions can call each other regardless of declaration order, which makes mutual recursion natural:
 
-```aha
+```rust
 fn is_even(n) {
     n % 2 == 0
 }
@@ -58,7 +58,7 @@ count // 5
 
 String parameters and return values are fully supported. The compiler runs a pre-pass (`infer_function_return_type`) to infer the return type before code generation, so string-returning functions work just like integer ones.
 
-```aha
+```rust
 fn greet(name) {
     "Hello, " + name
 }
@@ -70,7 +70,7 @@ print_str(greet("world")); // Hello, world
 
 Calling a function is a plain expression — the value can be printed, stored, or used in arithmetic:
 
-```aha
+```rust
 let doubled = add(5, 5); // 10
 print(doubled * 2);      // 20
 ```

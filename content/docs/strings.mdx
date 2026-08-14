@@ -10,7 +10,7 @@ Strings in AHA! are a real `{pointer, length}` struct — not a bare pointer hac
 
 ## String Literals
 
-```aha
+```rust
 let name = "world";
 ```
 
@@ -20,7 +20,7 @@ Supported escape sequences: `\n`, `\t`, `\\`, `\"`, `\r`, `\0`.
 
 `+` on strings allocates a new buffer via `malloc`, copies both parts with `memcpy`, and null-terminates the result:
 
-```aha
+```rust
 let name = "world";
 let greeting = "Hello, " + name;
 print_str(greeting); // Hello, world
@@ -30,7 +30,7 @@ print_str(greeting); // Hello, world
 
 `==` and `!=` compare the full contents via `strcmp`:
 
-```aha
+```rust
 if "aha" == "aha" {
     print(1); // 1
 }
@@ -40,7 +40,7 @@ if "aha" == "aha" {
 
 `len()` reads the length field of the struct — O(1), no scanning:
 
-```aha
+```rust
 print(len(name));  // 5
 print(len(""));    // 0
 ```
@@ -56,7 +56,7 @@ See [Builtins](/builtins) for the full list.
 
 Strings can be passed as arguments and returned from functions. The return type is inferred automatically by a pre-pass:
 
-```aha
+```rust
 fn shout(s) {
     s + "!"
 }
