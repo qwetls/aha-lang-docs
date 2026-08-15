@@ -8,6 +8,26 @@ icon: ListTodo
 
 All notable changes to AHA! Lang are documented in this file. You can always build the latest from source — see [Getting Started](/en/getting-started).
 
+## 1.5.0 — 2026-08-16
+
+### Added
+
+- **Struct Codegen (Roadmap Phase 2 #1):** `struct Point { x, y }` definitions now produce real LLVM struct types. Literals `Point { x: 1, y: 2 }` build the aggregate via `insertvalue`; field access `p.x` reads via `extractvalue`.
+- **Typed Struct Fields:** Field type hints (`name: string, age: int`) are honored at runtime — `string` fields use `{i8*, i64}` layout, `int` fields use `i64`. Literals are type-checked against declarations. Field access preserves the declared type, so `len(p.name)`, `p.name == "..."`, and `p.first + p.last` work correctly.
+- **Struct Literal Syntax:** `TypeName { field: value, ... }` — gated by a struct-name registry so ordinary block conditions `if x { ... }` are unaffected.
+- **PRD (Product Requirements Document):** `PRD.md` — defines AHA!'s vision from web to aerospace, roadmap priorities, and project governance.
+- **Test Suite (struct):** 28 backend tests covering JIT semantics, IR shape, typed fields, and error paths.
+
+### Changed
+
+- **Branch workflow:** All development now happens on the `development` branch; `main` only receives PRs with green CI.
+- **PRD replaces ad-hoc planning:** All future features must originate from the roadmap in `PRD.md`.
+- **F5 (Resource lifetimes) frozen:** Ownership/lifetimes will not be touched until F1–F4 (struct finalization, type inference, generics, module system) are stable.
+
+### Security
+
+- Struct field types are checked at compile time: assigning a string literal to an `int` field (or vice versa) produces a compile-time error instead of undefined behavior.
+
 ## 1.4.0 — 2026-05-17
 
 ### Added

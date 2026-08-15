@@ -8,6 +8,26 @@ icon: ListTodo
 
 Semua perubahan penting pada AHA! Lang didokumentasikan dalam berkas ini. Anda selalu dapat membangun versi terbaru dari kode sumber — lihat [Getting Started](/id/getting-started).
 
+## 1.5.0 — 2026-08-16
+
+### Ditambahkan
+
+- **Codegen Struct (Roadmap Phase 2 #1):** definisi `struct Point { x, y }` kini menghasilkan tipe struct LLVM yang sesungguhnya. Literal `Point { x: 1, y: 2 }` membangun agregat via `insertvalue`; akses field `p.x` dibaca via `extractvalue`.
+- **Field Struct Bertipe:** anotasi tipe field (`name: string, age: int`) dihormati saat runtime — field `string` memakai layout `{i8*, i64}`, field `int` memakai `i64`. Literal diperiksa tipenya terhadap deklarasi. Akses field mempertahankan tipe yang dideklarasikan, sehingga `len(p.name)`, `p.name == "..."`, dan `p.first + p.last` bekerja dengan benar.
+- **Sintaks Literal Struct:** `TypeName { field: value, ... }` — dibatasi oleh registry nama struct sehingga kondisi blok biasa `if x { ... }` tidak terpengaruh.
+- **PRD (Product Requirements Document):** `PRD.md` — mendefinisikan visi AHA! dari web hingga aerospace, prioritas roadmap, dan tata kelola proyek.
+- **Rangkaian Pengujian (struct):** 28 pengujian backend mencakup semantik JIT, bentuk IR, field bertipe, dan jalur kesalahan.
+
+### Diubah
+
+- **Alur kerja branch:** semua pengembangan kini terjadi di branch `development`; `main` hanya menerima PR dengan CI hijau.
+- **PRD menggantikan perencanaan ad-hoc:** semua fitur masa depan wajib berasal dari roadmap di `PRD.md`.
+- **F5 (Resource lifetimes) dibekukan:** ownership/lifetimes tidak akan disentuh sampai F1–F4 (penyelesaian struct, inferensi tipe, generics, sistem modul) stabil.
+
+### Keamanan
+
+- Tipe field struct diperiksa saat kompilasi: menugaskan literal string ke field `int` (atau sebaliknya) menghasilkan kesalahan saat kompilasi, bukan perilaku runtime tak terdefinisi.
+
 ## 1.4.0 — 2026-05-17
 
 ### Ditambahkan
