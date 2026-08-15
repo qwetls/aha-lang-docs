@@ -1,0 +1,51 @@
+---
+title: FAQ
+description: Pertanyaan yang sering diajukan tentang AHA! Lang
+icon: CircleHelp
+---
+
+# FAQ
+
+## Mengapa operator perbandingan dan logika mengembalikan `Int` 0/1 alih-alih `Bool`?
+
+Agar logika dapat menyatu dengan aritmetika. `is_even(n) * 100` langsung bekerja — tanpa cast. Di AHA!, setiap operator yang menjawab pertanyaan ya/tidak (`==`, `!=`, `<`, `>`, `<=`, `>=`, `&&`, `||`) menghasilkan sebuah `Int`, dan `Bool` disediakan untuk literal `true`/`false` dan operator prefiks `!`. Ini menjaga seluruh bahasa pada satu sumbu numerik.
+
+## Versi LLVM mana yang saya butuhkan?
+
+LLVM 14, dengan Clang 14 dan Polly. Lihat [Getting Started](/id/getting-started) untuk instalasi satu baris di Ubuntu/Debian.
+
+## Bisakah saya menjalankan AHA! di Windows atau macOS?
+
+Compiler ditulis dalam Rust dan menargetkan LLVM 14. Di Ubuntu/Debian ada instalasi satu baris; di platform lain, pasang LLVM 14 (atau gunakan WSL di Windows) dan `cargo build --release` akan menghasilkan binary yang sama.
+
+## Apakah AHA! siap untuk produksi?
+
+Belum. Lini v1.x adalah fondasi yang solid dan teruji dengan baik — 305+ pengujian lolos di CI — tetapi codegen struct, generik, dan sistem modul masih ada di roadmap.
+
+## Tipe apa saja yang dimiliki AHA!?
+
+Tiga tipe nilai saat ini: `Int` (64-bit), `Bool` (`true`/`false`), dan `String` (struct `{pointer, length}`). Array bertipe `Int` didukung pada tingkat codegen. Lihat [Language Tour](/id/language-tour) dan [Arrays](/id/arrays).
+
+## Apakah AHA! membutuhkan anotasi tipe?
+
+Tidak. Parameter fungsi ditulis tanpa anotasi tipe, dan tipe kembali disimpulkan oleh pra-tahap sebelum pembangkitan kode. Sistem tipe tetap memeriksa setiap operasi saat kompilasi, sehingga ketidakcocokan seperti `"hello" + 5` tertangkap sebelum IR dibangun.
+
+## Apakah `if` sebuah pernyataan atau ekspresi?
+
+Sebuah ekspresi. Ekspresi terakhir dari setiap cabang adalah nilainya, sehingga `let m = if a > b { a } else { b };` bekerja. Hal yang sama berlaku untuk badan fungsi — ekspresi terakhir adalah nilai kembalinya.
+
+## Seberapa cepat `len()`?
+
+O(1). String menyimpan panjangnya di dalam struct, sehingga `len()` membaca sebuah field alih-alih memindai buffer.
+
+## Bagaimana cara memeriksa LLVM IR yang dihasilkan?
+
+Gunakan `--emit-ir <path>` untuk menulis IR ke sebuah berkas. Lihat [CLI Reference](/id/cli).
+
+## Di mana saya mulai belajar?
+
+Bangun compiler dengan [Getting Started](/id/getting-started), ikuti [Language Tour](/id/language-tour), lalu coba [Code Snippets](/id/snippets).
+
+## Bagaimana cara saya berkontribusi?
+
+Laporan bug, ide fitur, dan kode semuanya diterima dengan senang hati. Lihat panduan kontribusi di [repository](https://github.com/qwetls/aha-lang), dan [Changelog](/id/changelog) untuk kondisi proyek saat ini.

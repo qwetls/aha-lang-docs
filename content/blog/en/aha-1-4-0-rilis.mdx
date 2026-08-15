@@ -1,0 +1,61 @@
+---
+title: "AHA! Lang 1.4.0 Is Out: Type System, Strings, and 84 Tests"
+description: "Release 1.4.0 brings a type system, a safe String type, a builtin len(), block comments, and 84 automated tests."
+icon: Rocket
+date: 2026-05-17
+---
+
+# AHA! Lang 1.4.0 Is Out
+
+The **AHA! Lang 1.4.0** release is the biggest leap since the project started — and it's not just about new features, but about a stronger foundation for future growth.
+
+## What's New in 1.4.0
+
+### Type System (`src/types.rs`)
+
+The compiler now has a complete type system: `Int`, `Bool`, `String`, `Void`, `Array`, and `Function`. All binary and prefix operations are type-checked **before** execution via `check_binary_op()` and `check_prefix_op()`.
+
+That means errors like adding a string to an integer are now caught at compile time, instead of silently producing unexpected behavior at runtime.
+
+### A Safe `String` Type
+
+Previously, strings were stored as integers masquerading as pointers — fast, but bug-prone. In 1.4.0, a string is an LLVM struct `{i8*, i64}` (pointer + length):
+
+```rust
+// internal: string = struct { ptr: i8*, len: i64 }
+
+let s1 = "halo";
+let s2 = " dunia";
+let s3 = s1 + s2;   // concatenation via malloc + memcpy
+
+print(s3);          // "halo dunia"
+print(len(s3));     // 11 — O(1), reads the length field directly
+```
+
+- **Concatenation** `"a" + "b"` allocates a new buffer with `malloc`, copies with `memcpy`, and appends a null terminator.
+- **Comparison** `==` and `!=` on strings uses `strcmp`.
+- **`len()`** is a new builtin that reads a string's length in O(1).
+
+### More Human-Friendly Code
+
+- **Block comments**: complex code can now carry multi-line documentation.
+- **String escape sequences**: `\n`, `\t`, `\\`, `\"`, `\r`, `\0`.
+- **More flexible identifiers**: `my_var2` and `_private` are now valid.
+- **All compiler error messages** are now in consistent English.
+
+## Quality: 84 Automated Tests
+
+This release also brings a massive test suite:
+
+| Module | Number of Tests |
+|-------|------------|
+| `lexer_tests.rs` | 19 |
+| `parser_tests.rs` | 22 |
+| `types_tests.rs` | 18 |
+| `integration_tests.rs` | 25 |
+
+All verified via CI — every commit on `main` is compiled and tested automatically.
+
+## After 1.4.0
+
+The next roadmap covers native arrays, functions with parameters, and richer control flow. Follow the development path on the [GitHub repo](https://github.com/qwetls/aha-lang) and our new [Course](/en/course) — which breaks down how this compiler works from the inside.

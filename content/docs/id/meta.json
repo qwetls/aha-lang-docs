@@ -1,0 +1,4 @@
+{
+  "title": "Dokumentasi",
+  "pages": ["index", "getting-started", "language-tour", "---Panduan---", "functions", "strings", "arrays", "builtins", "cli", "snippets", "architecture", "changelog", "faq"]
+}

@@ -1,0 +1,54 @@
+---
+title: Introduction
+description: Selamat datang di dokumentasi AHA! Lang - bahasa pemrograman modern dengan backend LLVM, ditulis dalam Rust
+icon: BookOpen
+---
+
+# Selamat Datang di AHA! Lang
+
+**AHA! Lang** — **A**dvanced **H**ybrid **A**rchitecture — adalah bahasa pemrograman modern dengan backend LLVM. Dirancang agar mudah dipahami sekilas, namun cukup kuat untuk membangun perangkat lunak nyata.
+
+## Apa itu AHA! Lang?
+
+AHA! adalah proyek compiler lengkap yang ditulis dalam Rust. Kode sumber mengalir melalui lexer, parser Pratt, tahap pemeriksaan tipe, pembangkitan LLVM IR, dan akhirnya eksekusi JIT — semuanya di dalam satu binary. Tanpa interpreter, tanpa transpiler, tanpa keajaiban.
+
+- **Didukung LLVM** — dikompilasi ke LLVM IR dan dieksekusi melalui JIT bawaan
+- **Berorientasi ekspresi** — ekspresi terakhir adalah hasilnya; `if`/`else` menghasilkan nilai
+- **Sistem tipe nyata** — `Int`, `Bool`, dan `String` diperiksa saat kompilasi
+- **Aljabar boolean yang menyatu** — perbandingan dan `&&`/`||` mengembalikan `Int` `0`/`1`
+- **String yang benar** — struct `{pointer, length}` dengan `len()` O(1)
+- **Perkakas yang jujur** — CLI bersih, ekstensi VS Code, 305+ pengujian berjalan di CI
+
+## Tautan Cepat
+
+<Cards>
+  <Card title="Getting Started" href="/id/getting-started" />
+  <Card title="Language Tour" href="/id/language-tour" />
+  <Card title="Architecture" href="/id/architecture" />
+  <Card title="Changelog" href="/id/changelog" />
+</Cards>
+
+## Cicipan Pertama
+
+AHA! berorientasi ekspresi — setiap konstruksi yang dapat menjadi nilai adalah nilai:
+
+```rust
+// the last expression of the program is its result
+let x = 10;
+let y = 20;
+
+if x > y {
+    x
+} else {
+    y
+}
+```
+
+Jalankan melalui JIT dan Anda akan mendapatkan `20`.
+
+## Persyaratan
+
+- **Rust** (toolchain stabil)
+- **LLVM 14** dengan Clang 14 dan Polly (instalasi satu baris di Ubuntu/Debian)
+
+Lihat [Getting Started](/id/getting-started) untuk pengaturan lengkap.

@@ -1,0 +1,121 @@
+---
+title: "Decisions with if / else"
+description: "Making programs branch: if/else in AHA! Lang is an expression that produces a value."
+icon: Blocks
+---
+
+# Decisions with if / else
+
+An interesting program must be able to **make decisions**: "if it rains, bring an umbrella". In AHA! Lang, decisions are written with `if` and `else`.
+
+## Basic Form
+
+```rust
+let nilai = 80;
+
+if nilai >= 70 {
+    print_str("Lulus\n");
+} else {
+    print_str("Tidak lulus\n");
+}
+```
+
+Structure:
+
+```text
+if <condition> {
+    ...code if the condition is true...
+} else {
+    ...code if the condition is false...
+}
+```
+
+- The condition is an expression that produces `1` (true) or `0` (false) — usually a comparison.
+- The `else` block can be omitted if it's not needed.
+
+## if / else Is an Expression
+
+Here's AHA! Lang's quirk: **`if`/`else` produces a value**. That value is the result of the last expression in the branch that runs.
+
+```rust
+let x = 10;
+let y = 20;
+
+let terbesar = if x > y { x } else { y };
+
+print(terbesar); // 20
+```
+
+No variable is filled inside a branch — the branch **produces** its value directly. This makes the program shorter and clearer.
+
+Compare it to the usual imperative style (which also works):
+
+```rust
+let terbesar = 0;
+if x > y {
+    terbesar = x;
+} else {
+    terbesar = y;
+}
+```
+
+Both ways are valid, but the expression version avoids the initial `terbesar` value that could be misunderstood.
+
+## Nested Branches
+
+An `else` branch can contain another `if` — for tiered decisions:
+
+```rust
+let nilai = 85;
+
+// grade: A if >= 85, B if >= 70, otherwise C
+let grade = if nilai >= 85 {
+    "A"
+} else {
+    if nilai >= 70 {
+        "B"
+    } else {
+        "C"
+    }
+};
+
+print_str(grade + "\n"); // A
+```
+
+Note: each branch returns a string, so the variable `grade` has type `String`.
+
+## Combining Conditions
+
+Combine multiple conditions with `&&` and `||`:
+
+```rust
+let umur = 20;
+let punya_ktp = 1;
+
+if umur >= 17 && punya_ktp == 1 {
+    print_str("Boleh membuat KTP\n");
+}
+```
+
+## AHA!'s Compositional Value System
+
+Because `if` is an expression and logic results are `Int`, everything can be chained freely:
+
+```rust
+let x = 42;
+
+// "Fizz" inspiration from FizzBuzz: multiples of 3
+let label = if x % 3 == 0 { "Fizz" } else { "Bukan Fizz" };
+
+print_str(label + "\n");
+```
+
+This is one of the things that makes AHA! Lang feel like a "composable alphabet".
+
+## Exercises
+
+1. Write a program that prints "Genap" or "Ganjil" based on a number variable (hint: `angka % 2`).
+2. Create a function `tanda(n)` that returns `"Positif"` if `n > 0`, `"Negatif"` if `n < 0`, and `"Nol"` if `n == 0`. (Hint: nested branches.)
+3. Use `if` as an expression: store in a variable `diskon` — `10` if `total > 100000`, otherwise `0` — then print `total - diskon`.
+
+On to [Looping with while](/en/course/07-while)

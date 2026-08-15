@@ -1,0 +1,65 @@
+---
+title: Strings
+description: Cara kerja string di AHA! — struct nyata, konkatenasi aman, dan panjang O(1)
+icon: Zap
+---
+
+# Strings
+
+String di AHA! adalah struct `{pointer, length}` nyata — bukan trik pointer telanjang. Itu membuat konkatenasi aman dan `len()` bersifat O(1).
+
+## Literal String
+
+```rust
+let name = "world";
+```
+
+Urutan escape yang didukung: `\n`, `\t`, `\\`, `\"`, `\r`, `\0`.
+
+## Konkatenasi
+
+`+` pada string mengalokasikan buffer baru via `malloc`, menyalin kedua bagian dengan `memcpy`, dan menambahkan null-terminator pada hasilnya:
+
+```rust
+let name = "world";
+let greeting = "Hello, " + name;
+print_str(greeting); // Hello, world
+```
+
+## Perbandingan
+
+`==` dan `!=` membandingkan seluruh isi via `strcmp`:
+
+```rust
+if "aha" == "aha" {
+    print(1); // 1
+}
+```
+
+## Panjang
+
+`len()` membaca field panjang dari struct — O(1), tanpa pemindaian:
+
+```rust
+print(len(name));  // 5
+print(len(""));    // 0
+```
+
+## Mencetak
+
+- `print_str(s)` — cetak sebuah string
+- `print(n)` — cetak sebuah bilangan bulat
+
+Lihat [Builtins](/id/builtins) untuk daftar lengkapnya.
+
+## String dalam Fungsi
+
+String dapat dilewatkan sebagai argumen dan dikembalikan dari fungsi. Tipe kembali disimpulkan secara otomatis oleh sebuah pra-tahap:
+
+```rust
+fn shout(s) {
+    s + "!"
+}
+
+print_str(shout("aha")); // aha!
+```

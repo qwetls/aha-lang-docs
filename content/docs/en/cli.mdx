@@ -1,0 +1,73 @@
+---
+title: CLI Reference
+description: Command-line options for the AHA! compiler — compile, execute, and emit LLVM IR
+icon: SquareTerminal
+---
+
+# CLI Reference
+
+The AHA! compiler is a single binary that lexes, parses, generates LLVM IR, and JIT-executes your program. You drive it entirely from the command line.
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `--file <path>` | Source file to compile and execute |
+| `--emit-ir <path>` | Save the generated LLVM IR to a file |
+| `--version` | Print the compiler version |
+| `--help` | Show usage information |
+
+## Running a Program
+
+```bash
+cargo run --release -- --file example.aha
+```
+
+The compiler walks the full pipeline — lexing, parsing, type checking, LLVM code generation — and then JIT-executes the result:
+
+```
+--- AHA! COMPILER ---
+Reading file: example.aha
+
+[1] LEXING...
+[2] PARSING...
+Parsing successful!
+
+[3] CODE GENERATION...
+LLVM IR generated successfully!
+
+--- LLVM IR OUTPUT ---
+; ModuleID = 'aha_module'
+...
+----------------------
+
+[4] EXECUTION (JIT)...
+Program executed successfully. Result: 20
+```
+
+## Emitting LLVM IR
+
+Use `--emit-ir` to write the generated IR to a file — handy for inspecting exactly what the compiler produces:
+
+```bash
+cargo run --release -- --file example.aha --emit-ir out.ll
+```
+
+The `out.ll` file contains the textual LLVM IR (`; ModuleID = 'aha_module'` …) that the JIT executes.
+
+## Version & Help
+
+```bash
+cargo run --release -- --version
+cargo run --release -- --help
+```
+
+## After Building a Release Binary
+
+Once you `cargo build --release`, the compiler lives at `target/release/aha` and can be invoked directly:
+
+```bash
+./target/release/aha --file example.aha
+```
+
+See [Getting Started](/en/getting-started) for build instructions.

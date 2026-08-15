@@ -1,0 +1,78 @@
+---
+title: "What Is AHA! Lang?"
+description: "Get to know AHA! Lang first: a modern programming language with an LLVM compiler that is easy to read and powerful."
+icon: Rocket
+---
+
+# What Is AHA! Lang?
+
+Welcome to the course **Writing Code with AHA! Lang**! In this course you'll learn to program from scratch — just like learning Python — but with a language designed to be easy to read and to produce programs that run very fast.
+
+## Getting to Know AHA! Lang
+
+**AHA! Lang** is an open source programming language that is:
+
+- **Easy to read** — its syntax is minimal and clear ("Easy to read").
+- **Powerful** — compiled to machine code via LLVM and executed with JIT ("Powerful to wield").
+- **Type-disciplined** — type errors like adding a number and text are caught at compile time, not while the program is running.
+- **Written in Rust** — the compiler itself is built with Rust and is open source on GitHub.
+
+Because it's compiled (not interpreted line by line), AHA! Lang programs run fast — close to the speed of C — while the syntax stays friendly like a modern language.
+
+## What Do You Need?
+
+This course doesn't require any prior programming experience. You'll need:
+
+1. **Rust** (stable toolchain) and **LLVM 14** — a complete guide is at [Getting Started](/en/getting-started).
+2. **A text editor** — VS Code, Neovim, or anything you like.
+3. **Curiosity** — the most important thing! 🚀
+
+## The First Program You'll Write
+
+By the end of this lesson you'll be able to write a program like this:
+
+```rust
+fn sapa(nama) {
+    "Halo, " + nama + "!"
+}
+
+let nama = "dunia";
+print_str(sapa(nama));
+```
+
+Even if some parts don't make sense yet — relax, everything will be explained step by step.
+
+## How to Build and Run
+
+Clone the compiler from GitHub:
+
+```bash
+git clone https://github.com/qwetls/aha-lang
+cd aha-lang
+cargo build --release
+```
+
+Run a `.aha` program file:
+
+```bash
+cargo run --release -- --file program.aha
+```
+
+The compiler runs the entire pipeline — lexing, parsing, LLVM codegen, then JIT execution — and displays the result.
+
+## Roadmap of This Course
+
+| Lesson | Topic |
+|--------|-------|
+| 1 | What Is AHA! Lang? (you are here) |
+| 2 | Hello, World: your first program |
+| 3 | Variables and data types |
+| 4 | Operators and expressions |
+| 5 | Working with strings |
+| 6 | Decisions with `if` / `else` |
+| 7 | Looping with `while` |
+| 8 | Looping with `for` |
+| 9 | Functions: reusable code |
+| 10 | A small project to sharpen everything |
+
+Ready? On to [Hello, World](/en/course/02-hello-world)!

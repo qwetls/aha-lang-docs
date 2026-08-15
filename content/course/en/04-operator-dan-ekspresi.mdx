@@ -1,0 +1,141 @@
+---
+title: "Operators and Expressions"
+description: "Arithmetic, comparison, and logic in AHA! Lang — plus the boolean quirk that can be used directly in arithmetic."
+icon: Braces
+---
+
+# Operators and Expressions
+
+An **expression** is a piece of code that produces a value. `2 + 3` is an expression — its result is `5`. In this lesson you'll get to know the operators that build expressions in AHA! Lang.
+
+## Arithmetic Operators
+
+| Operator | Meaning | Example | Result |
+|----------|-------|--------|-------|
+| `+` | Addition | `7 + 3` | `10` |
+| `-` | Subtraction | `7 - 3` | `4` |
+| `*` | Multiplication | `7 * 3` | `21` |
+| `/` | Division | `7 / 3` | `2` |
+| `%` | Remainder (modulo) | `7 % 3` | `1` |
+
+Note: the division `7 / 3` produces `2`, not `2.33` — because `Int` only stores whole numbers. You can grab the discarded remainder with `%`.
+
+```rust
+print(10 / 4); // 2
+print(10 % 4); // 2
+print(9 % 2);  // 1 — 9 is odd
+```
+
+## Operator Priority (Precedence)
+
+Like in math, multiplication comes before addition:
+
+```rust
+print(2 + 3 * 4);  // 14 — not 20
+
+let a = (2 + 3) * 4; // 20 — parentheses change the order
+print(a);
+```
+
+Use parentheses `(...)` whenever the order of computation needs to be made clear.
+
+## Comparison Operators
+
+Comparisons compare two values:
+
+```rust
+print(5 == 5); // 1 (true)
+print(5 != 5); // 0 (false)
+print(5 < 3);  // 0
+print(5 >= 5); // 1
+```
+
+| Operator | Meaning |
+|----------|-------|
+| `==` | Equal to |
+| `!=` | Not equal to |
+| `<` `>` | Less than / greater than |
+| `<=` `>=` | Less than / greater than or equal to |
+
+### AHA! Lang's Quirk: The Result Is `Int`
+
+This is where AHA! Lang differs from Python. The result of a comparison in AHA! Lang is not a boolean type — instead it's an **`Int` `1` (true) or `0` (false)**.
+
+As a result, a logic result can be used directly in calculations:
+
+```rust
+let umur = 20;
+let dewasa = umur >= 18; // 1
+
+print(dewasa);      // 1
+print(dewasa * 100); // 100 — logic flows into arithmetic!
+```
+
+## Logical Operators
+
+| Operator | Meaning | Example |
+|----------|-------|--------|
+| `&&` | AND | `x > 0 && x < 10` |
+| `\|\|` | OR | `hari == 6 \|\| hari == 0` |
+| `!` | NOT (invert) | `!benar` → `false` |
+
+`&&` produces `1` if **both** sides are true, otherwise `0`. `||` produces `1` if **either** side is true, otherwise `0`.
+
+```rust
+let nilai = 80;
+let hadir = 1;
+
+// pass if nilai >= 70 AND present
+let lulus = nilai >= 70 && hadir == 1;
+
+print(lulus); // 1
+```
+
+## Prefix Operators
+
+There are also operators that stand in front of a value:
+
+| Operator | Meaning |
+|----------|-------|
+| `-x` | Flips the sign of a number |
+| `!x` | Flips a truth value |
+
+```rust
+print(-5);  // -5
+print(-(3 + 4)); // -7
+```
+
+## Number Helpers: `abs`, `min`, `max`
+
+AHA! Lang provides three number builtins that are often useful:
+
+```rust
+print(abs(-7));    // 7 — absolute value
+print(min(3, 9));  // 3 — the smallest
+print(max(3, 9));  // 9 — the largest
+```
+
+## Chaining Expressions
+
+Expressions can be chained freely — as long as the types match:
+
+```rust
+let harga = 20000;
+let diskon = 10;
+
+// discounted price: 20000 - 10% = 18000
+let bayar = harga - (harga * diskon / 100);
+
+print(bayar); // 18000
+```
+
+The computer calculates from left to right following the priority rules: `harga * diskon / 100` → `200000 / 100` → `2000`, then it's subtracted from `harga`.
+
+## Exercises
+
+1. Print the result of `25 % 7` and explain what it means.
+2. Check whether `100` is evenly divisible by `4` (hint: `100 % 4`).
+3. Create a variable `tahun` holding your birth year, then compute and print an estimate of your current age.
+4. Experiment: what is the result of `(1 == 1) * 5 + (2 > 5)`? Match it against the explanation above.
+
+On to [Working with Strings](/en/course/05-string)

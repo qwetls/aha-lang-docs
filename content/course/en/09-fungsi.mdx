@@ -1,0 +1,164 @@
+---
+title: "Functions: Reusable Code"
+description: "Wrapping logic in fn: parameters, return values, early return, and functions that call each other."
+icon: Code2
+---
+
+# Functions: Reusable Code
+
+The bigger a program gets, the more important it is not to write the same code over and over. **Functions** solve this: a named piece of code that can be called anytime.
+
+## Creating Your First Function
+
+```rust
+fn sapa() {
+    print_str("Halo, dunia!\n");
+}
+
+sapa();
+sapa();
+```
+
+Output:
+
+```text
+Halo, dunia!
+Halo, dunia!
+```
+
+Structure:
+
+```text
+fn <function name>(<optional parameters>) {
+    ...function body...
+}
+```
+
+## Parameters: Input for a Function
+
+A function can accept **parameters** — values given when it's called:
+
+```rust
+fn sapa_nama(nama) {
+    print_str("Halo, " + nama + "!\n");
+}
+
+sapa_nama("Budi");
+sapa_nama("Dina");
+```
+
+Output:
+
+```text
+Halo, Budi!
+Halo, Dina!
+```
+
+The parameters in the `sapa_nama` example work like variables that are automatically filled with the values from the call.
+
+## Return Values
+
+A function can **return a value**. Here's how: write an expression (without a semicolon) at the end of the function — the value of that expression is what gets returned:
+
+```rust
+fn tambah(a, b) {
+    a + b
+}
+
+let hasil = tambah(3, 4);
+print(hasil); // 7
+
+print(tambah(10, 20)); // 30
+```
+
+Note: `a + b` on the last line has **no semicolon** — that's how AHA! Lang says "this is the return value".
+
+The return value can be used directly in another expression — exactly like an ordinary value.
+
+## return to Exit Early
+
+Sometimes you want to stop in the middle of a function because of some condition. Use `return`:
+
+```rust
+fn harga_ongkir(total) {
+    if total >= 100000 {
+        return 0;    // free shipping, exit immediately
+    }
+    15000           // otherwise, the shipping cost stays
+}
+
+print(harga_ongkir(200000)); // 0
+print(harga_ongkir(5000));   // 15000
+```
+
+## Functions Can Use Other Functions
+
+A function can call another function — even itself (recursion) or in both directions (mutual recursion):
+
+```rust
+fn is_even(n) {
+    n % 2 == 0
+}
+
+fn is_odd(n) {
+    if is_even(n) {
+        0
+    } else {
+        1
+    }
+}
+
+print(is_even(10)); // 1
+print(is_odd(10));  // 0
+```
+
+A function can be called **before it's defined** — AHA! Lang handles the ordering. This lets code be read from top to bottom naturally.
+
+## Combining All the Tricks
+
+A complete program that combines what you've learned:
+
+```rust
+fn kelipatan(angka, k) {
+    angka % k == 0
+}
+
+fn label_angka(n) {
+    if kelipatan(n, 15) {
+        "FizzBuzz"
+    } else {
+        if kelipatan(n, 3) {
+            "Fizz"
+        } else {
+            if kelipatan(n, 5) {
+                "Buzz"
+            } else {
+                "Angka biasa"
+            }
+        }
+    }
+}
+
+for i 1..16 {
+    print_str(label_angka(i) + "\n");
+}
+```
+
+Output:
+
+```text
+Angka biasa
+Angka biasa
+Fizz
+...
+FizzBuzz
+```
+
+## Exercises
+
+1. Create a function `kubik(x)` that returns `x * x * x`.
+2. Create a function `maksimal(a, b)` that returns the largest value — use `if` as an expression.
+3. Create a function `hitung_mundur(mulai)` that prints from `mulai` down to `1` with `while`, then `print_str("Go!\n")`.
+4. Create a function `bilangan_prima(n)` that returns `1` if `n` is prime and `0` if not. Hint: divide `n` by all numbers from `2` to `n - 1`; if any gives `n % i == 0`, it's not prime. (Challenge!)
+
+On to the final lesson: [A Small Project](/en/course/10-proyek-kecil) 🎉

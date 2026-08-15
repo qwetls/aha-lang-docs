@@ -1,0 +1,88 @@
+---
+title: "The Philosophy of Expressions: Why Is Everything a Value?"
+description: "In AHA! Lang, control flow like if/else is an expression that produces a value. Here's why that design was chosen."
+icon: Braces
+date: 2026-08-05
+---
+
+# The Philosophy of Expressions: Why Is Everything a Value?
+
+Let's be honest: have you ever been frustrated at having to write a program halfway around the fact that an `if` couldn't be placed inside an expression?
+
+In most languages, `if` is a *statement* — it does something, but it doesn't produce a value. AHA! Lang takes a different path: **almost everything is an expression that produces a value**.
+
+## Expression vs Statement
+
+```rust
+// AHA! Lang: if/else is an expression —
+// the last evaluated branch becomes the resulting value.
+
+let x = 10;
+let y = 20;
+
+let result = if x > y {
+    "x lebih besar"
+} else {
+    "y lebih besar"
+};
+
+print(result);
+```
+
+Because `if` produces a value, you can write it directly in an assignment. No two-step declaration, no variable being filled in inside a branch.
+
+## Why Is This Design Good?
+
+### 1. Shorter, Clearer Programs
+
+Compare a common pattern:
+
+```rust
+// common in statement-based languages:
+let mut status = "default";
+if score >= 7 {
+    status = "lulus";
+} else {
+    status = "tidak lulus";
+}
+```
+
+with the expression version:
+
+```rust
+let status = if score >= 7 { "lulus" } else { "tidak lulus" };
+```
+
+One expression, one value, no mutating state. Easier to read and harder to get wrong.
+
+### 2. Composition
+
+Values can be composed without limit:
+
+```rust
+let nilai = if a { 1 } else { 2 } * 10 + if b { 5 } else { 6 };
+```
+
+Control flow behaves like any other value — it can be operated on, passed around, and combined.
+
+### 3. A Foundation for Functional Programming
+
+This design is a natural gateway into a functional style: functions that map inputs to outputs without hidden side effects. This isn't a coincidence — it's a deliberate design decision, as you can see throughout the [Language Tour](/en/language-tour).
+
+## Why Don't All Languages Do This?
+
+Expression-oriented design usually requires a more disciplined compiler: every AST node must have a clear type and value. In AHA! Lang, it's the type system from release 1.4.0 that makes this philosophy possible — every expression is type-checked at compile time:
+
+```rust
+let a = 10;
+let b = "teks";
+
+// compile-time error: cannot compare Int with String
+let hasil = if a == b { 1 } else { 2 };
+```
+
+Errors are caught before the program runs, not at runtime.
+
+## Conclusion
+
+Everything a value, everything an expression — this is the heart of "Easy to read. Powerful to wield." If you want to dig into how the compiler brings this philosophy to life, follow our [Course](/en/course) from the first lesson.

@@ -1,0 +1,61 @@
+---
+title: "AHA! Lang 1.4.0 Telah Rilis: Sistem Tipe, String, dan 84 Tes"
+description: "Rilis 1.4.0 membawa sistem tipe, tipe String yang aman, builtin len(), komentar blok, dan 84 test otomatis."
+icon: Rocket
+date: 2026-05-17
+---
+
+# AHA! Lang 1.4.0 Telah Rilis
+
+Rilis **AHA! Lang 1.4.0** adalah lompatan terbesar sejak proyek dimulai — dan bukan hanya soal fitur baru, tapi soal fondasi yang lebih kokoh untuk pertumbuhan ke depan.
+
+## Yang Baru di 1.4.0
+
+### Sistem Tipe (`src/types.rs`)
+
+Kompiler sekarang punya sistem tipe lengkap: `Int`, `Bool`, `String`, `Void`, `Array`, dan `Function`. Semua operasi biner dan prefix diperiksa tipenya **sebelum** dijalankan lewat `check_binary_op()` dan `check_prefix_op()`.
+
+Artinya, kesalahan seperti menambahkan string ke integer sekarang tertangkap saat kompilasi, bukan diam-diam menghasilkan perilaku tak terduga saat runtime.
+
+### Tipe `String` yang Aman
+
+Sebelumnya string disimpan sebagai integer yang menyamar sebagai pointer — cepat, tapi rawan bug. Di 1.4.0, string adalah struct LLVM `{i8*, i64}` (pointer + panjang):
+
+```rust
+// internal: string = struct { ptr: i8*, len: i64 }
+
+let s1 = "halo";
+let s2 = " dunia";
+let s3 = s1 + s2;   // konkatenasi via malloc + memcpy
+
+print(s3);          // "halo dunia"
+print(len(s3));     // 11 — O(1), baca field panjang langsung
+```
+
+- **Konkatenasi** `"a" + "b"` mengalokasikan buffer baru dengan `malloc`, menyalin dengan `memcpy`, dan menambahkan null-terminator.
+- **Perbandingan** `==` dan `!=` pada string memakai `strcmp`.
+- **`len()`** adalah builtin baru yang membaca panjang string dalam O(1).
+
+### Penulisan Kode yang Lebih Manusiawi
+
+- **Komentar blok**: kode kompleks sekarang bisa diberi dokumentasi multi-baris.
+- **Escape sequence string**: `\n`, `\t`, `\\`, `\"`, `\r`, `\0`.
+- **Identifier lebih fleksibel**: `my_var2` dan `_private` sekarang valid.
+- **Semua pesan error** dari kompiler kini berbahasa Inggris yang konsisten.
+
+## Kualitas: 84 Test Otomatis
+
+Rilis ini juga menghadirkan test suite besar-besaran:
+
+| Modul | Jumlah Test |
+|-------|------------|
+| `lexer_tests.rs` | 19 |
+| `parser_tests.rs` | 22 |
+| `types_tests.rs` | 18 |
+| `integration_tests.rs` | 25 |
+
+Semua diverifikasi lewat CI — setiap commit di `main` di-compile dan di-test otomatis.
+
+## Setelah 1.4.0
+
+Roadmap berikutnya mencakup array asli, function dengan parameter, dan kontrol alur yang lebih kaya. Ikuti jalur perkembangan di [repo GitHub](https://github.com/qwetls/aha-lang) dan [Course](/id/course) kami yang baru — yang membedah cara kerja kompiler ini dari dalam.

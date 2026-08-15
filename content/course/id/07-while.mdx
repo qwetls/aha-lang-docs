@@ -1,0 +1,135 @@
+---
+title: "Perulangan dengan while"
+description: "Menjalankan kode berulang kali selama kondisi terpenuhi — dasar dari otomatisasi di AHA! Lang."
+icon: Cpu
+---
+
+# Perulangan dengan while
+
+Komputer unggul di satu hal: **melakukan hal yang sama berulang-ulang** tanpa bosan. Perulangan (loop) adalah cara menuliskannya.
+
+## Bentuk Dasar
+
+```rust
+let counter = 0;
+
+while counter < 3 {
+    print(counter);
+    counter = counter + 1;
+}
+```
+
+Output:
+
+```text
+0
+1
+2
+```
+
+Cara kerjanya:
+
+1. Periksa kondisi `counter < 3` — jika `0` (salah), selesai.
+2. Jalankan blok di dalam kurung kurawal.
+3. Kembali ke langkah 1.
+
+```text
+while <kondisi> {
+    ...kode yang diulang...
+}
+```
+
+## Apa yang Harus Diperhatikan
+
+### 1. Mutasi di dalam loop
+
+Loop `while` bekerja dengan mengubah kondisi. Tanpa `counter = counter + 1`, kondisi `counter < 3` akan selalu benar — dan loop akan berjalan **selamanya** (infinite loop). Ini bug yang sangat umum!
+
+```rust
+let i = 0;
+while i < 5 {
+    print(i);
+    // lupa i = i + 1 → program tidak akan pernah selesai!
+}
+```
+
+Jadi: pastikan ada sesuatu di dalam blok yang akhirnya membuat kondisi menjadi salah.
+
+### 2. Bisa memakai variabel apa pun
+
+Kondisi tidak harus angka yang naik — bisa ekspresi apa pun:
+
+```rust
+let skor = 100;
+while skor > 0 {
+    print(skor);
+    skor = skor - 25;
+}
+// 100, 75, 50, 25
+```
+
+## Menggunakan while untuk Menjumlahkan
+
+Pola klasik: menjumlahkan angka 1 sampai 100.
+
+```rust
+let total = 0;
+let i = 1;
+
+while i <= 100 {
+    total = total + i;
+    i = i + 1;
+}
+
+print(total); // 5050
+```
+
+Baca pelan-pelan: `total` menimbun hasil setiap putaran, `i` menghitung sampai melampaui 100.
+
+## Berhenti Lebih Awal dengan break
+
+Terkadang kamu ingin berhenti **sebelum** kondisi berakhir, karena ada situasi khusus. Gunakan `break`:
+
+```rust
+let i = 0;
+
+while i < 100 {
+    i = i + 1;
+
+    if i == 5 {
+        break;      // berhenti paksa di sini
+    }
+}
+
+print(i); // 5
+```
+
+## Melewati Satu Putaran dengan continue
+
+`continue` melewati sisa kode dalam putaran itu, lalu langsung menuju putaran berikutnya:
+
+```rust
+let i = 0;
+let jumlah_genap = 0;
+
+while i < 10 {
+    i = i + 1;
+
+    if i % 2 != 0 {
+        continue;   // angka ganjil dilewati
+    }
+
+    jumlah_genap = jumlah_genap + i;
+}
+
+print(jumlah_genap); // 2 + 4 + 6 + 8 + 10 = 30
+```
+
+## Latihan
+
+1. Cetak angka 10 sampai 1 (mundur).
+2. Hitung dan cetak jumlah semua angka genap dari 1 sampai 20.
+3. Cetak semua pembagi dari bilangan `60` (bilangan yang `60 % b == 0`), mulai dari `b = 1` sampai `b = 60`.
+4. Gunakan `while` untuk mengganti nilai `nilai` menjadi 0 lewat pengurangan berulang, dan hitung berapa langkah yang diperlukan.
+
+Lanjut ke [Perulangan dengan for](/id/course/08-for)

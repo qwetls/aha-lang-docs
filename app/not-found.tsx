@@ -42,13 +42,13 @@ export default function NotFound() {
 
         <div className="flex flex-wrap items-center justify-center gap-4">
           <Link
-            href="/"
+            href="/en"
             className="rounded-lg border-2 border-foreground bg-foreground px-6 py-3 text-sm font-semibold text-background transition-all hover:bg-foreground/90"
           >
             Back to home
           </Link>
           <Link
-            href="/introduction"
+            href="/en/introduction"
             className="rounded-lg border-2 border-border px-6 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
           >
             View docs

@@ -1,0 +1,128 @@
+---
+title: "Working with Strings"
+description: "Text in AHA! Lang: literals, escape sequences, concatenation, comparison, and string length."
+icon: Zap
+---
+
+# Working with Strings
+
+A **string** is text data — a name, a sentence, a message, or anything made of letters. In AHA! Lang, strings are written between double quotes: `"..."`
+
+## Creating Strings
+
+```rust
+let nama = "Budi";
+let pesan = "Selamat datang di AHA! Lang!";
+let kosong = "";
+```
+
+## Printing and Concatenating
+
+To join two strings, use `+`:
+
+```rust
+let nama = "Budi";
+let sapaan = "Halo, " + nama + "!";
+
+print_str(sapaan); // Halo, Budi!
+```
+
+Concatenation works for string with string only — `"umur " + 25` will be rejected by the compiler because the types don't match (`String + Int`).
+
+## Escape Sequences
+
+Some special characters need a special way to be written inside a string:
+
+| Escape | Meaning |
+|--------|-------|
+| `\n` | New line |
+| `\t` | Tab |
+| `\\` | Backslash `\` |
+| `\"` | Double quote |
+| `\r` | Carriage return |
+| `\0` | Null |
+
+Example:
+
+```rust
+print_str("Kelas A\tKelas B\nSelesai");
+```
+
+Output:
+
+```text
+Kelas A	Kelas B
+Selesai
+```
+
+What if you want to print a quote inside a string? Use `\"`:
+
+```rust
+print_str("Dia berkata, \"AHA!\"");
+```
+
+## String Length with `len()`
+
+The builtin `len()` returns the number of characters:
+
+```rust
+print(len("hello"));  // 5
+print(len(""));       // 0
+print(len("AHA! Lang"));
+// 9 — count it yourself!
+```
+
+`len()` in AHA! Lang is very fast: the string's length is already stored as part of the data, so it's read directly in O(1) — no need to recount.
+
+## Comparing Strings
+
+Strings can be compared by content with `==` and `!=`:
+
+```rust
+let jawaban = "aha";
+
+if jawaban == "aha" {        // the result is 1 (true)
+    print_str("Benar!\n");
+} else {
+    print_str("Salah.\n");
+}
+```
+
+Comparison compares the **content** — `"aha" == "aha aja"` is `0` (false).
+
+## Strings Inside Functions
+
+Strings can be passed to functions and returned from functions:
+
+```rust
+fn seru(teks) {
+    teks + "!"
+}
+
+fn sapaan_panjang(nama) {
+    "Halo, " + nama + "! Semoga harimu menyenangkan."
+}
+
+print_str(seru("yuhuu"));              // yuhuu!
+print_str(sapaan_panjang("Dina"));     // Halo, Dina! ...
+```
+
+The compiler infers a function's return type automatically.
+
+## Summary
+
+| Operation | Syntax | Example |
+|---------|---------|--------|
+| Concatenate | `+` | `"a" + "b"` → `"ab"` |
+| Equal to | `==` | `"a" == "a"` → `1` |
+| Not equal | `!=` | `"a" != "b"` → `1` |
+| Length | `len(s)` | `len("abc")` → `3` |
+
+## Exercises
+
+1. Concatenate `"Nama saya "` with your name, then print it.
+2. Print a three-line poem using a single `print_str` with `\n`.
+3. Create a function `kata_sambutan(jam)` that returns `"Selamat pagi!"` if `jam < 12` and `"Selamat malam!"` otherwise (hint: use `if`, which you'll learn more deeply in the next lesson — feel free to try it now!).
+4. Print the length of your full name with `len()`.
+
+On to [Decisions with if / else](/en/course/06-if-else)

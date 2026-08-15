@@ -1,0 +1,115 @@
+---
+title: Language Tour
+description: Types, operators, and control flow in AHA! — a 10-minute tour
+icon: Braces
+---
+
+# Language Tour
+
+## Types
+
+| Type | Notes |
+|------|-------|
+| `Int` | 64-bit integer — the universal numeric type |
+| `Bool` | `true` / `false` literals; produced by `!` |
+| `String` | `"..."` with escape sequences (`\n`, `\t`, `\\`, `\"`, `\r`, `\0`) |
+
+## Operators
+
+| Category | Operators |
+|----------|-----------|
+| Arithmetic | `+` `-` `*` `/` `%` |
+| Comparison | `==` `!=` `<` `>` `<=` `>=` (→ `Int` 0/1) |
+| Logical | `&&` `\|\|` (→ `Int` 0/1) |
+| Prefix | `-x`, `!x` |
+| Assignment | `x = value` |
+
+### Boolean Algebra That Composes
+
+All comparison and logical operators return `Int` `0`/`1` instead of a boolean — so logic results flow straight into arithmetic:
+
+```rust
+fn is_even(n) {
+    n % 2 == 0
+}
+
+print(is_even(4) * 100); // 1 * 100 = 100
+```
+
+No casts, no conversions — logic just composes.
+
+## Variables
+
+```rust
+let count = 0;
+count = count + 1; // assignment
+count // 1
+```
+
+## Control Flow
+
+### if / else
+
+`if` is an **expression** — the last expression of each branch is the value:
+
+```rust
+let x = 10;
+let y = 20;
+
+if x > y {
+    x
+} else {
+    y
+}
+```
+
+### while
+
+```rust
+let i = 0;
+while i < 5 {
+    i = i + 1;
+}
+i // 5
+```
+
+### for
+
+`for` loops over an integer range `a..b` (exclusive end):
+
+```rust
+let sum = 0;
+for i 0..10 {
+    sum = sum + i;
+}
+sum // 0 + 1 + ... + 9 = 45
+```
+
+### break / continue
+
+```rust
+let total = 0;
+for i 0..100 {
+    if i == 5 {
+        break;
+    }
+    total = total + i;
+}
+total // 0 + 1 + 2 + 3 + 4 = 10
+```
+
+## Comments
+
+- `// line comment`
+- `/* block comment */`
+
+## Builtins
+
+| Builtin | Description |
+|---------|-------------|
+| `print(int)` | Print an integer |
+| `print_str(string)` | Print a string |
+| `len(string)` | String length in O(1) |
+| `abs(x)`, `min(a, b)`, `max(a, b)` | Numeric helpers |
+
+See [Builtins](/en/builtins) for details.

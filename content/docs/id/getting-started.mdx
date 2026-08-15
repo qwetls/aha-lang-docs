@@ -1,0 +1,91 @@
+---
+title: Getting Started
+description: Bangun compiler AHA! dari kode sumber dan jalankan program pertama Anda
+icon: Rocket
+---
+
+# Getting Started
+
+## Prasyarat
+
+- **Rust** (toolchain stabil)
+- **LLVM 14** dengan Clang 14 dan Polly
+
+### Ubuntu / Debian
+
+```bash
+sudo apt-get update
+sudo apt-get install -y llvm-14-dev clang-14 libpolly-14-dev
+```
+
+## Membangun dari Kode Sumber
+
+```bash
+git clone https://github.com/qwetls/aha-lang.git
+cd aha-lang
+cargo build --release
+```
+
+## Menjalankan Compiler
+
+```bash
+cargo run --release -- --file example.aha
+```
+
+### Opsi CLI
+
+| Opsi | Deskripsi |
+|--------|-------------|
+| `--file <path>` | Berkas sumber untuk dikompilasi dan dieksekusi |
+| `--emit-ir <path>` | Simpan LLVM IR yang dihasilkan ke sebuah berkas |
+| `--version` | Cetak versi compiler |
+| `--help` | Tampilkan informasi penggunaan |
+
+## Program Pertama Anda
+
+Buat `example.aha`:
+
+```rust
+let x = 10;
+let y = 20;
+
+if x > y {
+    x
+} else {
+    y
+}
+```
+
+Jalankan:
+
+```bash
+cargo run --release -- --file example.aha
+```
+
+Compiler menelusuri seluruh pipeline — lexing, parsing, pembangkitan kode LLVM — lalu mengeksekusi program melalui JIT bawaannya:
+
+```
+--- AHA! COMPILER ---
+Reading file: example.aha
+
+[1] LEXING...
+[2] PARSING...
+Parsing successful!
+
+[3] CODE GENERATION...
+LLVM IR generated successfully!
+
+--- LLVM IR OUTPUT ---
+; ModuleID = 'aha_module'
+...
+----------------------
+
+[4] EXECUTION (JIT)...
+Program executed successfully. Result: 20
+```
+
+## Selanjutnya
+
+- Ikuti [Language Tour](/id/language-tour) untuk mempelajari tipe, operator, dan alur kontrol
+- Baca tentang [Functions](/id/functions) dan [Strings](/id/strings)
+- Lihat lebih dalam di [Architecture](/id/architecture)

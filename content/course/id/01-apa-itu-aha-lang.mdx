@@ -1,0 +1,78 @@
+---
+title: "Apa Itu AHA! Lang?"
+description: "Kenalan dulu dengan AHA! Lang: bahasa pemrograman modern dengan kompiler LLVM yang mudah dibaca dan bertenaga."
+icon: Rocket
+---
+
+# Apa Itu AHA! Lang?
+
+Selamat datang di course **Menulis Kode dengan AHA! Lang**! Di course ini kamu akan belajar memrogram dari nol — sama seperti belajar Python — tapi dengan bahasa yang dirancang agar mudah dibaca dan menghasilkan program yang berjalan sangat cepat.
+
+## Mengenal AHA! Lang
+
+**AHA! Lang** adalah bahasa pemrograman open source yang:
+
+- **Mudah dibaca** — sintaksnya minimal dan jelas ("Easy to read").
+- **Bertenaga** — dikompilasi ke kode mesin lewat LLVM dan dieksekusi dengan JIT ("Powerful to wield").
+- **Berdisiplin tipe** — kesalahan tipe seperti menambahkan angka dan teks tertangkap saat kompilasi, bukan saat program berjalan.
+- **Ditulis dalam Rust** — kompiler itu sendiri dibuat dengan Rust dan open source di GitHub.
+
+Karena dikompilasi (bukan diinterpretasi baris per baris), program AHA! Lang berjalan cepat — mendekati kecepatan C — sementara sintaksnya tetap bersahabat seperti bahasa modern.
+
+## Apa yang Kamu Butuhkan?
+
+Course ini tidak membutuhkan pengalaman memrogram sebelumnya. Kamu perlu:
+
+1. **Rust** (toolchain stable) dan **LLVM 14** — panduan lengkap ada di [Getting Started](/id/getting-started).
+2. **Sebuah editor teks** — VS Code, Neovim, atau apa pun yang kamu suka.
+3. **Rasa ingin tahu** — yang paling penting! 🚀
+
+## Program Pertama yang Akan Kamu Tulis
+
+Di akhir pelajaran ini kamu akan bisa menulis program seperti ini:
+
+```rust
+fn sapa(nama) {
+    "Halo, " + nama + "!"
+}
+
+let nama = "dunia";
+print_str(sapa(nama));
+```
+
+Bahkan jika beberapa bagian belum kamu pahami — tenang, semua akan dijelaskan pelan-pelan.
+
+## Cara Membangun dan Menjalankan
+
+Clone kompiler dari GitHub:
+
+```bash
+git clone https://github.com/qwetls/aha-lang
+cd aha-lang
+cargo build --release
+```
+
+Jalankan file program `.aha`:
+
+```bash
+cargo run --release -- --file program.aha
+```
+
+Kompiler akan menjalankan seluruh pipeline — lexing, parsing, codegen LLVM, lalu eksekusi JIT — dan menampilkan hasilnya.
+
+## Peta Perjalanan Course Ini
+
+| Lesson | Topik |
+|--------|-------|
+| 1 | Apa Itu AHA! Lang? (kamu di sini) |
+| 2 | Hello, World: program pertamamu |
+| 3 | Variabel dan tipe data |
+| 4 | Operator dan ekspresi |
+| 5 | Bekerja dengan string |
+| 6 | Keputusan dengan `if` / `else` |
+| 7 | Perulangan dengan `while` |
+| 8 | Perulangan dengan `for` |
+| 9 | Fungsi: kode yang bisa dipakai ulang |
+| 10 | Proyek kecil untuk mengasah semuanya |
+
+Siap? Lanjut ke [Hello, World](/id/course/02-hello-world)!

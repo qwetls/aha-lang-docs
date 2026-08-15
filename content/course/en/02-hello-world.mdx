@@ -1,0 +1,103 @@
+---
+title: "Hello, World: Your First Program"
+description: "Writing your first program, printing output, and understanding the simple anatomy of an AHA! Lang program."
+icon: Terminal
+---
+
+# Hello, World: Your First Program
+
+Every programmer's tradition begins with one tiny program: printing the words **"Hello, World!"**. Let's get started.
+
+## Your First Program
+
+Create a file named `halo.aha` with the contents:
+
+```rust
+print_str("Hello, World!");
+```
+
+Run it:
+
+```bash
+cargo run --release -- --file halo.aha
+```
+
+Output:
+
+```text
+Hello, World!
+```
+
+Congratulations — you've just written and run your first program! 🎉
+
+## Anatomy of One Line
+
+```rust
+print_str("Hello, World!");
+```
+
+| Part | Meaning |
+|--------|-------|
+| `print_str` | **Built-in function** (builtin) for printing a string |
+| `("Hello, World!")` | **Argument** — the text you want to print, enclosed in double quotes |
+| `;` | Marks the end of a statement |
+
+In AHA! Lang, every **statement** ends with a semicolon `;`.
+
+## Printing Numbers
+
+To print a number, use `print`:
+
+```rust
+print(42);
+print(7 + 5);
+```
+
+Output:
+
+```text
+42
+12
+```
+
+Note: `print` prints numbers, `print_str` prints text. Mixing them — like `print("halo")` — will be rejected by the compiler at compile time, because of the wrong type. This is the type discipline mentioned in the first lesson.
+
+## Comments: Notes for Humans
+
+Code needs explanations too. Comments are written with `//` (single line) or `/* ... */` (multiple lines), and are ignored by the compiler:
+
+```rust
+// this is a single-line comment
+print(1); // it can also be at the end of a line
+
+/*
+   This is a
+   multi-line comment.
+*/
+print(2);
+```
+
+Comments are the best way to explain **why** you wrote something — not what the code does.
+
+## Printing Multiple Lines
+
+Use the escape `\n` for a new line:
+
+```rust
+print_str("Baris satu\nBaris dua");
+```
+
+Output:
+
+```text
+Baris satu
+Baris dua
+```
+
+## Exercises
+
+1. Change the program above to print your name.
+2. Print three lines: your name, a hobby, and an aspiration — using three `print_str` calls.
+3. Print the result of `2 + 2` with `print`.
+
+On to [Variables and Data Types](/en/course/03-variabel-dan-tipe)?

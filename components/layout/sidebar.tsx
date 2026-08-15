@@ -2,34 +2,38 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-
-const navItems = [
-  { href: "/", label: "Overview" },
-  { href: "/introduction", label: "Introduction" },
-  { href: "/getting-started", label: "Getting Started" },
-  { href: "/language-tour", label: "Language Tour" },
-  { href: "/course", label: "Course" },
-  { href: "/blog", label: "Blog" },
-];
-
-const guidesItems = [
-  { href: "/functions", label: "Functions" },
-  { href: "/strings", label: "Strings" },
-  { href: "/builtins", label: "Builtins" },
-  { href: "/architecture", label: "Architecture" },
-  { href: "/changelog", label: "Changelog" },
-  { href: "/faq", label: "FAQ" },
-];
+import { getUI } from "@/lib/i18n";
+import { locales, defaultLocale, type Locale } from "@/lib/source";
 
 const externalLinks = [
   { href: "https://github.com/qwetls/aha-lang", label: "GitHub" },
 ];
 
+// @note extracts the locale prefix from the current pathname (defaults to en)
+function useLocale(): Locale {
+  const pathname = usePathname();
+  const seg = pathname.split("/")[1];
+  return (locales as string[]).includes(seg) ? (seg as Locale) : defaultLocale;
+}
+
+// @note builds a locale-prefixed href from a bare slug ("" => /<lang>)
+function localeHref(lang: Locale, slug: string) {
+  return slug ? `/${lang}/${slug}` : `/${lang}`;
+}
+
 // @note renders a single nav link with active indicator
-function NavItem({ href, label, onClick }: { href: string; label: string; onClick?: () => void }) {
+function NavItem({
+  href,
+  label,
+  onClick,
+}: {
+  href: string;
+  label: string;
+  onClick?: () => void;
+}) {
   const pathname = usePathname();
   const isActive = pathname === href;
 
@@ -53,9 +57,45 @@ function NavItem({ href, label, onClick }: { href: string; label: string; onClic
   );
 }
 
+// @note language switcher — swaps the locale segment while keeping the rest of the path
+function LanguageSwitcher() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const current = useLocale();
+
+  const switchTo = (lang: Locale) => {
+    const parts = pathname.split("/");
+    if ((locales as string[]).includes(parts[1])) {
+      parts[1] = lang;
+    } else {
+      parts.splice(1, 0, lang);
+    }
+    router.push(parts.join("/") || `/${lang}`);
+  };
+
+  return (
+    <div className="flex items-center gap-0.5 rounded-md border border-[#e7e5e4] dark:border-white/[0.09] p-0.5">
+      {locales.map((lang) => (
+        <button
+          key={lang}
+          onClick={() => switchTo(lang)}
+          className={`px-2 py-0.5 text-[11px] font-medium rounded transition-colors ${
+            current === lang
+              ? "bg-[#1c1917] dark:bg-white text-[#fafaf9] dark:text-[#0a0a0c]"
+              : "text-[#a8a29e] dark:text-white/40 hover:text-[#78716c] dark:hover:text-white/70"
+          }`}
+          aria-label={`Switch to ${lang.toUpperCase()}`}
+        >
+          {lang.toUpperCase()}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 // @note theme toggle button
 function ThemeToggle() {
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
@@ -83,18 +123,25 @@ function ThemeToggle() {
 
 export function Sidebar() {
   const [open, setOpen] = useState(false);
+  const lang = useLocale();
+  const t = getUI(lang);
+
+  const navItems = t.nav.map((item) => ({
+    href: localeHref(lang, item.slug),
+    label: item.label,
+  }));
+  const guidesItems = t.guides.map((item) => ({
+    href: localeHref(lang, item.slug),
+    label: item.label,
+  }));
+  const homeHref = localeHref(lang, "");
 
   const sidebarContent = (
     <>
       {/* logo */}
       <div className="pt-12 md:pt-16 pb-8">
-        <Link href="/" className="flex items-center gap-2.5">
-          <Image
-            src="/logo.png"
-            width={28}
-            height={28}
-            alt="AHA! Lang"
-          />
+        <Link href={homeHref} className="flex items-center gap-2.5">
+          <Image src="/logo.png" width={28} height={28} alt="AHA! Lang" />
           <span className="text-[15px] font-semibold text-[#1c1917] dark:text-white/90 transition-colors">AHA! Lang</span>
         </Link>
       </div>
@@ -107,14 +154,14 @@ export function Sidebar() {
           ))}
         </ul>
 
-        <p className="pl-3 mb-2 text-[11px] font-medium text-[#1c1917] dark:text-white/30 uppercase tracking-widest transition-colors">Guides</p>
+        <p className="pl-3 mb-2 text-[11px] font-medium text-[#1c1917] dark:text-white/30 uppercase tracking-widest transition-colors">{t.guidesLabel}</p>
         <ul className="space-y-0.5 mb-6 pl-3">
           {guidesItems.map((item) => (
             <NavItem key={item.href} {...item} onClick={() => setOpen(false)} />
           ))}
         </ul>
 
-        <p className="pl-3 mb-2 text-[11px] font-medium text-[#1c1917] dark:text-white/30 uppercase tracking-widest transition-colors">Links</p>
+        <p className="pl-3 mb-2 text-[11px] font-medium text-[#1c1917] dark:text-white/30 uppercase tracking-widest transition-colors">{t.linksLabel}</p>
         <ul className="space-y-0.5 pl-3">
           {externalLinks.map((item) => (
             <li key={item.href}>
@@ -136,7 +183,7 @@ export function Sidebar() {
 
       {/* footer */}
       <div className="py-4 flex items-center justify-between">
-        <span className="text-[12px] text-[#a8a29e] dark:text-white/30 transition-colors">early development</span>
+        <LanguageSwitcher />
         <ThemeToggle />
       </div>
     </>
@@ -146,16 +193,12 @@ export function Sidebar() {
     <>
       {/* mobile topbar */}
       <div className="fixed top-0 left-0 right-0 z-50 md:hidden flex items-center justify-between px-6 h-14 bg-[#fafaf9]/90 dark:bg-[#0a0a0c]/90 backdrop-blur-md border-b border-stone-200/60 dark:border-white/5 transition-colors">
-        <Link href="/" className="flex items-center gap-2">
-          <Image
-            src="/logo.png"
-            width={24}
-            height={24}
-            alt="AHA! Lang"
-          />
+        <Link href={homeHref} className="flex items-center gap-2">
+          <Image src="/logo.png" width={24} height={24} alt="AHA! Lang" />
           <span className="text-[14px] font-semibold text-[#1c1917] dark:text-white/90">AHA! Lang</span>
         </Link>
         <div className="flex items-center gap-2">
+          <LanguageSwitcher />
           <ThemeToggle />
           <button
             onClick={() => setOpen(!open)}
@@ -192,13 +235,13 @@ export function Sidebar() {
               <NavItem key={item.href} {...item} onClick={() => setOpen(false)} />
             ))}
           </ul>
-          <p className="pl-3 mb-2 text-[11px] font-medium text-[#1c1917] dark:text-white/30 uppercase tracking-widest transition-colors">Guides</p>
+          <p className="pl-3 mb-2 text-[11px] font-medium text-[#1c1917] dark:text-white/30 uppercase tracking-widest transition-colors">{t.guidesLabel}</p>
           <ul className="space-y-0.5 mb-4 pl-3">
             {guidesItems.map((item) => (
               <NavItem key={item.href} {...item} onClick={() => setOpen(false)} />
             ))}
           </ul>
-          <p className="pl-3 mb-2 text-[11px] font-medium text-[#1c1917] dark:text-white/30 uppercase tracking-widest transition-colors">Links</p>
+          <p className="pl-3 mb-2 text-[11px] font-medium text-[#1c1917] dark:text-white/30 uppercase tracking-widest transition-colors">{t.linksLabel}</p>
           <ul className="space-y-0.5 pl-3">
             {externalLinks.map((item) => (
               <li key={item.href}>

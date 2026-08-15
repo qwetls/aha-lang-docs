@@ -1,0 +1,34 @@
+---
+title: Builtins
+description: Fungsi builtin standar yang tersedia di setiap program AHA!
+icon: Terminal
+---
+
+# Builtins
+
+Setiap program AHA! mendapatkan seperangkat kecil builtin standar:
+
+| Builtin | Deskripsi |
+|---------|-------------|
+| `print(int)` | Cetak sebuah bilangan bulat |
+| `print_str(string)` | Cetak sebuah string |
+| `len(string)` | Panjang string dalam O(1) |
+| `abs(x)` | Nilai absolut |
+| `min(a, b)` | Yang lebih kecil dari dua bilangan |
+| `max(a, b)` | Yang lebih besar dari dua bilangan |
+
+## Contoh
+
+```rust
+print(42);           // 42
+print_str("hello");  // hello
+print(len("hello")); // 5
+print(abs(-7));      // 7
+print(min(3, 9));    // 3
+print(max(3, 9));    // 9
+```
+
+## Catatan
+
+- `print` menerima bilangan bulat; `print_str` menerima string. `print("hi")` adalah kesalahan tipe saat kompilasi — string melalui `print_str`.
+- `len` mengembalikan panjang tersimpan dari struct string, sehingga bersifat O(1) tanpa memandang ukuran string.

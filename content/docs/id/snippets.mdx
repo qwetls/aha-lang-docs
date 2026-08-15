@@ -1,0 +1,137 @@
+---
+title: Code Snippets
+description: Program AHA! siap jalan — faktorial, Fibonacci, uji keprimaan, dan tabel perkalian
+icon: FileCode
+---
+
+# Code Snippets
+
+Sekumpulan program AHA! yang lengkap dan dapat dijalankan. Setiap snippet hanya menggunakan fitur yang ada saat ini — simpan salah satunya ke berkas `.aha` dan jalankan dengan `cargo run --release -- --file <name>.aha`.
+
+## Faktorial
+
+Rekursi dengan ekspresi `if`/`else`:
+
+```rust
+fn factorial(n) {
+    if n <= 1 {
+        1
+    } else {
+        n * factorial(n - 1)
+    }
+}
+
+print(factorial(5)); // 120
+```
+
+## Fibonacci
+
+Fibonacci iteratif dengan perulangan `while` dan penugasan ulang:
+
+```rust
+fn fib(n) {
+    let a = 0;
+    let b = 1;
+    let i = 0;
+    while i < n {
+        let next = a + b;
+        a = b;
+        b = next;
+        i = i + 1;
+    }
+    a
+}
+
+print(fib(10)); // 55
+```
+
+## Uji Keprimaan
+
+Perbandingan mengembalikan `Int` `0`/`1`, sehingga hasil pemeriksaan menyatu langsung ke alur kontrol:
+
+```rust
+fn is_prime(n) {
+    if n < 2 {
+        return 0;
+    }
+    let i = 2;
+    while i * i <= n {
+        if n % i == 0 {
+            return 0;
+        }
+        i = i + 1;
+    }
+    1
+}
+
+print(is_prime(7));  // 1
+print(is_prime(12)); // 0
+```
+
+## Tabel Perkalian
+
+Perulangan `for` bersarang pada rentang bilangan bulat:
+
+```rust
+fn table(size) {
+    for row 1..size {
+        for col 1..size {
+            print(row * col);
+        }
+    }
+    0
+}
+
+table(4);
+```
+
+## Menjumlahkan Array
+
+Array berpasangan secara alami dengan perulangan `for` berentang:
+
+```rust
+let data = [4, 8, 15, 16, 23, 42];
+let sum = 0;
+for i 0..6 {
+    sum = sum + data[i];
+}
+print(sum); // 108
+```
+
+## Menghitung dengan Rekursi Timbal Balik
+
+Fungsi dapat saling memanggil tanpa memandang urutan deklarasi:
+
+```rust
+fn is_even(n) {
+    n % 2 == 0
+}
+
+fn is_odd(n) {
+    if is_even(n) { 0 } else { 1 }
+}
+
+let odds = 0;
+for i 0..10 {
+    if is_odd(i) {
+        odds = odds + 1;
+    }
+}
+print(odds); // 5
+```
+
+## Membangun String
+
+Konkatenasi mengembalikan string baru; `len()` bersifat O(1):
+
+```rust
+fn greet(name) {
+    "Hello, " + name + "!"
+}
+
+let msg = greet("world");
+print_str(msg);       // Hello, world!
+print(len(msg));      // 13
+```
+
+Ingin referensi bahasa di balik ini? Lihat [Language Tour](/id/language-tour) dan [Functions](/id/functions).

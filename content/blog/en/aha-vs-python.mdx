@@ -1,0 +1,72 @@
+---
+title: "AHA! Lang vs Python: Two Styles, One Goal"
+description: "The same code written in Python and AHA! Lang — and what makes each of them unique as a learning language."
+icon: Code2
+date: 2026-08-12
+---
+
+# AHA! Lang vs Python: Two Styles, One Goal
+
+Python is the most popular first language in the world — and for good reason: simple, friendly, a huge ecosystem. So why consider AHA! Lang? Because the two have different philosophies, and both are worth learning.
+
+## Same Code, Different Style
+
+Let's compare the same program — deciding whether someone passes:
+
+**Python:**
+
+```python
+nilai = 85
+if nilai >= 70:
+    status = "Lulus"
+else:
+    status = "Tidak lulus"
+print(status)
+```
+
+**AHA! Lang:**
+
+```rust
+let nilai = 85;
+let status = if nilai >= 70 { "Lulus" } else { "Tidak lulus" };
+print_str(status);
+```
+
+Both programs print `Lulus`. But notice the differences:
+
+| Aspect | Python | AHA! Lang |
+|-------|--------|-----------|
+| `if` | Statement (does something) | Expression (produces a value) |
+| Boolean | `True`/`False` | `Int` `1`/`0` |
+| Variables | Optional-style declaration | Explicit `let` |
+| Execution | Interpretation | JIT compilation via LLVM |
+
+## The Most Interesting Difference: Booleans
+
+This is the design difference you feel the most. In Python, `True` and `False` are special types. In AHA! Lang, the result of a logical operation is an ordinary number:
+
+```rust
+let x = 5;
+print((x > 3) * 100);     // 100 — logic can be computed directly
+print((x > 3) == 1);      // 1 — and can be compared
+```
+
+In Python, writing `(x > 3) * 100` would error — multiplying `True` by a number doesn't make sense. In AHA! Lang, that's exactly its strength: **logic flows into arithmetic**. It's a style closer to C, but without C's complexity.
+
+## Execution Speed
+
+Python is interpreted; AHA! Lang is compiled to machine code via LLVM and then executed JIT. For large programs doing heavy computation, the performance difference is significant — close to C speed.
+
+But to be honest: for learning concepts, speed is rarely an issue. Speed starts to matter when you build a compiler, a simulator, or a game.
+
+## Which Should You Learn?
+
+**Choose Python if:** you want to jump straight into data science, web backends, or automation — and want the largest library ecosystem.
+
+**Choose AHA! Lang if:** you're curious about how a language works from the inside, want to experience a real compiler, or love minimal syntax that "reads like prose".
+
+**Or learn both!** Many institutions teach Python as a first language and C as a second to understand the machine. AHA! Lang can fill both roles at once: friendly like Python, fast like C.
+
+## Get Started
+
+You can try AHA! Lang right away through [Getting Started](/en/getting-started) and our progressive [Course](/en/course) — even without any prior programming experience.

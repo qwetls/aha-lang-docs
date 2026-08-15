@@ -1,0 +1,137 @@
+---
+title: Code Snippets
+description: Ready-to-run AHA! programs — factorial, Fibonacci, primality, and a multiplication table
+icon: FileCode
+---
+
+# Code Snippets
+
+A handful of complete, runnable AHA! programs. Every snippet uses only features that exist today — save one to a `.aha` file and run it with `cargo run --release -- --file <name>.aha`.
+
+## Factorial
+
+Recursion with an `if`/`else` expression:
+
+```rust
+fn factorial(n) {
+    if n <= 1 {
+        1
+    } else {
+        n * factorial(n - 1)
+    }
+}
+
+print(factorial(5)); // 120
+```
+
+## Fibonacci
+
+Iterative Fibonacci with a `while` loop and reassignment:
+
+```rust
+fn fib(n) {
+    let a = 0;
+    let b = 1;
+    let i = 0;
+    while i < n {
+        let next = a + b;
+        a = b;
+        b = next;
+        i = i + 1;
+    }
+    a
+}
+
+print(fib(10)); // 55
+```
+
+## Primality Test
+
+Comparisons return `Int` `0`/`1`, so the result of a check composes straight into control flow:
+
+```rust
+fn is_prime(n) {
+    if n < 2 {
+        return 0;
+    }
+    let i = 2;
+    while i * i <= n {
+        if n % i == 0 {
+            return 0;
+        }
+        i = i + 1;
+    }
+    1
+}
+
+print(is_prime(7));  // 1
+print(is_prime(12)); // 0
+```
+
+## Multiplication Table
+
+Nested `for` loops over integer ranges:
+
+```rust
+fn table(size) {
+    for row 1..size {
+        for col 1..size {
+            print(row * col);
+        }
+    }
+    0
+}
+
+table(4);
+```
+
+## Sum of an Array
+
+Arrays pair naturally with a ranged `for` loop:
+
+```rust
+let data = [4, 8, 15, 16, 23, 42];
+let sum = 0;
+for i 0..6 {
+    sum = sum + data[i];
+}
+print(sum); // 108
+```
+
+## Counting with Mutual Recursion
+
+Functions can call each other regardless of declaration order:
+
+```rust
+fn is_even(n) {
+    n % 2 == 0
+}
+
+fn is_odd(n) {
+    if is_even(n) { 0 } else { 1 }
+}
+
+let odds = 0;
+for i 0..10 {
+    if is_odd(i) {
+        odds = odds + 1;
+    }
+}
+print(odds); // 5
+```
+
+## String Building
+
+Concatenation returns a fresh string; `len()` is O(1):
+
+```rust
+fn greet(name) {
+    "Hello, " + name + "!"
+}
+
+let msg = greet("world");
+print_str(msg);       // Hello, world!
+print(len(msg));      // 13
+```
+
+Want the language reference behind these? See the [Language Tour](/en/language-tour) and [Functions](/en/functions).

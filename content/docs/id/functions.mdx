@@ -1,0 +1,76 @@
+---
+title: Functions
+description: Fungsi di AHA! — parameter, nilai kembali, referensi maju, dan rekursi timbal balik
+icon: Code2
+---
+
+# Functions
+
+Fungsi adalah blok penyusun program AHA!. Fungsi berorientasi ekspresi — ekspresi terakhir dalam badan fungsi adalah nilai kembalinya.
+
+## Mendefinisikan Fungsi
+
+```rust
+fn is_even(n) {
+    n % 2 == 0
+}
+```
+
+## Parameter
+
+Parameter ditulis tanpa anotasi tipe. Sistem tipe memeriksa argumen saat kompilasi, sehingga ketidakcocokan tipe menjadi kesalahan saat kompilasi, bukan saat runtime.
+
+```rust
+fn add(a, b) {
+    a + b
+}
+
+print(add(2, 3)); // 5
+```
+
+## Nilai Kembali
+
+Ekspresi terakhir dari badan fungsi adalah nilai kembalinya. Fungsi juga mendukung `return` eksplisit untuk keluar lebih awal — nilai yang dikembalikan diperiksa tipenya seperti nilai lainnya.
+
+## Referensi Maju & Rekursi Timbal Balik
+
+Fungsi dapat saling memanggil tanpa memandang urutan deklarasi, yang membuat rekursi timbal balik menjadi alami:
+
+```rust
+fn is_even(n) {
+    n % 2 == 0
+}
+
+fn is_odd(n) {
+    if is_even(n) { 0 } else { 1 }
+}
+
+let count = 0;
+for i 0..10 {
+    if is_odd(i) {
+        count = count + 1;
+    }
+}
+count // 5
+```
+
+## String dalam Fungsi
+
+Parameter dan nilai kembali bertipe string didukung sepenuhnya. Compiler menjalankan pra-tahap (`infer_function_return_type`) untuk menyimpulkan tipe kembali sebelum pembangkitan kode, sehingga fungsi yang mengembalikan string bekerja sama seperti fungsi bilangan bulat.
+
+```rust
+fn greet(name) {
+    "Hello, " + name
+}
+
+print_str(greet("world")); // Hello, world
+```
+
+## Konvensi Pemanggilan
+
+Memanggil fungsi adalah ekspresi biasa — nilainya dapat dicetak, disimpan, atau digunakan dalam aritmetika:
+
+```rust
+let doubled = add(5, 5); // 10
+print(doubled * 2);      // 20
+```

@@ -1,0 +1,42 @@
+---
+title: "Why Learn Compilers?"
+description: "A compiler is the translator between humans and machines. Why understanding it matters — even if your career isn't in language engineering."
+icon: CircleHelp
+date: 2026-08-10
+---
+
+# Why Learn Compilers?
+
+Every programming language you use — Python, Java, JavaScript, Rust — is just text until a compiler (or interpreter) turns it into instructions a machine can run. Behind the scenes, the same process applies to all of them: **tokenize, parse, type-check, and generate code**.
+
+## Understanding That Changes How You Write Code
+
+When you know how compilers work, all sorts of everyday mysteries become clear:
+
+- Why does `x = x + 1` error in one language but work in another?
+- What is *type checking* and why can languages like Rust reject a program at compile time?
+- Why can a `while` loop be faster than a recursive function call?
+
+A compiler isn't "magic" — it's just a pipeline you can understand step by step.
+
+## A Highly Sought-After Skill
+
+Big companies have dedicated teams for language tooling: linters, code formatters, language servers, transpilers, even in-house DSLs. All of these are direct applications of the same set of skills:
+
+| Skill | Used for |
+|--------------|-----------------|
+| Lexing & parsing | Analyzers, linters, syntax highlighters, formatters |
+| Semantics & types | Type checkers, code completion, refactoring tools |
+| Codegen | Transpilers, compilers, DSLs for business domains |
+
+## Learn by Building
+
+Theory matters, but nothing beats the experience of building a real compiler. **AHA! Lang** is designed for that:
+
+- A real compiler written in **Rust**, using **LLVM** for code generation.
+- Source code that is **compact and easy to read** — meant for learning, not a giant suite.
+- Automatic build and test via CI, so every change is verified.
+
+## Start Here
+
+Open [our Course](/en/course) — we break down AHA! Lang from scratch: what a compiler is, how the lexer works, how the parser builds the AST, all the way to producing machine code via LLVM. No prior compiler experience needed.

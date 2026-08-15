@@ -1,0 +1,103 @@
+---
+title: "Hello, World: Program Pertamamu"
+description: "Menulis program pertama, mencetak output, dan memahami anatomi sederhana sebuah program AHA! Lang."
+icon: Terminal
+---
+
+# Hello, World: Program Pertamamu
+
+Tradisi setiap pemrogram dimulai dari satu program kecil: mencetak kata **"Hello, World!"**. Mari kita mulai.
+
+## Program Pertamamu
+
+Buat file bernama `halo.aha` dengan isi:
+
+```rust
+print_str("Hello, World!");
+```
+
+Jalankan:
+
+```bash
+cargo run --release -- --file halo.aha
+```
+
+Output:
+
+```text
+Hello, World!
+```
+
+Selamat — kamu baru saja menulis dan menjalankan program pertamamu! 🎉
+
+## Anatomi Satu Baris
+
+```rust
+print_str("Hello, World!");
+```
+
+| Bagian | Makna |
+|--------|-------|
+| `print_str` | **Fungsi bawaan** (builtin) untuk mencetak string |
+| `("Hello, World!")` | **Argumen** — teks yang ingin dicetak, diapit tanda kutip ganda |
+| `;` | Penanda akhir dari sebuah pernyataan |
+
+Di AHA! Lang, setiap **pernyataan** (statement) diakhiri dengan titik koma `;`.
+
+## Mencetak Angka
+
+Untuk mencetak angka, pakai `print`:
+
+```rust
+print(42);
+print(7 + 5);
+```
+
+Output:
+
+```text
+42
+12
+```
+
+Perhatikan: `print` mencetak angka, `print_str` mencetak teks. Mencampurnya — seperti `print("halo")` — akan ditolak kompiler saat kompilasi, karena salah tipe. Inilah disiplin tipe yang disebutkan di pelajaran pertama.
+
+## Komentar: Catatan untuk Manusia
+
+Kode juga butuh penjelasan. Komentar ditulis dengan `//` (satu baris) atau `/* ... */` (banyak baris), dan diabaikan oleh kompiler:
+
+```rust
+// ini komentar satu baris
+print(1); // bisa juga di akhir baris
+
+/*
+   Ini komentar
+   banyak baris.
+*/
+print(2);
+```
+
+Komentar adalah cara terbaik untuk menjelaskan **kenapa** kamu menulis sesuatu — bukan apa yang dilakukan kode.
+
+## Mencetak Banyak Baris
+
+Gunakan escape `\n` untuk baris baru:
+
+```rust
+print_str("Baris satu\nBaris dua");
+```
+
+Output:
+
+```text
+Baris satu
+Baris dua
+```
+
+## Latihan
+
+1. Ubah program di atas untuk mencetak namamu.
+2. Cetak tiga baris: nama, hobi, dan cita-cita — dengan tiga `print_str`.
+3. Cetak hasil `2 + 2` dengan `print`.
+
+Lanjut ke [Variabel dan Tipe Data](/id/course/03-variabel-dan-tipe)?

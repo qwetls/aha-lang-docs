@@ -1,0 +1,56 @@
+---
+title: Changelog
+description: All notable changes to AHA! Lang
+icon: ListTodo
+---
+
+# Changelog
+
+All notable changes to AHA! Lang are documented in this file. You can always build the latest from source — see [Getting Started](/en/getting-started).
+
+## 1.4.0 — 2026-05-17
+
+### Added
+
+- **Type System** (`src/types.rs`): `AhaType` enum (`Int`, `Bool`, `String`, `Void`, `Array`, `Function`) with compile-time type checking via `check_binary_op()` and `check_prefix_op()`
+- **TypedValue**: all codegen expression methods now return a `TypedValue` pairing an LLVM value with its `AhaType`
+- **String Type**: strings are now an LLVM struct `{i8*, i64}` (pointer + length), replacing the unsafe pointer-to-int cast
+- **String Concatenation**: `"hello" + " world"` allocates a new buffer via `malloc`, copies via `memcpy`, null-terminates
+- **String Comparison**: `==` and `!=` on strings use `strcmp` from the C standard library
+- **`len()` builtin**: returns a string's length in O(1) by reading the struct's length field
+- **C Runtime Linkage**: external declarations for `malloc`, `memcpy`, `strlen`, `strcmp`
+- **Block Comments**: `/* ... */` multi-line comments
+- **String Escape Sequences**: `\n`, `\t`, `\\`, `\"`, `\r`, `\0`
+- **Identifier Improvements**: digits after the first character (`my_var2`), underscore prefix (`_private`)
+- **Test Suite**: 84 tests across 4 modules — lexer, parser, type system, and end-to-end JIT
+
+### Changed
+
+- `Token.r#type` renamed to `Token.kind` — follows Rust convention, eliminates raw identifier syntax
+- Variable scope: flat map → stack of scopes with type tracking
+- `compile_expression()` returns `TypedValue` throughout all expression handlers
+- All output messages and source comments standardized to English
+- README roadmap updated to accurately reflect implementation status
+
+### Fixed
+
+- `!=` operator produced `"=="` instead of `"!="` (copy-paste error in the lexer)
+- `if` conditions not converted from `i64` to `i1` before `build_conditional_branch`
+- Phi nodes referenced original basic blocks instead of actual end blocks
+- Last expression in program body was compiled twice
+- Functions emitted both implicit and explicit return, causing LLVM "multiple terminators" errors
+- Function compilation could leak scope/builder state on error
+- Parser returned `Expression::Identifier("ERROR")` on parse failure, propagating invalid AST to codegen
+
+### Security
+
+- Type mismatches (`"hello" + 5`) now produce compile-time errors instead of undefined runtime behavior
+- All `.unwrap()` calls replaced with `.expect("descriptive context")` for debuggable panics
+
+## 1.3.0 — Previous Release
+
+- Initial compiler with lexer, parser, codegen
+- Integer, boolean, string (as pointer hack) types
+- If/else, while, for loops
+- Functions with parameters
+- Basic stdlib: print, print_str, abs, min, max

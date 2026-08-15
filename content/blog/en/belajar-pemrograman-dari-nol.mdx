@@ -1,0 +1,55 @@
+---
+title: "Learning to Program from Scratch? Start with AHA! Lang"
+description: "Why AHA! Lang makes a great first language — minimal syntax, fast feedback, and you learn how compilers work along the way."
+icon: BookOpen
+date: 2026-08-14
+---
+
+# Learning to Program from Scratch? Start with AHA! Lang
+
+"Which language should I learn first?" — the most common question from beginners. The honest answer: the first language should be one that helps you **understand concepts**, not one that confuses you with complex syntax. AHA! Lang was designed for exactly that.
+
+## Why Your First Language Matters
+
+Your first language shapes how you think about code. If your first language is complicated, you spend your energy on syntax instead of concepts. AHA! Lang takes the "Easy to read" path: syntax kept as short as possible so you can focus on the logic.
+
+Look at the same concept side by side — variables and decisions:
+
+```rust
+let nilai = 7;
+let keterangan = if nilai >= 7 { "lulus" } else { "tidak lulus" };
+print_str(keterangan);
+```
+
+No mandatory type declarations, no extra parentheses, no fancy keywords. What remains is **what is actually happening**.
+
+## Fast Feedback Matters
+
+Beginners learn from feedback. In AHA! Lang, type errors — like `2 + "teks"` — are rejected **at compile time** with a clear message, before the program even runs. You won't be left wondering "why is my program just sitting there doing nothing?"
+
+## A Course Made for Beginners
+
+We just released the [Course](/en/course) — 10 progressive lessons designed like a first-language tutorial:
+
+| Lesson | Topic |
+|--------|-----------|
+| 1–2 | Introduction & Hello, World |
+| 3–5 | Variables, types, operators, strings |
+| 6–8 | `if`, `while`, `for` |
+| 9–10 | Functions & a small project |
+
+Every lesson has exercises, and the final lesson walks you through building three classic projects: FizzBuzz, the Fibonacci sequence, and a prime-number check.
+
+## Bonus: You Learn How Compilers Work
+
+Here's an advantage most first languages don't offer: AHA! Lang is a **real** compiler built on LLVM. When you type `cargo run --release -- --file program.aha`, you can see the pipeline — lexing, parsing, codegen — and read how the language works from the inside.
+
+For computer science students, that means one course does double duty: you learn to program **and** get to know compiler architecture at the same time. Read the article [Why Learn Compilers?](/en/blog/mengapa-belajar-kompiler) for a deeper perspective.
+
+## Start Today
+
+1. Follow [Getting Started](/en/getting-started) to set up your environment.
+2. Begin the [Course](/en/course) from the first lesson.
+3. Join the discussion on [GitHub](https://github.com/qwetls/aha-lang) — a small but warm community.
+
+Your first language doesn't have to be the most popular one. It should be the one that best helps you **understand**.

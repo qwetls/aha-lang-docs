@@ -1,0 +1,98 @@
+---
+title: "Writing Clean, Readable AHA! Lang Code"
+description: "Practices for writing clear code: meaningful names, small functions, if-expressions, and a few well-placed comments."
+icon: ListTodo
+date: 2026-08-08
+---
+
+# Writing Clean, Readable AHA! Lang Code
+
+"Easy to read" isn't just a slogan — it's a design promise. But a language that's easy to read doesn't automatically make your code easy to read. It takes a bit of discipline. Here are the habits with the most impact.
+
+## 1. Give Meaningful Names
+
+Code is read far more often than it's written. Good names explain themselves:
+
+```rust
+// ❌ What is this?
+let a = 30000;
+let b = 10;
+let c = a - (a * b / 100);
+
+// ✅ Clear
+let total_belanja = 30000;
+let diskon_persen = 10;
+let bayar = total_belanja - (total_belanja * diskon_persen / 100);
+```
+
+Rule of thumb: if you have to read the body to know what something means, the name isn't good enough.
+
+## 2. Break Logic into Small Functions
+
+Long functions that do many things are hard to read and test. Break them into small functions that each have a single responsibility:
+
+```rust
+fn kelipatan_dari(angka, pembagi) {
+    angka % pembagi == 0
+}
+
+fn label_angka(n) {
+    if kelipatan_dari(n, 15) {
+        "FizzBuzz"
+    } else {
+        if kelipatan_dari(n, 3) {
+            "Fizz"
+        } else {
+            if kelipatan_dari(n, 5) {
+                "Buzz"
+            } else {
+                "Angka biasa"
+            }
+        }
+    }
+}
+```
+
+Each function answers a single question: *is it a multiple?*, *what's its label?* — and can be read on its own.
+
+## 3. Use if as an Expression
+
+The most distinctive AHA! Lang style: let `if` produce a value, don't fill a variable inside a branch:
+
+```rust
+// ❌ Two steps that can go wrong
+let diskon = 0;
+if total > 100000 {
+    diskon = total / 10;
+} else {
+    diskon = 0;
+}
+
+// ✅ One expression, one value
+let diskon = if total > 100000 { total / 10 } else { 0 };
+```
+
+## 4. Comment the "Why", Not the "What"
+
+Good code already explains itself. The most valuable comments are the ones that explain the **reasons** behind a decision:
+
+```rust
+// Discount locked at 10% during the promo month — see the 2026-08-01 meeting decision
+let diskon = if total > 100000 { total / 10 } else { 0 };
+```
+
+When code changes, comments are often forgotten. The fewer comments that merely repeat the code, the fewer that can go stale.
+
+## 5. Consistency Matters More Than Perfection
+
+Pick one style and use it consistently: spaces inside block braces, a semicolon on every statement, `snake_case` variable names as in the docs examples. Consistency keeps readers from being surprised.
+
+## Checklist Before Saving a File
+
+- [ ] Do the variable and function names explain their contents?
+- [ ] Does each function have a single responsibility?
+- [ ] Is `if` used as an expression where it makes sense?
+- [ ] Do comments only explain "why"?
+- [ ] Can you read it aloud smoothly?
+
+Remember: you write code once, but you read it many times — and others read it too. Make that reading experience a pleasant one.

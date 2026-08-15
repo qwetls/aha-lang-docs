@@ -1,0 +1,65 @@
+---
+title: Arrays
+description: Literal array dan pengindeksan di AHA! — array bilangan bulat homogen dengan penyimpanan berbasis LLVM
+icon: Brackets
+---
+
+# Arrays
+
+AHA! mendukung **literal array** dan **pengindeksan** pada tingkat pembangkitan kode. Array bersifat homogen — setiap elemen berbagi satu tipe — dan implementasi saat ini menyimpan elemen `Int`.
+
+## Literal Array
+
+Tulis sebuah array dengan tanda kurung siku dan elemen yang dipisahkan koma:
+
+```rust
+let nums = [1, 2, 3];
+```
+
+Array kosong juga valid:
+
+```rust
+let empty = [];
+```
+
+## Pengindeksan
+
+Baca sebuah elemen dengan `arr[index]`. Indeks dimulai dari nol, sehingga elemen pertama adalah `arr[0]`:
+
+```rust
+let nums = [10, 20, 30];
+print(nums[0]); // 10
+print(nums[2]); // 30
+```
+
+## Menggunakan Array dengan Perulangan
+
+Karena perulangan `for` menelusuri rentang bilangan bulat, ia berpasangan secara alami dengan pengindeksan:
+
+```rust
+let data = [5, 15, 25, 35];
+let sum = 0;
+for i 0..4 {
+    sum = sum + data[i];
+}
+print(sum); // 80
+```
+
+## Cara Kerja Array
+
+Di balik layar, sebuah literal array mengalokasikan ruang stack (`alloca`) untuk tipe array LLVM, lalu menyimpan setiap elemen melalui `getelementptr` (GEP). Pengindeksan mengubah array kembali menjadi pointer dan memuat elemen pada offset yang dihitung.
+
+| Aspek | Detail |
+|--------|--------|
+| Tipe elemen | `Int` (64-bit) |
+| Tampilan tipe | `[Int]` |
+| Penyimpanan | LLVM `array_type` via `alloca` + GEP |
+| Pengindeksan | `int_to_ptr` + GEP + `load` |
+
+## Catatan
+
+- Array bersifat homogen — sistem tipe melacak tipe elemen sebagai `AhaType::Array(Int)`.
+- Pengindeksan mengembalikan sebuah `Int`, sehingga hasilnya menyatu dengan aritmetika dan builtin numerik secara langsung.
+- Literal array dan pengindeksan diimplementasikan di codegen (`compile_array_literal`, `compile_index_expression`).
+
+Lihat [Language Tour](/id/language-tour) untuk keseluruhan konstruksi bahasa.

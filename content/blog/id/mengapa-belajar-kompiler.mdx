@@ -1,0 +1,42 @@
+---
+title: "Mengapa Belajar Kompiler?"
+description: "Kompiler adalah penerjemah antara manusia dan mesin. Mengapa memahaminya penting — bahkan jika kariermu bukan di bidang language engineering?"
+icon: CircleHelp
+date: 2026-08-10
+---
+
+# Mengapa Belajar Kompiler?
+
+Setiap bahasa pemrograman yang kamu gunakan — Python, Java, JavaScript, Rust — hanyalah teks sampai sebuah kompiler (atau interpreter) mengubahnya menjadi instruksi yang bisa dijalankan mesin. Di balik layar itu ada proses yang sama untuk semua bahasa: **tokenize, parse, type-check, dan generate code**.
+
+## Pemahaman yang Mengubah Cara Kamu Menulis Kode
+
+Ketika kamu tahu cara kerja kompiler, berbagai misteri sehari-hari menjadi jelas:
+
+- Kenapa `x = x + 1` di satu bahasa error tapi di bahasa lain berjalan?
+- Apa itu *type checking* dan kenapa bahasa seperti Rust bisa menolak program di compile-time?
+- Kenapa loop `while` bisa lebih cepat daripada panggilan fungsi rekursif?
+
+Kompiler bukan "sihir" — ia hanya pipeline yang bisa dipahami langkah demi langkah.
+
+## Skill yang Sangat Dicari
+
+Perusahaan besar punya tim khusus untuk tooling bahasa: linter, code formatter, language server, transpiler, bahkan in-house DSL. Semua itu adalah aplikasi langsung dari keterampilan yang sama:
+
+| Keterampilan | Digunakan untuk |
+|--------------|-----------------|
+| Lexing & parsing | Analyzer, linter, syntax highlighter, formatter |
+| Semantik & tipe | Type checker, code completion, refactoring tools |
+| Codegen | Transpiler, compiler, DSL untuk domain bisnis |
+
+## Belajar dengan Membangun
+
+Teori penting, tapi tidak ada yang mengalahkan pengalaman membangun kompiler sungguhan. **AHA! Lang** dirancang untuk itu:
+
+- Compiler asli yang ditulis dalam **Rust**, dan memakai **LLVM** untuk code generation.
+- Kode sumber yang **ringkas dan mudah dibaca** — cocok untuk dipelajari, bukan suite raksasa.
+- Build dan test otomatis lewat CI, jadi setiap perubahan terverifikasi.
+
+## Mulai dari Sini
+
+Buka [Course kami](/id/course) — kami membedah AHA! Lang dari nol: apa itu kompiler, bagaimana lexer bekerja, bagaimana parser membangun AST, sampai menghasilkan kode mesin lewat LLVM. Tidak perlu pengalaman compiler sebelumnya.

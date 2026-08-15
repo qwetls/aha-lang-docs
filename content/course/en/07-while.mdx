@@ -1,0 +1,135 @@
+---
+title: "Looping with while"
+description: "Running code repeatedly as long as a condition holds — the foundation of automation in AHA! Lang."
+icon: Cpu
+---
+
+# Looping with while
+
+Computers excel at one thing: **doing the same thing over and over** without getting bored. A loop is how you write that.
+
+## Basic Form
+
+```rust
+let counter = 0;
+
+while counter < 3 {
+    print(counter);
+    counter = counter + 1;
+}
+```
+
+Output:
+
+```text
+0
+1
+2
+```
+
+How it works:
+
+1. Check the condition `counter < 3` — if it's `0` (false), done.
+2. Run the block inside the curly braces.
+3. Go back to step 1.
+
+```text
+while <condition> {
+    ...code to repeat...
+}
+```
+
+## What to Watch Out For
+
+### 1. Mutation inside the loop
+
+A `while` loop works by changing the condition. Without `counter = counter + 1`, the condition `counter < 3` will always be true — and the loop will run **forever** (infinite loop). This is a very common bug!
+
+```rust
+let i = 0;
+while i < 5 {
+    print(i);
+    // forgot i = i + 1 → the program will never finish!
+}
+```
+
+So: make sure there's something in the block that eventually makes the condition false.
+
+### 2. It can use any variable
+
+The condition doesn't have to be a number that goes up — it can be any expression:
+
+```rust
+let skor = 100;
+while skor > 0 {
+    print(skor);
+    skor = skor - 25;
+}
+// 100, 75, 50, 25
+```
+
+## Using while to Sum
+
+A classic pattern: summing the numbers 1 to 100.
+
+```rust
+let total = 0;
+let i = 1;
+
+while i <= 100 {
+    total = total + i;
+    i = i + 1;
+}
+
+print(total); // 5050
+```
+
+Read it slowly: `total` accumulates the result each round, `i` counts until it goes past 100.
+
+## Stopping Early with break
+
+Sometimes you want to stop **before** the condition ends, because of a special situation. Use `break`:
+
+```rust
+let i = 0;
+
+while i < 100 {
+    i = i + 1;
+
+    if i == 5 {
+        break;      // force stop here
+    }
+}
+
+print(i); // 5
+```
+
+## Skipping One Round with continue
+
+`continue` skips the rest of the code in that round, then jumps straight to the next round:
+
+```rust
+let i = 0;
+let jumlah_genap = 0;
+
+while i < 10 {
+    i = i + 1;
+
+    if i % 2 != 0 {
+        continue;   // odd numbers are skipped
+    }
+
+    jumlah_genap = jumlah_genap + i;
+}
+
+print(jumlah_genap); // 2 + 4 + 6 + 8 + 10 = 30
+```
+
+## Exercises
+
+1. Print the numbers 10 down to 1 (backwards).
+2. Compute and print the sum of all even numbers from 1 to 20.
+3. Print all divisors of the number `60` (numbers where `60 % b == 0`), starting from `b = 1` up to `b = 60`.
+4. Use `while` to reduce the value of `nilai` to 0 through repeated subtraction, and count how many steps it takes.
+
+On to [Looping with for](/en/course/08-for)

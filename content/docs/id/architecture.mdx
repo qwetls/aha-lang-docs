@@ -1,0 +1,39 @@
+---
+title: Architecture
+description: Di dalam compiler AHA! — lexer, parser Pratt, sistem tipe, codegen LLVM, dan JIT
+icon: Cpu
+---
+
+# Arsitektur Compiler
+
+AHA! adalah compiler lengkap dalam satu binary:
+
+```
+Source Code → Lexer → Parser (Pratt) → AST → Code Generator → LLVM IR → JIT Execution
+```
+
+## Tahapan
+
+| Tahap | Modul | Apa yang dilakukannya |
+|-------|--------|--------------|
+| **Lexer** | `src/lexer.rs` | Melakukan tokenisasi sumber: identifier, bilangan bulat, string (dengan escape), operator, komentar baris & blok |
+| **Parser** | `src/parser.rs` | Parser Pratt yang menghasilkan AST — berorientasi ekspresi, dengan presedensi operator yang benar |
+| **Sistem Tipe** | `src/types.rs` | `AhaType` + `TypedValue`; pemeriksaan saat kompilasi untuk operator biner dan prefiks |
+| **Codegen** | `src/codegen.rs` | Pembangkitan LLVM IR via `inkwell`: fungsi (dengan inferensi tipe kembali), perulangan, string, array, penautan C-runtime |
+| **Driver** | `src/main.rs` | Titik masuk CLI: lex → parse → codegen → cetak IR → eksekusi JIT |
+
+## Catatan Desain
+
+- **LLVM 14** melalui crate `inkwell` — tanpa backend buatan tangan
+- **String** adalah struct `{i8*, i64}`; `malloc`, `memcpy`, dan `strcmp` berasal dari C runtime yang ditautkan
+- **TypedValue**: setiap ekspresi codegen mengembalikan baik nilai LLVM maupun `AhaType`-nya, sehingga kesalahan tipe muncul sebelum IR dibangun
+- **Boolean menyatu dengan matematika**: semua operator perbandingan dan logika menghasilkan `i64` `0`/`1`, sehingga `is_even(n) * 100` tidak memerlukan cast
+- **Eksekusi JIT** menjalankan IR yang dihasilkan di dalam proses compiler — tanpa interpreter terpisah
+
+## Bagaimana Program Dieksekusi
+
+1. Lexer mengubah teks sumber menjadi aliran token.
+2. Parser Pratt membangun AST berorientasi ekspresi dengan presedensi yang benar.
+3. Sistem tipe memeriksa setiap operasi biner dan prefiks.
+4. Codegen memancarkan LLVM IR (fungsi, perulangan, string, panggilan builtin) via inkwell.
+5. Driver menautkan dan mengeksekusi IR dengan JIT, mencetak hasil program.

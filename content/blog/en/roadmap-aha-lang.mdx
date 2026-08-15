@@ -1,0 +1,74 @@
+---
+title: "AHA! Lang Roadmap: What's the Next Step?"
+description: "The finished 1.x release status, the Phase 2 plan — from generics to self-hosting — and how to contribute."
+icon: Rocket
+date: 2026-08-15
+---
+
+# AHA! Lang Roadmap: What's the Next Step?
+
+Every serious language needs an honest roadmap. Here's the AHA! Lang roadmap — what has been achieved in the 1.x releases, and what's being targeted in Phase 2.
+
+## ✅ Already Delivered (v1.x)
+
+A complete language foundation, tested by 305+ automated tests in CI:
+
+- **Lexer & Pratt parser** with clear error reporting
+- **`Int`, `Bool`, `String` types** with a compile-time type-checking pass
+- **Operators**: arithmetic, comparison, `&&`/`||`, prefix, assignment
+- **Control flow**: `if`/`else` (expressions), `while`, `for a..b`, `break`/`continue`
+- **Functions**: parameters, `return`, forward references, mutual recursion, string params & return
+- **String struct**: safe concatenation, `==`/`!=`, `len()` O(1)
+- **Array literals & indexing** (codegen)
+- **Builtins**: `print`, `print_str`, `abs`, `min`, `max`, `len`
+- **JIT execution** via LLVM
+- **CLI**: `--file`, `--emit-ir`, `--version`
+- **VS Code extension** for syntax highlighting (`editors/vscode`)
+- **CI pipeline**: `cargo check`, automated tests, `cargo build --release`
+
+## 🚧 In Progress (Phase 2)
+
+Here's the most exciting part — the big direction the language is heading:
+
+### 1. Struct Codegen & Field Access
+
+Structs can already be parsed; the next step is full codegen and field access at runtime. This opens the way to truly structured data.
+
+### 2. Type Inference & Annotations
+
+The type system will be enriched: smarter inference and the option to write explicit type annotations — full control for developers who want it.
+
+### 3. Generics / Parametric Types
+
+Write code once, working for many types: `Vec<T>`, generic functions, and type-safe collections.
+
+### 4. Module System & Package Manager
+
+`aha install` — a package ecosystem for sharing and using libraries. This is the gateway to large-scale projects.
+
+### 5. Resource Lifetimes
+
+Safe manual memory management — no garbage collector, no memory leaks, with native speed. An ambitious vision that sets AHA! apart from other languages.
+
+### 6. Actor-Model Concurrency
+
+Concurrency with message passing and async/await — making use of many processor cores without the headaches.
+
+### 7. Self-Hosting
+
+The most noble end goal: **the AHA! Lang compiler written in AHA! Lang itself**. When achieved, the language proves its maturity.
+
+## Why Does This Roadmap Matter?
+
+A roadmap isn't just a wishlist — it's a commitment to direction. Every release (1.3.0, 1.4.0, ...) comes out of this list, and every item ships with tests that guard quality.
+
+## Want to Contribute?
+
+AHA! Lang is an open source project (MIT). The best way to start:
+
+1. **Read the code**: the compiler is only ~a few thousand lines of Rust — start from `src/main.rs`.
+2. **Find an issue**: bug reports and feature ideas at [GitHub Issues](https://github.com/qwetls/aha-lang/issues).
+3. **Send a PR**: the full guide is in [CONTRIBUTING.md](https://github.com/qwetls/aha-lang/blob/main/CONTRIBUTING.md).
+4. **Tell us**: which feature do you need most? This roadmap can change — and your opinion is part of that change.
+
+Our vision is simple: a language that is *easy to read, powerful to wield* — and you can help make it happen.

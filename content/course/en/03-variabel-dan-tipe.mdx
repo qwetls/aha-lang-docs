@@ -1,0 +1,101 @@
+---
+title: "Variables and Data Types"
+description: "Storing data with let, getting to know Int, Bool, and String, and how to change a variable's value."
+icon: ListTodo
+---
+
+# Variables and Data Types
+
+A useful program must be able to **store data**. In AHA! Lang, we store data in **variables** — named containers that hold values.
+
+## Creating Variables with `let`
+
+```rust
+let umur = 25;
+let nama = "Budi";
+let sudah_lulus = true;
+```
+
+The basic pattern:
+
+```text
+let <name> = <value>;
+```
+
+- `let` is the keyword for declaring a variable.
+- `<name>` is a name you choose yourself.
+- `<value>` is the data you want to store.
+
+## Basic Data Types
+
+Every value in AHA! Lang has a **type** — a category of data that determines what can be done with it:
+
+| Type | Holds | Example |
+|------|-----|--------|
+| `Int` | 64-bit whole numbers | `42`, `-7`, `0`, `1000000` |
+| `Bool` | Truth values | `true`, `false` |
+| `String` | Text | `"halo"`, `"AHA! Lang"` |
+
+Important: you **don't need to write the type** when declaring — the compiler infers it from the value. This is called *type inference*.
+
+## Displaying a Variable's Value
+
+```rust
+let umur = 25;
+
+print(umur);           // 25 — an Int variable
+print_str("Umur: ");   // Umur:
+```
+
+## Naming Rules
+
+Variable names can use letters, numbers, and the underscore `_`:
+
+- Allowed: `umur`, `my_var2`, `_private`
+- Not allowed: `2umur` (starts with a number), `umur 2` (contains a space)
+- Avoid names identical to keywords like `if`, `let`, `while` — they have special meaning in AHA!
+
+Use **clear and descriptive** names. `total_belanja` is far better than `x` if what you're storing is a shopping total.
+
+## Changing a Variable's Value
+
+Unlike some other languages where `let` is immutable, in AHA! Lang a variable can be **changed** with the assignment operator `=`:
+
+```rust
+let skor = 10;
+print(skor); // 10
+
+skor = 15;   // change its value
+print(skor); // 15
+
+skor = skor + 5; // read the old value, compute, store the new one
+print(skor);     // 20
+```
+
+How to read `skor = skor + 5;`:
+
+1. Take the old value of `skor` (10).
+2. Add 5 → 15.
+3. Store the result back into `skor`.
+
+This pattern of incrementing a value is very common — you'll often see it alongside loops.
+
+## Variables Inside Expressions
+
+Variables can be used anywhere a value is needed:
+
+```rust
+let harga = 15000;
+let jumlah = 3;
+let total = harga * jumlah;
+
+print(total); // 45000
+```
+
+## Exercises
+
+1. Create a variable `kampus` holding the name of your campus, then print it with `print_str`.
+2. Create two variables `a = 8` and `b = 12`, then print the results of `a + b`, `a * b`, and `b - a`.
+3. Create a variable `counter = 0`, add 1 three times (without changing the 0 on the first line), then print its value.
+
+On to [Operators and Expressions](/en/course/04-operator-dan-ekspresi)

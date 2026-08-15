@@ -1,0 +1,115 @@
+---
+title: Language Tour
+description: Tipe, operator, dan alur kontrol di AHA! — tur 10 menit
+icon: Braces
+---
+
+# Language Tour
+
+## Tipe
+
+| Tipe | Catatan |
+|------|-------|
+| `Int` | Bilangan bulat 64-bit — tipe numerik universal |
+| `Bool` | Literal `true` / `false`; dihasilkan oleh `!` |
+| `String` | `"..."` dengan urutan escape (`\n`, `\t`, `\\`, `\"`, `\r`, `\0`) |
+
+## Operator
+
+| Kategori | Operator |
+|----------|-----------|
+| Aritmetika | `+` `-` `*` `/` `%` |
+| Perbandingan | `==` `!=` `<` `>` `<=` `>=` (→ `Int` 0/1) |
+| Logika | `&&` `\|\|` (→ `Int` 0/1) |
+| Prefiks | `-x`, `!x` |
+| Penugasan | `x = value` |
+
+### Aljabar Boolean yang Menyatu
+
+Semua operator perbandingan dan logika mengembalikan `Int` `0`/`1` alih-alih boolean — sehingga hasil logika mengalir langsung ke aritmetika:
+
+```rust
+fn is_even(n) {
+    n % 2 == 0
+}
+
+print(is_even(4) * 100); // 1 * 100 = 100
+```
+
+Tanpa cast, tanpa konversi — logika langsung menyatu.
+
+## Variabel
+
+```rust
+let count = 0;
+count = count + 1; // assignment
+count // 1
+```
+
+## Alur Kontrol
+
+### if / else
+
+`if` adalah sebuah **ekspresi** — ekspresi terakhir dari setiap cabang adalah nilainya:
+
+```rust
+let x = 10;
+let y = 20;
+
+if x > y {
+    x
+} else {
+    y
+}
+```
+
+### while
+
+```rust
+let i = 0;
+while i < 5 {
+    i = i + 1;
+}
+i // 5
+```
+
+### for
+
+`for` mengulang pada rentang bilangan bulat `a..b` (batas akhir eksklusif):
+
+```rust
+let sum = 0;
+for i 0..10 {
+    sum = sum + i;
+}
+sum // 0 + 1 + ... + 9 = 45
+```
+
+### break / continue
+
+```rust
+let total = 0;
+for i 0..100 {
+    if i == 5 {
+        break;
+    }
+    total = total + i;
+}
+total // 0 + 1 + 2 + 3 + 4 = 10
+```
+
+## Komentar
+
+- `// line comment`
+- `/* block comment */`
+
+## Builtins
+
+| Builtin | Deskripsi |
+|---------|-------------|
+| `print(int)` | Cetak sebuah bilangan bulat |
+| `print_str(string)` | Cetak sebuah string |
+| `len(string)` | Panjang string dalam O(1) |
+| `abs(x)`, `min(a, b)`, `max(a, b)` | Pembantu numerik |
+
+Lihat [Builtins](/id/builtins) untuk detailnya.

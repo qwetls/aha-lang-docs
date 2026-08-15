@@ -1,0 +1,51 @@
+---
+title: FAQ
+description: Frequently asked questions about AHA! Lang
+icon: CircleHelp
+---
+
+# FAQ
+
+## Why do comparison and logical operators return `Int` 0/1 instead of `Bool`?
+
+So logic can compose with arithmetic. `is_even(n) * 100` just works — no casts. In AHA!, every operator that answers a yes/no question (`==`, `!=`, `<`, `>`, `<=`, `>=`, `&&`, `||`) produces an `Int`, and `Bool` is reserved for the `true`/`false` literals and the `!` prefix operator. This keeps the whole language on a single numeric axis.
+
+## Which LLVM version do I need?
+
+LLVM 14, with Clang 14 and Polly. See [Getting Started](/en/getting-started) for the one-line Ubuntu/Debian install.
+
+## Can I run AHA! on Windows or macOS?
+
+The compiler is written in Rust and targets LLVM 14. On Ubuntu/Debian there is a one-line install; on other platforms, install LLVM 14 (or use WSL on Windows) and `cargo build --release` will produce the same binary.
+
+## Is AHA! ready for production?
+
+Not yet. The v1.x line is a solid, well-tested foundation — 305+ tests pass in CI — but struct codegen, generics, and a module system are still on the roadmap.
+
+## What types does AHA! have?
+
+Three value types today: `Int` (64-bit), `Bool` (`true`/`false`), and `String` (a `{pointer, length}` struct). Arrays of `Int` are supported at the codegen level. See the [Language Tour](/en/language-tour) and [Arrays](/en/arrays).
+
+## Does AHA! need type annotations?
+
+No. Function parameters are written without type annotations, and return types are inferred by a pre-pass before code generation. The type system still checks every operation at compile time, so mismatches like `"hello" + 5` are caught before the IR is built.
+
+## Is `if` a statement or an expression?
+
+An expression. The last expression of each branch is its value, so `let m = if a > b { a } else { b };` works. The same is true for function bodies — the last expression is the return value.
+
+## How fast is `len()`?
+
+O(1). Strings store their length in the struct, so `len()` reads a field rather than scanning the buffer.
+
+## How do I inspect the generated LLVM IR?
+
+Use `--emit-ir <path>` to write the IR to a file. See the [CLI Reference](/en/cli).
+
+## Where do I start learning?
+
+Build the compiler with [Getting Started](/en/getting-started), take the [Language Tour](/en/language-tour), then try the [Code Snippets](/en/snippets).
+
+## How do I contribute?
+
+Bug reports, feature ideas, and code are all welcome. See the contributing guidelines in the [repository](https://github.com/qwetls/aha-lang), and the [Changelog](/en/changelog) for the current state of the project.

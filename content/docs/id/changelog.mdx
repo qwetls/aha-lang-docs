@@ -1,0 +1,56 @@
+---
+title: Changelog
+description: Semua perubahan penting pada AHA! Lang
+icon: ListTodo
+---
+
+# Changelog
+
+Semua perubahan penting pada AHA! Lang didokumentasikan dalam berkas ini. Anda selalu dapat membangun versi terbaru dari kode sumber — lihat [Getting Started](/id/getting-started).
+
+## 1.4.0 — 2026-05-17
+
+### Ditambahkan
+
+- **Sistem Tipe** (`src/types.rs`): enum `AhaType` (`Int`, `Bool`, `String`, `Void`, `Array`, `Function`) dengan pemeriksaan tipe saat kompilasi via `check_binary_op()` dan `check_prefix_op()`
+- **TypedValue**: semua metode ekspresi codegen kini mengembalikan `TypedValue` yang memasangkan nilai LLVM dengan `AhaType`-nya
+- **Tipe String**: string kini merupakan struct LLVM `{i8*, i64}` (pointer + panjang), menggantikan cast pointer-ke-int yang tidak aman
+- **Konkatenasi String**: `"hello" + " world"` mengalokasikan buffer baru via `malloc`, menyalin via `memcpy`, menambahkan null-terminator
+- **Perbandingan String**: `==` dan `!=` pada string menggunakan `strcmp` dari pustaka standar C
+- **Builtin `len()`**: mengembalikan panjang string dalam O(1) dengan membaca field panjang struct
+- **Penautan C Runtime**: deklarasi eksternal untuk `malloc`, `memcpy`, `strlen`, `strcmp`
+- **Komentar Blok**: komentar multi-baris `/* ... */`
+- **Urutan Escape String**: `\n`, `\t`, `\\`, `\"`, `\r`, `\0`
+- **Peningkatan Identifier**: digit setelah karakter pertama (`my_var2`), prefiks garis bawah (`_private`)
+- **Rangkaian Pengujian**: 84 pengujian di 4 modul — lexer, parser, sistem tipe, dan JIT ujung-ke-ujung
+
+### Diubah
+
+- `Token.r#type` diganti nama menjadi `Token.kind` — mengikuti konvensi Rust, menghilangkan sintaks raw identifier
+- Cakupan variabel: peta datar → tumpukan cakupan dengan pelacakan tipe
+- `compile_expression()` mengembalikan `TypedValue` di seluruh penangan ekspresi
+- Semua pesan keluaran dan komentar sumber distandarkan ke bahasa Inggris
+- Roadmap README diperbarui untuk mencerminkan status implementasi secara akurat
+
+### Diperbaiki
+
+- Operator `!=` menghasilkan `"=="` alih-alih `"!="` (kesalahan copy-paste di lexer)
+- Kondisi `if` tidak dikonversi dari `i64` ke `i1` sebelum `build_conditional_branch`
+- Node phi mereferensikan basic block asli alih-alih end block sebenarnya
+- Ekspresi terakhir di badan program dikompilasi dua kali
+- Fungsi memancarkan return implisit dan eksplisit sekaligus, menyebabkan kesalahan LLVM "multiple terminators"
+- Kompilasi fungsi dapat membocorkan state scope/builder saat terjadi kesalahan
+- Parser mengembalikan `Expression::Identifier("ERROR")` saat gagal parse, menyebarkan AST tidak valid ke codegen
+
+### Keamanan
+
+- Ketidakcocokan tipe (`"hello" + 5`) kini menghasilkan kesalahan saat kompilasi alih-alih perilaku runtime tak terdefinisi
+- Semua panggilan `.unwrap()` diganti dengan `.expect("descriptive context")` untuk panic yang dapat di-debug
+
+## 1.3.0 — Rilis Sebelumnya
+
+- Compiler awal dengan lexer, parser, codegen
+- Tipe bilangan bulat, boolean, string (sebagai trik pointer)
+- Perulangan If/else, while, for
+- Fungsi dengan parameter
+- Stdlib dasar: print, print_str, abs, min, max
