@@ -8,6 +8,26 @@ icon: ListTodo
 
 Semua perubahan penting pada AHA! Lang didokumentasikan dalam berkas ini. Anda selalu dapat membangun versi terbaru dari kode sumber — lihat [Getting Started](/id/getting-started).
 
+## 1.6.0 — 2026-08-16
+
+### Ditambahkan
+
+- **Mutasi Field (F1):** `p.x = value` — penugasan field struct saat runtime. `p.x` kini menjadi lvalue: load struct, `insertvalue` field baru, store kembali. Tipe diperiksa terhadap deklarasi field (field `string` menolak nilai int dan sebaliknya).
+- **Target Penugasan Generik:** Parser kini memperlakukan `=` sebagai operator infix, sehingga baik `x = 5` (identifier) maupun `p.x = 5` (field access) mengurai menjadi `AssignmentExpression` dengan target ekspresi generik.
+- **Rangkaian Pengujian:** 373 pengujian lulus (sebelumnya 363; +10 pengujian mutasi field, termasuk mutasi di dalam loop dan penugasan ulang field string).
+
+### Diubah
+
+- `AssignmentExpression.name: Identifier` → `AssignmentExpression.target: Box<Expression>` — memungkinkan bentuk lvalue di masa depan (mis. penugasan elemen array `arr[0] = x`).
+
+### Diperbaiki
+
+- `TokenType::Assign` tidak ada di `precedence()`, sehingga `=` jatuh ke `parse_prefix` sebagai token tak terduga. Ditambahkan `Precedence::Assign`.
+
+### Keamanan
+
+- Menugaskan nilai dengan tipe yang salah ke field bertipe menghasilkan kesalahan saat kompilasi.
+
 ## 1.5.0 — 2026-08-16
 
 ### Ditambahkan
