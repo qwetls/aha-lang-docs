@@ -8,6 +8,14 @@ icon: ListTodo
 
 All notable changes to AHA! Lang are documented in this file. You can always build the latest from source — see [Getting Started](/en/getting-started).
 
+## 1.4.7 — 2026-08-17
+
+### Added
+
+- **Map\<K,V\> (F3e):** deterministic hash table — open addressing / linear probing, `splitmix64` (Int keys) / FNV-1a (String keys) hashing. Header struct `{data, len, cap, key_size, val_size}` on heap. Four prefix combos: `map_` (Int→Int), `map_string_key_` (String→Int), `map_string_val_` (Int→String), `map_strings_` (String→String). Builtins: `map_new`, `map_set`, `map_get`, `map_contains`, `map_remove`, `map_len`, `map_free`.
+- **New docs page:** [Maps](/en/maps) (EN) and [/id/maps](/id/maps) (ID) — full reference with memory model and examples.
+- **Test Suite:** 21 Map tests added (all 4 combos: Int→Int, String→Int, Int→String, String→String).
+
 ## 1.4.6 — 2026-08-17
 
 ### Added

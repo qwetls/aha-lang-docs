@@ -1,0 +1,120 @@
+---
+title: Maps
+description: Map<K,V> — deterministic hash table with open addressing, splitmix64/FNV-1a hashing, and zero GC pauses
+icon: Map
+---
+
+# Maps
+
+AHA! provides **`Map<K,V>`** — a generic, heap-allocated hash table with open addressing and linear probing. All hashing is deterministic (`splitmix64` for Int keys, FNV-1a for String keys) — no randomness, no GC pauses. This makes Map suitable for aerospace and game engine workloads where latency must be predictable.
+
+## Creating a Map
+
+Four constructors exist, one per supported key/value combination:
+
+| Constructor | Type |
+|-------------|------|
+| `map_new()` | `Map<Int, Int>` |
+| `map_new_string_key()` | `Map<String, Int>` |
+| `map_new_string_val()` | `Map<Int, String>` |
+| `map_strings_new()` | `Map<String, String>` |
+
+```rust
+let m = map_new();                // Map<Int, Int>
+let m2 = map_new_string_key();    // Map<String, Int>
+let m3 = map_new_string_val();    // Map<Int, String>
+let m4 = map_strings_new();       // Map<String, String>
+```
+
+An explicit type annotation is also accepted:
+
+```rust
+let m: Map<int, int> = map_new();
+```
+
+## Set and Get
+
+Elements are inserted with `map_set` and read back with `map_get`. Setting an existing key overwrites the value. Reading a missing key returns `0` (Int) or an empty string (String):
+
+```rust
+let m = map_new();
+let m2 = map_set(m, 1, 100);
+let m3 = map_set(m2, 2, 200);
+
+print(map_get(m3, 1)); // 100
+print(map_get(m3, 2)); // 200
+print(map_get(m3, 99)); // 0 (missing key)
+```
+
+`map_set` returns the map handle, so calls can be chained:
+
+```rust
+let m = map_new();
+let m2 = map_set(map_set(map_set(m, 1, 10), 2, 20), 3, 30);
+print(map_len(m2)); // 3
+```
+
+## Contains, Remove, and Length
+
+| Builtin | Description |
+|---------|-------------|
+| `map_contains(m, key)` | Returns `1` if key exists, `0` otherwise |
+| `map_remove(m, key)` | Removes the key; returns the map handle |
+| `map_len(m)` | Number of entries in O(1) |
+
+```rust
+let m = map_new();
+let m2 = map_set(m, 5, 50);
+print(map_contains(m2, 5)); // 1
+print(map_contains(m2, 6)); // 0
+
+let m3 = map_remove(m2, 5);
+print(map_len(m3)); // 0
+```
+
+## Free
+
+`map_free` releases the heap buffer and returns `0`:
+
+```rust
+let m = map_new();
+map_free(m); // 0
+```
+
+## String Key/Value Variants
+
+All operations have prefixed variants for each combo:
+
+| Combo | Prefix | Set example |
+|-------|--------|-------------|
+| `Map<Int, Int>` | `map_` | `map_set(m, 1, 10)` |
+| `Map<String, Int>` | `map_string_key_` | `map_string_key_set(m, "x", 10)` |
+| `Map<Int, String>` | `map_string_val_` | `map_string_val_set(m, 1, "hi")` |
+| `Map<String, String>` | `map_strings_` | `map_strings_set(m, "k", "v")` |
+
+```rust
+let m = map_new_string_key();
+let m2 = map_string_key_set(m, "hello", 42);
+print(map_string_key_get(m2, "hello")); // 42
+```
+
+## Memory Model
+
+Each Map handle is an `i64` pointer to a heap-allocated header struct:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `data` | `i8*` | Pointer to the slot array |
+| `len` | `i64` | Number of occupied entries |
+| `cap` | `i64` | Allocated slot count |
+| `key_size` | `i64` | Bytes per key (8 for Int, 16 for String) |
+| `val_size` | `i64` | Bytes per value (8 for Int, 16 for String) |
+
+Each slot contains: `[key_bytes | value_bytes | occupied_flag(i64)]`. The initial capacity is 4 slots. Growth happens on the first `map_set` when `cap == 0`.
+
+## Deterministic Hashing
+
+- **Int keys:** `splitmix64` — a single function, no random seed, same input always produces the same hash.
+- **String keys:** FNV-1a over the raw bytes — also fully deterministic.
+
+This means Map iteration order and probing sequences are identical across runs, which is critical for aerospace and game engine applications.

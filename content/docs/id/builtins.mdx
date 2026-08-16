@@ -22,6 +22,16 @@ Setiap program AHA! mendapatkan seperangkat kecil builtin standar:
 | `list_get(list, index)` | Baca elemen di indeks |
 | `list_len(list)` | Jumlah elemen dalam O(1) |
 | `list_free(list)` | Bebaskan buffer heap; mengembalikan 0 |
+| `map_new()` | Buat `Map<Int, Int>` kosong |
+| `map_new_string_key()` | Buat `Map<String, Int>` kosong |
+| `map_new_string_val()` | Buat `Map<Int, String>` kosong |
+| `map_strings_new()` | Buat `Map<String, String>` kosong |
+| `map_set(m, key, val)` | Masukkan atau timpa; mengembalikan map |
+| `map_get(m, key)` | Baca nilai (0 jika tidak ada) |
+| `map_contains(m, key)` | Mengembalikan 1 jika kunci ada, 0 jika tidak |
+| `map_remove(m, key)` | Hapus kunci; mengembalikan map |
+| `map_len(m)` | Jumlah entri dalam O(1) |
+| `map_free(m)` | Bebaskan buffer heap; mengembalikan 0 |
 
 ## Contoh
 

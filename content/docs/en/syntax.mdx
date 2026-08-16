@@ -68,6 +68,7 @@ let myVar2 = 3;
 | `void` | Type hint for functions returning nothing (hint only) |
 | `StructName` | User-defined struct (field type hint: `name: string`, `age: int`) |
 | `List<T>` | Generic heap-allocated dynamic array — `List<int>`, `List<string>` (type hint only; constructed via `list_new`/`list_new_string`) |
+| `Map<K,V>` | Generic hash table — `Map<int, int>`, `Map<string, int>` (type hint only; constructed via `map_new`/`map_new_string_key`/`map_new_string_val`/`map_strings_new`) |
 
 Type hints in field declarations and future annotations use the lowercase forms: `int`, `i64`, `bool`, `string`, `str`, `void`.
 
@@ -197,6 +198,20 @@ list_push(xs, 10);
 let x = list_get(xs, 0);        // element read
 let n = list_len(xs);           // element count
 list_free(xs);                  // release heap buffer
+```
+
+### Map builtins & type
+
+`Map<K,V>` is a generic hash table with open addressing (see [Maps](/en/maps)):
+
+```rust
+let m = map_new();                // Map<Int, Int>
+let m2 = map_set(m, 1, 100);     // insert
+let v = map_get(m2, 1);          // read: 100
+let c = map_contains(m2, 1);     // contains: 1
+let m3 = map_remove(m2, 1);      // remove
+let n = map_len(m3);             // entry count
+map_free(m3);                    // release heap buffer
 ```
 
 Lists use the same index syntax as arrays — read and write:
@@ -335,6 +350,16 @@ for i in 0..100 {
 | `list_get(list, index)` | Read element |
 | `list_len(list)` | Element count |
 | `list_free(list)` | Free heap buffer |
+| `map_new()` | Create `Map<Int, Int>` |
+| `map_new_string_key()` | Create `Map<String, Int>` |
+| `map_new_string_val()` | Create `Map<Int, String>` |
+| `map_strings_new()` | Create `Map<String, String>` |
+| `map_set(m, key, val)` | Insert or overwrite |
+| `map_get(m, key)` | Read value |
+| `map_contains(m, key)` | Check key exists |
+| `map_remove(m, key)` | Remove key |
+| `map_len(m)` | Entry count |
+| `map_free(m)` | Free heap buffer |
 
 ## Grammar Summary
 

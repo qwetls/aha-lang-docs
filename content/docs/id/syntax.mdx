@@ -68,6 +68,7 @@ let myVar2 = 3;
 | `void` | Type hint untuk fungsi tanpa return (hanya hint) |
 | `StructName` | Struct buatan user (hint tipe field: `name: string`, `age: int`) |
 | `List<T>` | Array dinamis generik di heap — `List<int>`, `List<string>` (hanya hint; dibuat via `list_new`/`list_new_string`) |
+| `Map<K,V>` | Hash table generik — `Map<int, int>`, `Map<string, int>` (hanya hint; dibuat via `map_new`/`map_new_string_key`/`map_new_string_val`/`map_strings_new`) |
 
 Type hint di deklarasi field dan anotasi masa depan memakai bentuk huruf kecil: `int`, `i64`, `bool`, `string`, `str`, `void`.
 
@@ -197,6 +198,20 @@ list_push(xs, 10);
 let x = list_get(xs, 0);        // baca elemen
 let n = list_len(xs);           // jumlah elemen
 list_free(xs);                  // bebaskan buffer heap
+```
+
+### Builtin map & tipe
+
+`Map<K,V>` adalah hash table generik dengan open addressing (lihat [Maps](/id/maps)):
+
+```rust
+let m = map_new();                // Map<Int, Int>
+let m2 = map_set(m, 1, 100);     // sisipkan
+let v = map_get(m2, 1);          // baca: 100
+let c = map_contains(m2, 1);     // cek ada: 1
+let m3 = map_remove(m2, 1);      // hapus
+let n = map_len(m3);             // jumlah entri
+map_free(m3);                    // bebaskan buffer heap
 ```
 
 List memakai sintaks indeks yang sama dengan array — baca dan tulis:
@@ -335,6 +350,16 @@ for i in 0..100 {
 | `list_get(list, index)` | Baca elemen |
 | `list_len(list)` | Jumlah elemen |
 | `list_free(list)` | Bebaskan buffer heap |
+| `map_new()` | Buat `Map<Int, Int>` |
+| `map_new_string_key()` | Buat `Map<String, Int>` |
+| `map_new_string_val()` | Buat `Map<Int, String>` |
+| `map_strings_new()` | Buat `Map<String, String>` |
+| `map_set(m, key, val)` | Sisipkan atau timpa |
+| `map_get(m, key)` | Baca nilai |
+| `map_contains(m, key)` | Cek kunci ada |
+| `map_remove(m, key)` | Hapus kunci |
+| `map_len(m)` | Jumlah entri |
+| `map_free(m)` | Bebaskan buffer heap |
 
 ## Ringkasan Grammar
 

@@ -8,11 +8,19 @@ icon: ListTodo
 
 Semua perubahan penting pada AHA! Lang didokumentasikan dalam berkas ini. Anda selalu dapat membangun versi terbaru dari kode sumber — lihat [Getting Started](/id/getting-started).
 
+## 1.4.7 — 2026-08-17
+
+### Ditambahkan
+
+- **Map\<K,V\> (F3e):** hash table deterministik — open addressing / linear probing, hashing `splitmix64` (kunci Int) / FNV-1a (kunci String). Struct header `{data, len, cap, key_size, val_size}` di heap. Empat kombinasi prefix: `map_` (Int→Int), `map_string_key_` (String→Int), `map_string_val_` (Int→String), `map_strings_` (String→String). Builtins: `map_new`, `map_set`, `map_get`, `map_contains`, `map_remove`, `map_len`, `map_free`.
+- **Halaman docs baru:** [Maps](/id/maps) (ID) dan [/en/maps](/en/maps) (EN) — referensi lengkap dengan model memori dan contoh.
+- **Rangkaian Pengujian:** 21 pengujian Map ditambahkan (semua 4 kombinasi: Int→Int, String→Int, Int→String, String→String).
+
 ## 1.4.6 — 2026-08-17
 
 ### Ditambahkan
 
-- **List<T> (F3e):** array dinamis generik yang dialokasikan di heap — `list_new()`, `list_new_string()`, `list_push`, `list_get`, `list_get_string`, `list_len`, `list_free`, index read `xs[i]` dan write `xs[i] = v`. Didukung struct header heap `{data, len, cap, elem_size}` dengan pertumbuhan `malloc`/`realloc`.
+- **List\<T\> (F3e):** array dinamis generik yang dialokasikan di heap — `list_new()`, `list_new_string()`, `list_push`, `list_get`, `list_get_string`, `list_len`, `list_free`, index read `xs[i]` dan write `xs[i] = v`. Didukung struct header heap `{data, len, cap, elem_size}` dengan pertumbuhan `malloc`/`realloc`.
 - **Dukungan penuh List<String>:** elemen string menyimpan struct `{i8*, i64}` penuh — push/get/index/concat/`len()` semua berfungsi pada list string.
 - **Fungsi generik atas list:** `fn first<T>(xs: List<T>) -> T { xs[0] }` — parameter tipe `T` ter-bind ke tipe elemen dari hint `List<T>`; monomorphization meng-instantiasi `first_Int`/`first_String` per call site dengan nol biaya runtime.
 - **Halaman docs baru:** [Lists](/id/lists) (ID) dan [/en/lists](/en/lists) (EN) — referensi lengkap dengan model memori dan contoh.

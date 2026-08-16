@@ -22,6 +22,16 @@ Every AHA! program gets a small set of standard builtins:
 | `list_get(list, index)` | Read element at index |
 | `list_len(list)` | Number of elements in O(1) |
 | `list_free(list)` | Free the heap buffer; returns 0 |
+| `map_new()` | Create an empty `Map<Int, Int>` |
+| `map_new_string_key()` | Create an empty `Map<String, Int>` |
+| `map_new_string_val()` | Create an empty `Map<Int, String>` |
+| `map_strings_new()` | Create an empty `Map<String, String>` |
+| `map_set(m, key, val)` | Insert or overwrite; returns the map |
+| `map_get(m, key)` | Read value (0 if missing) |
+| `map_contains(m, key)` | Returns 1 if key exists, 0 otherwise |
+| `map_remove(m, key)` | Remove key; returns the map |
+| `map_len(m)` | Number of entries in O(1) |
+| `map_free(m)` | Free the heap buffer; returns 0 |
 
 ## Examples
 

@@ -1,0 +1,120 @@
+---
+title: Maps
+description: Map<K,V> — hash table deterministik dengan open addressing, hashing splitmix64/FNV-1a, dan nol GC pause
+icon: Map
+---
+
+# Maps
+
+AHA! menyediakan **`Map<K,V>`** — hash table generik yang dialokasikan di heap dengan open addressing dan linear probing. Semua hashing bersifat deterministik (`splitmix64` untuk kunci Int, FNV-1a untuk kunci String) — tanpa keacakan, tanpa GC pause. Ini menjadikan Map cocok untuk workload aerospace dan game engine di mana latensi harus dapat diprediksi.
+
+## Membuat Map
+
+Empat konstruktor tersedia, satu per kombinasi key/value yang didukung:
+
+| Konstruktor | Tipe |
+|-------------|------|
+| `map_new()` | `Map<Int, Int>` |
+| `map_new_string_key()` | `Map<String, Int>` |
+| `map_new_string_val()` | `Map<Int, String>` |
+| `map_strings_new()` | `Map<String, String>` |
+
+```rust
+let m = map_new();                // Map<Int, Int>
+let m2 = map_new_string_key();    // Map<String, Int>
+let m3 = map_new_string_val();    // Map<Int, String>
+let m4 = map_strings_new();       // Map<String, String>
+```
+
+Anotasi tipe eksplisit juga diterima:
+
+```rust
+let m: Map<int, int> = map_new();
+```
+
+## Set dan Get
+
+Elemen dimasukkan dengan `map_set` dan dibaca kembali dengan `map_get`. Set pada kunci yang sudah ada menimpa nilainya. Membaca kunci yang tidak ada mengembalikan `0` (Int) atau string kosong (String):
+
+```rust
+let m = map_new();
+let m2 = map_set(m, 1, 100);
+let m3 = map_set(m2, 2, 200);
+
+print(map_get(m3, 1)); // 100
+print(map_get(m3, 2)); // 200
+print(map_get(m3, 99)); // 0 (kunci tidak ada)
+```
+
+`map_set` mengembalikan handle map, sehingga panggilan bisa dirantai:
+
+```rust
+let m = map_new();
+let m2 = map_set(map_set(map_set(m, 1, 10), 2, 20), 3, 30);
+print(map_len(m2)); // 3
+```
+
+## Contains, Remove, dan Length
+
+| Builtin | Deskripsi |
+|---------|-----------|
+| `map_contains(m, key)` | Mengembalikan `1` jika kunci ada, `0` jika tidak |
+| `map_remove(m, key)` | Menghapus kunci; mengembalikan handle map |
+| `map_len(m)` | Jumlah entri dalam O(1) |
+
+```rust
+let m = map_new();
+let m2 = map_set(m, 5, 50);
+print(map_contains(m2, 5)); // 1
+print(map_contains(m2, 6)); // 0
+
+let m3 = map_remove(m2, 5);
+print(map_len(m3)); // 0
+```
+
+## Free
+
+`map_free` melepaskan buffer heap dan mengembalikan `0`:
+
+```rust
+let m = map_new();
+map_free(m); // 0
+```
+
+## Varian String Key/Value
+
+Semua operasi memiliki varian dengan prefix untuk setiap kombinasi:
+
+| Kombinasi | Prefix | Contoh set |
+|-----------|--------|------------|
+| `Map<Int, Int>` | `map_` | `map_set(m, 1, 10)` |
+| `Map<String, Int>` | `map_string_key_` | `map_string_key_set(m, "x", 10)` |
+| `Map<Int, String>` | `map_string_val_` | `map_string_val_set(m, 1, "hi")` |
+| `Map<String, String>` | `map_strings_` | `map_strings_set(m, "k", "v")` |
+
+```rust
+let m = map_new_string_key();
+let m2 = map_string_key_set(m, "hello", 42);
+print(map_string_key_get(m2, "hello")); // 42
+```
+
+## Model Memori
+
+Setiap handle Map adalah pointer `i64` ke struct header yang dialokasikan di heap:
+
+| Field | Tipe | Deskripsi |
+|-------|------|-----------|
+| `data` | `i8*` | Pointer ke array slot |
+| `len` | `i64` | Jumlah entri yang terisi |
+| `cap` | `i64` | Jumlah slot yang dialokasikan |
+| `key_size` | `i64` | Byte per kunci (8 untuk Int, 16 untuk String) |
+| `val_size` | `i64` | Byte per nilai (8 untuk Int, 16 untuk String) |
+
+Setiap slot berisi: `[key_bytes | value_bytes | occupied_flag(i64)]`. Kapasitas awal adalah 4 slot. Pertumbuhan terjadi pada `map_set` pertama ketika `cap == 0`.
+
+## Hashing Deterministik
+
+- **Kunci Int:** `splitmix64` — satu fungsi, tanpa seed acak, input yang sama selalu menghasilkan hash yang sama.
+- **Kunci String:** FNV-1a atas byte mentah — juga sepenuhnya deterministik.
+
+Ini berarti urutan iterasi dan probing Map identik di setiap run, yang kritis untuk aplikasi aerospace dan game engine.
