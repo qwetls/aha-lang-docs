@@ -1,0 +1,298 @@
+---
+title: Syntax Reference
+description: The complete AHA! syntax — keywords, operators, literals, and grammar, verified against the compiler source
+icon: FileCode
+---
+
+# Syntax Reference
+
+The complete, compiler-verified syntax of AHA! Lang. Every construct here is checked against the actual lexer and parser in `src/`.
+
+## Keywords
+
+There are exactly **13 reserved keywords**:
+
+| Keyword | Purpose |
+|---------|---------|
+| `fn` | Function definition |
+| `let` | Variable binding |
+| `struct` | Struct definition |
+| `if` / `else` | Conditional branching |
+| `return` | Return from function |
+| `while` | Condition loop |
+| `for` / `in` | Range loop |
+| `break` | Exit loop early |
+| `continue` | Skip to next iteration |
+| `true` / `false` | Boolean literals |
+
+These are reserved — you cannot use them as variable or function names.
+
+## Identifiers
+
+- Start with a letter (`a-z`, `A-Z`) or underscore (`_`)
+- Continue with letters, digits, or underscores (`my_var2`, `_private`)
+- Must not be a keyword
+
+```rust
+let valid_name = 1;
+let _private = 2;
+let myVar2 = 3;
+```
+
+## Literals
+
+| Literal | Example | Type |
+|---------|---------|------|
+| Integer | `42` | `Int` (64-bit) |
+| Boolean | `true`, `false` | `Bool` |
+| String | `"hello"` | `String` (`{i8*, i64}`) |
+
+### String escape sequences
+
+| Escape | Meaning |
+|--------|---------|
+| `\n` | Newline |
+| `\t` | Tab |
+| `\\` | Backslash |
+| `\"` | Double quote |
+| `\r` | Carriage return |
+| `\0` | Null byte |
+
+## Types
+
+| Type | Notes |
+|------|-------|
+| `Int` | 64-bit integer — the universal numeric type |
+| `Bool` | `true` / `false`; produced by `!` and comparisons |
+| `String` | `"..."` — stored as `{pointer, length}` struct |
+| `void` | Type hint for functions returning nothing (hint only) |
+| `StructName` | User-defined struct (field type hint: `name: string`, `age: int`) |
+
+Type hints in field declarations and future annotations use the lowercase forms: `int`, `i64`, `bool`, `string`, `str`, `void`.
+
+## Operators
+
+### Arithmetic
+
+`+` `-` `*` `/` `%`
+
+### Comparison (→ `Int` 0/1)
+
+`==` `!=` `<` `>` `<=` `>=`
+
+### Logical (→ `Int` 0/1)
+
+`&&` `||`
+
+### Prefix
+
+`-x` (negate), `!x` (not)
+
+### Assignment
+
+`x = value`, `p.x = value`
+
+### Precedence (low → high)
+
+| Precedence | Operators |
+|-----------|-----------|
+| Lowest | `=` (assignment) |
+| | `||` |
+| | `&&` |
+| | `==` `!=` |
+| | `<` `>` `<=` `>=` |
+| | `+` `-` |
+| | `*` `/` `%` |
+| Highest | prefix `-` `!`, call, field access, index |
+
+## Statements
+
+### let (variable binding)
+
+```rust
+let count = 0;
+```
+
+Binding is immutable in the sense that re-declaring the same name is not allowed; mutation happens via assignment `=`.
+
+### Expression statements
+
+Any expression on its own line is a statement:
+
+```rust
+print(42);
+x + y;
+```
+
+### return
+
+```rust
+fn add(a, b) {
+    return a + b;
+}
+```
+
+Functions may also implicitly return their last expression (see below).
+
+### struct definition
+
+```rust
+struct Point {
+    x,
+    y,
+}
+```
+
+Struct definitions support optional field type hints:
+
+```rust
+struct Person {
+    name: string,
+    age: int,
+}
+```
+
+Field types are checked at compile time: assigning a string literal to an `int` field is a compile error.
+
+## Expressions
+
+### Struct literal
+
+```rust
+let p = Point { x: 3, y: 4 };
+```
+
+- Field order is independent of declaration order
+- Missing fields default to `0` (int) / empty string (string)
+- Type-checked against declarations
+
+### Field access
+
+```rust
+let sum = p.x + p.y;
+let name_len = len(p.name);
+```
+
+Field access preserves the declared type, so `p.first + p.last` (string concat) and `len(p.name)` work.
+
+### Function calls
+
+```rust
+print(42);
+abs(-5);
+sum(Point { x: 1, y: 2 });
+```
+
+## Functions
+
+```rust
+fn greet(name) {
+    print_str("Hello, ");
+    print_str(name);
+}
+
+fn add(a, b) {
+    a + b // implicit return of last expression
+}
+
+fn make_point(x, y) {
+    Point { x: x, y: y } // struct return value
+}
+```
+
+- Parameters are typed by inference from call sites (Int by default, String/struct when observed)
+- Structs can be passed **by value** and returned as values
+- The last expression is the implicit return value
+- `return` exits early
+
+## Control Flow
+
+### if / else
+
+`if` is an **expression** — the last expression of each branch is the value:
+
+```rust
+let m = if a > b { a } else { b };
+```
+
+### while
+
+```rust
+let i = 0;
+while i < 5 {
+    i = i + 1;
+}
+```
+
+### for (range loop)
+
+```rust
+let sum = 0;
+for i in 0..10 {
+    sum = sum + i;
+}
+```
+
+The range `a..b` is **exclusive** of `b` (yields `a, a+1, ..., b-1`).
+
+### break / continue
+
+```rust
+let total = 0;
+for i in 0..100 {
+    if i == 5 {
+        break;      // exit loop
+    }
+    if i % 2 == 0 {
+        continue;   // skip to next iteration
+    }
+    total = total + i;
+}
+```
+
+## Comments
+
+```rust
+// line comment
+
+/* block comment
+   spanning multiple lines */
+```
+
+## Builtins
+
+| Builtin | Description |
+|---------|-------------|
+| `print(int)` | Print an integer |
+| `print_str(string)` | Print a string |
+| `len(string)` | String length in O(1) |
+| `abs(x)` | Absolute value |
+| `min(a, b)` | Smaller of two numbers |
+| `max(a, b)` | Larger of two numbers |
+
+## Grammar Summary
+
+```
+program     := statement*
+statement   := let-stmt | struct-def | return-stmt | expr-stmt
+let-stmt    := 'let' IDENT '=' expression ';'
+struct-def  := 'struct' IDENT '{' (IDENT (':' type-hint)? (',' IDENT (':' type-hint)?)*)? '}'
+return-stmt := 'return' expression
+expr-stmt   := expression ';'? (last expr in block may omit ';')
+
+expression  := assignment
+assignment  := unary '=' expression | infix
+infix       := unary (operator unary)*
+unary       := ('-' | '!') unary | primary
+primary     := literal | IDENT | call | field-access | index | struct-literal
+             | '(' expression ')' | if-expr | while-expr | for-expr
+             | array-literal | function-literal
+call        := primary '(' (expression (',' expression)*)? ')'
+field-access:= primary '.' IDENT
+index       := primary '[' expression ']'
+struct-lit  := IDENT '{' (IDENT ':' expression (',' IDENT ':' expression)*)? '}'
+if-expr     := 'if' expression block ('else' (block | if-expr))?
+while-expr  := 'while' expression block
+for-expr    := 'for' IDENT 'in' expression block
+block       := '{' statement* '}'
+```

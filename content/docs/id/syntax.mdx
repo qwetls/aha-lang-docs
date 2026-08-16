@@ -1,0 +1,298 @@
+---
+title: Referensi Sintaks
+description: Sintaks lengkap AHA! — kata kunci, operator, literal, dan grammar, terverifikasi dari source compiler
+icon: FileCode
+---
+
+# Referensi Sintaks
+
+Sintaks lengkap AHA! Lang, terverifikasi dari compiler. Setiap konstruksi di sini diperiksa langsung terhadap lexer dan parser di `src/`.
+
+## Kata Kunci
+
+Ada tepat **13 kata kunci reserved**:
+
+| Kata Kunci | Fungsi |
+|------------|--------|
+| `fn` | Definisi fungsi |
+| `let` | Binding variabel |
+| `struct` | Definisi struct |
+| `if` / `else` | Percabangan kondisional |
+| `return` | Kembali dari fungsi |
+| `while` | Loop berbasis kondisi |
+| `for` / `in` | Loop rentang (range) |
+| `break` | Keluar dari loop lebih awal |
+| `continue` | Lewati ke iterasi berikutnya |
+| `true` / `false` | Literal boolean |
+
+Kata kunci ini reserved — tidak bisa dipakai sebagai nama variabel atau fungsi.
+
+## Identifier
+
+- Diawali huruf (`a-z`, `A-Z`) atau garis bawah (`_`)
+- Dilanjutkan huruf, angka, atau garis bawah (`my_var2`, `_private`)
+- Tidak boleh sama dengan kata kunci
+
+```rust
+let valid_name = 1;
+let _private = 2;
+let myVar2 = 3;
+```
+
+## Literal
+
+| Literal | Contoh | Tipe |
+|---------|--------|------|
+| Integer | `42` | `Int` (64-bit) |
+| Boolean | `true`, `false` | `Bool` |
+| String | `"hello"` | `String` (`{i8*, i64}`) |
+
+### Urutan escape string
+
+| Escape | Arti |
+|--------|------|
+| `\n` | Baris baru |
+| `\t` | Tab |
+| `\\` | Backslash |
+| `\"` | Tanda kutip ganda |
+| `\r` | Carriage return |
+| `\0` | Null byte |
+
+## Tipe
+
+| Tipe | Catatan |
+|------|---------|
+| `Int` | Integer 64-bit — tipe numerik universal |
+| `Bool` | `true` / `false`; dihasilkan oleh `!` dan perbandingan |
+| `String` | `"..."` — disimpan sebagai struct `{pointer, length}` |
+| `void` | Type hint untuk fungsi tanpa return (hanya hint) |
+| `StructName` | Struct buatan user (hint tipe field: `name: string`, `age: int`) |
+
+Type hint di deklarasi field dan anotasi masa depan memakai bentuk huruf kecil: `int`, `i64`, `bool`, `string`, `str`, `void`.
+
+## Operator
+
+### Aritmetika
+
+`+` `-` `*` `/` `%`
+
+### Perbandingan (→ `Int` 0/1)
+
+`==` `!=` `<` `>` `<=` `>=`
+
+### Logika (→ `Int` 0/1)
+
+`&&` `||`
+
+### Prefix
+
+`-x` (negasi), `!x` (not)
+
+### Penugasan
+
+`x = value`, `p.x = value`
+
+### Precedence (rendah → tinggi)
+
+| Precedence | Operator |
+|-----------|----------|
+| Terendah | `=` (penugasan) |
+| | `\|\|` |
+| | `&&` |
+| | `==` `!=` |
+| | `<` `>` `<=` `>=` |
+| | `+` `-` |
+| | `*` `/` `%` |
+| Tertinggi | prefix `-` `!`, call, field access, index |
+
+## Statement
+
+### let (binding variabel)
+
+```rust
+let count = 0;
+```
+
+Binding tidak mengizinkan redeklarasi nama yang sama; mutasi dilakukan via penugasan `=`.
+
+### Expression statement
+
+Ekspresi apa pun di baris sendiri adalah statement:
+
+```rust
+print(42);
+x + y;
+```
+
+### return
+
+```rust
+fn add(a, b) {
+    return a + b;
+}
+```
+
+Fungsi juga bisa mengembalikan ekspresi terakhirnya secara implisit (lihat bawah).
+
+### Definisi struct
+
+```rust
+struct Point {
+    x,
+    y,
+}
+```
+
+Definisi struct mendukung hint tipe field opsional:
+
+```rust
+struct Person {
+    name: string,
+    age: int,
+}
+```
+
+Tipe field diperiksa saat kompilasi: menugaskan literal string ke field `int` adalah error kompilasi.
+
+## Ekspresi
+
+### Struct literal
+
+```rust
+let p = Point { x: 3, y: 4 };
+```
+
+- Urutan field tidak tergantung urutan deklarasi
+- Field yang tidak diisi default ke `0` (int) / string kosong (string)
+- Tipe diperiksa terhadap deklarasi
+
+### Akses field
+
+```rust
+let sum = p.x + p.y;
+let name_len = len(p.name);
+```
+
+Akses field mempertahankan tipe yang dideklarasikan, sehingga `p.first + p.last` (concat string) dan `len(p.name)` bekerja.
+
+### Panggilan fungsi
+
+```rust
+print(42);
+abs(-5);
+sum(Point { x: 1, y: 2 });
+```
+
+## Fungsi
+
+```rust
+fn greet(name) {
+    print_str("Hello, ");
+    print_str(name);
+}
+
+fn add(a, b) {
+    a + b // return implisit ekspresi terakhir
+}
+
+fn make_point(x, y) {
+    Point { x: x, y: y } // return value struct
+}
+```
+
+- Tipe parameter diinferensikan dari call site (default Int; String/struct saat teramati)
+- Struct bisa dioper **by-value** dan dikembalikan sebagai nilai
+- Ekspresi terakhir adalah nilai return implisit
+- `return` keluar lebih awal
+
+## Alur Kontrol
+
+### if / else
+
+`if` adalah **ekspresi** — ekspresi terakhir tiap cabang adalah nilainya:
+
+```rust
+let m = if a > b { a } else { b };
+```
+
+### while
+
+```rust
+let i = 0;
+while i < 5 {
+    i = i + 1;
+}
+```
+
+### for (range loop)
+
+```rust
+let sum = 0;
+for i in 0..10 {
+    sum = sum + i;
+}
+```
+
+Rentang `a..b` **eksklusif** `b` (menghasilkan `a, a+1, ..., b-1`).
+
+### break / continue
+
+```rust
+let total = 0;
+for i in 0..100 {
+    if i == 5 {
+        break;      // keluar dari loop
+    }
+    if i % 2 == 0 {
+        continue;   // lewati ke iterasi berikutnya
+    }
+    total = total + i;
+}
+```
+
+## Komentar
+
+```rust
+// komentar satu baris
+
+/* komentar blok
+   beberapa baris */
+```
+
+## Builtin
+
+| Builtin | Deskripsi |
+|---------|-----------|
+| `print(int)` | Cetak integer |
+| `print_str(string)` | Cetak string |
+| `len(string)` | Panjang string O(1) |
+| `abs(x)` | Nilai absolut |
+| `min(a, b)` | Angka terkecil dari dua |
+| `max(a, b)` | Angka terbesar dari dua |
+
+## Ringkasan Grammar
+
+```
+program     := statement*
+statement   := let-stmt | struct-def | return-stmt | expr-stmt
+let-stmt    := 'let' IDENT '=' expression ';'
+struct-def  := 'struct' IDENT '{' (IDENT (':' type-hint)? (',' IDENT (':' type-hint)?)*)? '}'
+return-stmt := 'return' expression
+expr-stmt   := expression ';'? (ekspresi terakhir di blok boleh tanpa ';')
+
+expression  := assignment
+assignment  := unary '=' expression | infix
+infix       := unary (operator unary)*
+unary       := ('-' | '!') unary | primary
+primary     := literal | IDENT | call | field-access | index | struct-literal
+             | '(' expression ')' | if-expr | while-expr | for-expr
+             | array-literal | function-literal
+call        := primary '(' (expression (',' expression)*)? ')'
+field-access:= primary '.' IDENT
+index       := primary '[' expression ']'
+struct-lit  := IDENT '{' (IDENT ':' expression (',' IDENT ':' expression)*)? '}'
+if-expr     := 'if' expression block ('else' (block | if-expr))?
+while-expr  := 'while' expression block
+for-expr    := 'for' IDENT 'in' expression block
+block       := '{' statement* '}'
+```

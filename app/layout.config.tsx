@@ -32,6 +32,11 @@ export const baseOptions: BaseLayoutProps = {
       active: 'nested-url',
     },
     {
+      text: 'Syntax Reference',
+      url: '/syntax',
+      active: 'nested-url',
+    },
+    {
       text: 'Builtins',
       url: '/builtins',
       active: 'nested-url',
