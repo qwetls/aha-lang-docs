@@ -58,19 +58,33 @@ let q = shifted(p);              // mutasi hanya copy lokal, caller tak berubah
 - String field ikut bekerja di dalam fungsi: `len(p.name)` + `p.age`
 - Sistem inferensi tipe di-pre-pass kini mengenali `StructLiteral` dan `FieldAccess`, dengan fixpoint agar tipe parameter stabil walau call site muncul belakangan
 
-## Kualitas: 384 Test Otomatis
+## Kualitas: 404 Test Otomatis
 
-| Rilis | Test |
-|-------|------|
-| 1.4.0 | 84 |
-| 1.4.1 | 363 |
-| 1.4.2 | 373 |
-| 1.4.3 | **384** |
+| Rilis | Test | Fitur |
+|-------|------|-------|
+| 1.4.0 | 84 | Type system, string, loop |
+| 1.4.1 | 363 | Struct codegen |
+| 1.4.2 | 373 | Mutasi field |
+| 1.4.3 | 384 | Struct param/return |
+| 1.4.4 | **404** | **Anotasi & inferensi tipe** |
 
 Semua diverifikasi via CI di branch `development` — `cargo check`, `cargo test --test-threads=1`, `cargo build --release` — dan hasilnya deterministik.
 
+## Baru di 1.4.4: Anotasi & Inferensi Tipe
+
+`let x: int = 5` — deklarasi variabel dapat membawa anotasi tipe eksplisit:
+
+```rust
+let x: int = 5;
+let s: string = "hello";
+let b: bool = true;
+let p: Point = Point { x: 1, y: 2 };
+```
+
+Nilai diperiksa tipenya saat kompilasi — `let x: int = "hi"` adalah error kompilasi. Variabel tanpa anotasi tipenya di-infer dari ekspresi. Fungsi juga meng-infer return type: `fn greet() { "hello" }` mengembalikan String, sehingga `len(greet())` bekerja.
+
 ## Stabilkan Dulu, Lalu Melangkah
 
-Setelah F1 (struct) stabil, roadmap berlanjut ke **F2 — Type Inference & Annotations**: `let x: int = 5`, inferensi return type yang lebih cerdas. Resource lifetimes (F5) tetap dibekukan sampai fondasi stabil — sesuai prinsip *stabilkan lalu melangkah sedikit demi sedikit*.
+Setelah F1 (struct) dan F2 (anotasi tipe) stabil, roadmap berlanjut ke **F3 — Generics**. Resource lifetimes (F5) tetap dibekukan sampai fondasi stabil — sesuai prinsip *stabilkan lalu melangkah sedikit demi sedikit*.
 
 Ikuti perkembangan di [repo GitHub](https://github.com/qwetls/aha-lang) dan lihat [Referensi Sintaks](/id/syntax) terbaru yang terverifikasi dari compiler.

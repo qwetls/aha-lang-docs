@@ -11,7 +11,7 @@ Setiap bahasa yang serius butuh peta jalan yang jujur. Ini dia roadmap AHA! Lang
 
 ## ✅ Sudah Terwujud
 
-Fondasi bahasa lengkap dan diuji oleh **384 test otomatis** di CI:
+Fondasi bahasa lengkap dan diuji oleh **404 test otomatis** di CI:
 
 - **Lexer & Pratt parser** dengan pelaporan error yang jelas
 - **Tipe `Int`, `Bool`, `String`** dengan type-checking pass di compile-time
@@ -26,7 +26,7 @@ Fondasi bahasa lengkap dan diuji oleh **384 test otomatis** di CI:
 - **Ekstensi VS Code** untuk syntax highlighting (`editors/vscode`)
 - **CI pipeline**: `cargo check`, tes otomatis, `cargo build --release`
 
-### Struct (F1) — Hampir Selesai
+### Struct (F1) — Selesai
 
 Struct kini berfungsi penuh di runtime:
 
@@ -36,37 +36,40 @@ Struct kini berfungsi penuh di runtime:
 - **Mutasi field**: `p.x = value` — lvalue sejati, diperiksa tipenya
 - **Struct sebagai parameter & return value**: struct dioper by-value ke fungsi, dan fungsi bisa mengembalikan struct
 
+### Type Inference & Annotations (F2) — Selesai
+
+- **Anotasi tipe**: `let x: int = 5` — eksplisit `int`, `string`, `bool`, atau nama struct; nilai diperiksa tipenya saat kompilasi
+- **Inferensi tipe**: variabel tanpa anotasi tipenya di-infer dari ekspresi
+- **Inferensi return type fungsi**: `fn greet() { "hello" }` mengembalikan String — `len(greet())` bekerja
+- **If-expression dengan cabang string** menghasilkan string sungguhan
+
 ## 🚧 Sedang dalam Pengerjaan (Phase 2)
 
 Inilah yang paling menarik — arah besar bahasa ke depan:
 
-### 1. Type Inference & Annotations (F2)
-
-Inferensi yang lebih cerdas dan anotasi tipe eksplisit — `let x: int = 5`. Kendali penuh bagi pengembang yang menginginkannya.
-
-### 2. Generics / Parametric Types (F3)
+### 1. Generics / Parametric Types (F3)
 
 Menulis kode sekali, bekerja untuk banyak tipe: fungsi generik dan koleksi yang aman tipenya.
 
-### 3. Module System & Package Manager (F4)
+### 2. Module System & Package Manager (F4)
 
 `aha install` — ekosistem paket untuk membagikan dan memakai pustaka. Pintu gerbang menuju proyek berskala besar.
 
-### 4. Resource Lifetimes (F5) — Dibekukan Sementara
+### 3. Resource Lifetimes (F5) — Dibekukan Sementara
 
 Manajemen memori manual yang aman — tanpa garbage collector, tanpa kebocoran memori. **F5 sengaja dibekukan** sampai F1–F4 stabil: stabilkan dulu, lalu melangkah sedikit demi sedikit.
 
-### 5. Actor-Model Concurrency (F6)
+### 4. Actor-Model Concurrency (F6)
 
 Konkurensi dengan message passing — memanfaatkan banyak inti prosesor tanpa sakit kepala.
 
-### 6. Self-Hosting (F7)
+### 5. Self-Hosting (F7)
 
 Tujuan akhir: **kompiler AHA! Lang ditulis dalam AHA! Lang sendiri**. Saat tercapai, bahasa ini membuktikan kedewasaannya.
 
 ## Tata Kelola Pengembangan
 
-- **Branch workflow**: semua pengembangan terjadi di branch `development`; `main` hanya menerima PR dengan CI hijau.
+- **Branch workflow**: setiap fitur dimulai di branch `experimental/<fitur>`, digabung ke `development` hanya setelah stabil; `main` hanya menerima PR dengan CI hijau.
 - **Setiap fitur ditelusuri**: setiap perubahan dicatat di changelog (EN + ID) — *kita butuh jejak*.
 - **PRD sebagai acuan**: semua fitur wajib berasal dari roadmap di `PRD.md`, bukan ide ad-hoc.
 

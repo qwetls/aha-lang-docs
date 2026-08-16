@@ -115,6 +115,21 @@ let count = 0;
 
 Binding is immutable in the sense that re-declaring the same name is not allowed; mutation happens via assignment `=`.
 
+Variables can carry an explicit **type annotation** — the value is type-checked at compile time:
+
+```rust
+let x: int = 5;
+let s: string = "hello";
+let b: bool = true;
+let p: Point = Point { x: 1, y: 2 };
+```
+
+An annotation that mismatches the value's type is a compile error:
+
+```rust
+let x: int = "hi";  // Type mismatch: variable 'x' annotated as 'int' but value has type 'String'
+```
+
 ### Expression statements
 
 Any expression on its own line is a statement:

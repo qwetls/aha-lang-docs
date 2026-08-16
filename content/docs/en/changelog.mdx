@@ -8,6 +8,27 @@ icon: ListTodo
 
 All notable changes to AHA! Lang are documented in this file. You can always build the latest from source — see [Getting Started](/en/getting-started).
 
+## 1.4.4 — 2026-08-16
+
+### Added
+
+- **Type annotations (F2):** `let x: int = 5` — variable declarations can carry an explicit type annotation (`int`, `string`, `bool`, or a struct name). The value is type-checked at compile time:
+  - `let x: int = "hi"` → compile error `Type mismatch: variable 'x' annotated as 'int' but value has type 'String'`
+  - `let p: Point = Other { ... }` → compile error when the struct names differ
+- **Type inference (F2):** Variables without an annotation get their type inferred from the expression (literal, function call, if-expression).
+- **Function return type inference:** `fn greet() { "hello" }` has return type String — callers can do `let s = greet(); len(s)`.
+- **If-expression with string branches:** `fn pick(a) { if a > 0 { "pos" } else { "neg" } }` now returns a real string (the phi node uses the branch types instead of always i64).
+- **Test Suite:** 404 tests passing (was 384; +20 type inference/annotation tests).
+
+### Changed
+
+- `infer_expr_type` & `infer_expr_type_with_scope` support annotations and function return type inference.
+- Unknown type hints (`let x: unknown = 7`) are lenient — they fall back to Int, consistent with struct field hints.
+
+### Security
+
+- Type annotations are verified at compile time: mismatching an annotation with the value's type produces a compile-time error, not undefined behavior.
+
 ## 1.4.3 — 2026-08-16
 
 ### Added

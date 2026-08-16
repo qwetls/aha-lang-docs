@@ -8,6 +8,27 @@ icon: ListTodo
 
 Semua perubahan penting pada AHA! Lang didokumentasikan dalam berkas ini. Anda selalu dapat membangun versi terbaru dari kode sumber — lihat [Getting Started](/id/getting-started).
 
+## 1.4.4 — 2026-08-16
+
+### Ditambahkan
+
+- **Anotasi Tipe (F2):** `let x: int = 5` — deklarasi variabel dapat membawa anotasi tipe eksplisit (`int`, `string`, `bool`, atau nama struct). Nilai diperiksa tipenya saat kompilasi:
+  - `let x: int = "hi"` → error kompilasi `Type mismatch: variable 'x' annotated as 'int' but value has type 'String'`
+  - `let p: Point = Other { ... }` → error kompilasi bila nama struct berbeda
+- **Inferensi Tipe (F2):** Variabel tanpa anotasi tipenya di-infer dari ekspresi (literal, panggilan fungsi, if-expression).
+- **Inferensi return type fungsi:** `fn greet() { "hello" }` ber-return type String — caller bisa `let s = greet(); len(s)`.
+- **If-expression dengan cabang string:** `fn pick(a) { if a > 0 { "pos" } else { "neg" } }` kini mengembalikan string sungguhan (phi node memakai tipe cabang, bukan selalu i64).
+- **Rangkaian Pengujian:** 404 pengujian lulus (sebelumnya 384; +20 pengujian inferensi/anotasi tipe).
+
+### Diubah
+
+- `infer_expr_type` & `infer_expr_type_with_scope` mendukung anotasi dan inferensi return type fungsi.
+- Hint tipe yang tidak dikenal (`let x: unknown = 7`) bersifat lenient — fallback ke Int, konsisten dengan struct field hints.
+
+### Keamanan
+
+- Anotasi tipe diverifikasi saat kompilasi: ketidakcocokan anotasi dengan tipe nilai menghasilkan error kompilasi, bukan perilaku tak terdefinisi.
+
 ## 1.4.3 — 2026-08-16
 
 ### Ditambahkan

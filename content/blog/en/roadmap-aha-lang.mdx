@@ -11,7 +11,7 @@ Every serious language needs an honest map. Here is the AHA! Lang roadmap — wh
 
 ## ✅ Already Built
 
-The language foundation is complete and verified by **384 automated tests** in CI:
+The language foundation is complete and verified by **404 automated tests** in CI:
 
 - **Lexer & Pratt parser** with clear error reporting
 - **`Int`, `Bool`, `String` types** with compile-time type checking
@@ -26,9 +26,9 @@ The language foundation is complete and verified by **384 automated tests** in C
 - **VS Code extension** for syntax highlighting (`editors/vscode`)
 - **CI pipeline**: `cargo check`, automated tests, `cargo build --release`
 
-### Struct (F1) — Nearly Complete
+### Struct (F1) — Complete
 
-Structs now work fully at runtime:
+Structs work fully at runtime:
 
 - **Struct literals**: `Point { x: 3, y: 4 }` — built via LLVM `insertvalue`
 - **Field access**: `p.x` read via `extractvalue`
@@ -36,37 +36,40 @@ Structs now work fully at runtime:
 - **Field mutation**: `p.x = value` — a true lvalue, type-checked
 - **Struct as parameter & return value**: structs pass by value into functions, and functions can return structs
 
+### Type Inference & Annotations (F2) — Complete
+
+- **Type annotations**: `let x: int = 5` — explicit `int`, `string`, `bool`, or struct name; values are type-checked at compile time
+- **Type inference**: variables without annotations infer their type from the expression
+- **Function return type inference**: `fn greet() { "hello" }` returns a String — callers can do `let s = greet(); len(s)`
+- **If-expressions with string branches** produce real strings
+
 ## 🚧 In Progress (Phase 2)
 
 This is the most exciting part — the big direction of the language:
 
-### 1. Type Inference & Annotations (F2)
-
-Smarter inference and explicit type annotations — `let x: int = 5`. Full control for developers who want it.
-
-### 2. Generics / Parametric Types (F3)
+### 1. Generics / Parametric Types (F3)
 
 Write once, work for many types: generic functions and type-safe collections.
 
-### 3. Module System & Package Manager (F4)
+### 2. Module System & Package Manager (F4)
 
 `aha install` — a package ecosystem for sharing and using libraries. The gateway to large-scale projects.
 
-### 4. Resource Lifetimes (F5) — Temporarily Frozen
+### 3. Resource Lifetimes (F5) — Temporarily Frozen
 
 Safe manual memory management — no garbage collector, no memory leaks. **F5 is deliberately frozen** until F1–F4 are stable: stabilize first, then move step by step.
 
-### 5. Actor-Model Concurrency (F6)
+### 4. Actor-Model Concurrency (F6)
 
 Concurrency with message passing — using many CPU cores without headaches.
 
-### 6. Self-Hosting (F7)
+### 5. Self-Hosting (F7)
 
 The ultimate goal: **the AHA! Lang compiler written in AHA! Lang itself**. Once achieved, the language proves its maturity.
 
 ## Development Governance
 
-- **Branch workflow**: all development happens on the `development` branch; `main` only receives PRs with green CI.
+- **Branch workflow**: every feature starts on an `experimental/<feature>` branch, merges into `development` only once stable; `main` only receives PRs with green CI.
 - **Every feature is traced**: every change is recorded in the changelog (EN + ID) — *we need the trail*.
 - **PRD as the reference**: all features must originate from the roadmap in `PRD.md`, not ad-hoc ideas.
 

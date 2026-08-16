@@ -58,19 +58,33 @@ let q = shifted(p);              // mutation only touches the local copy
 - String fields work inside functions too: `len(p.name)` + `p.age`
 - The pre-pass type inference now recognizes `StructLiteral` and `FieldAccess`, with a fixpoint so parameter types stabilize even when call sites appear later in the source
 
-## Quality: 384 Automated Tests
+## Quality: 404 Automated Tests
 
-| Release | Tests |
-|---------|-------|
-| 1.4.0 | 84 |
-| 1.4.1 | 363 |
-| 1.4.2 | 373 |
-| 1.4.3 | **384** |
+| Release | Tests | Feature |
+|---------|-------|---------|
+| 1.4.0 | 84 | Type system, strings, loops |
+| 1.4.1 | 363 | Struct codegen |
+| 1.4.2 | 373 | Field mutation |
+| 1.4.3 | 384 | Struct param/return |
+| 1.4.4 | **404** | **Type annotations & inference** |
 
 All verified via CI on the `development` branch — `cargo check`, `cargo test --test-threads=1`, `cargo build --release` — and the results are deterministic.
 
+## New in 1.4.4: Type Annotations & Inference
+
+`let x: int = 5` — variable declarations can carry an explicit type annotation:
+
+```rust
+let x: int = 5;
+let s: string = "hello";
+let b: bool = true;
+let p: Point = Point { x: 1, y: 2 };
+```
+
+Values are type-checked at compile time — `let x: int = "hi"` is a compile error. Variables without annotations infer their type from the expression. Functions also infer their return type: `fn greet() { "hello" }` returns a String, so `len(greet())` works.
+
 ## Stabilize First, Then Move Step by Step
 
-With F1 (structs) stable, the roadmap continues to **F2 — Type Inference & Annotations**: `let x: int = 5`, smarter return type inference. Resource lifetimes (F5) remain frozen until the foundation is stable — per the principle *stabilize first, then move step by step*.
+With F1 (structs) and F2 (type annotations) stable, the roadmap continues to **F3 — Generics**. Resource lifetimes (F5) remain frozen until the foundation is stable — per the principle *stabilize first, then move step by step*.
 
-Follow the development on the [GitHub repo](https://github.com/qwetls/aha-lang) and check the new compiler-verified [Syntax Reference](/en/syntax).
+Follow the development on the [GitHub repo](https://github.com/qwetls/aha-lang) and check the compiler-verified [Syntax Reference](/en/syntax).

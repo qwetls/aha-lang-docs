@@ -115,6 +115,21 @@ let count = 0;
 
 Binding tidak mengizinkan redeklarasi nama yang sama; mutasi dilakukan via penugasan `=`.
 
+Variabel dapat membawa **anotasi tipe** eksplisit — nilai diperiksa tipenya saat kompilasi:
+
+```rust
+let x: int = 5;
+let s: string = "hello";
+let b: bool = true;
+let p: Point = Point { x: 1, y: 2 };
+```
+
+Anotasi yang tidak cocok dengan tipe nilai adalah error kompilasi:
+
+```rust
+let x: int = "hi";  // Type mismatch: variable 'x' annotated as 'int' but value has type 'String'
+```
+
 ### Expression statement
 
 Ekspresi apa pun di baris sendiri adalah statement:
