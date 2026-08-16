@@ -8,6 +8,27 @@ icon: ListTodo
 
 All notable changes to AHA! Lang are documented in this file. You can always build the latest from source — see [Getting Started](/en/getting-started).
 
+## 1.4.5 — 2026-08-16
+
+### Added
+
+- **Generic functions (F3):** `fn pick<T>(a: T, b: T) -> T { if a > b { a } else { b } }` — functions with generic type parameters.
+- **Monomorphization via LLVM:** Each unique combination of (generic name, concrete type) becomes a separate LLVM function (`pick_Int`, `pick_String`, ...), compiled lazily at the first call site and cached. Zero runtime cost — generics resolve entirely at compile time.
+- **Multiple type params:** `fn first<A, B>(a: A, b: B) -> A` — concrete bindings are inferred from call-site arguments.
+- **Return type annotation:** `-> T` or `-> int` — generic or concrete return types.
+- **Nested monomorphization:** Generic functions can call other generic functions (`fn twice<U>(x: U) -> U { id(x) }`).
+- **Test Suite:** 417 tests passing (was 404; +13 generics tests: identity int/string/bool/struct, pick, two type params, nested calls, IR shape).
+
+### Changed
+
+- `predeclare_functions` stores generic functions in `generic_defs` (no direct pre-declaration); bodies compile during monomorphization.
+- `compile_function` skips generic function bodies at top level (only instantiated on call).
+- The fixpoint loop skips generic functions (return types only exist per instantiation).
+
+### Security
+
+- Generics add no unsafe paths: all types are still verified at compile time; monomorphization is pure per-type codegen duplication.
+
 ## 1.4.4 — 2026-08-16
 
 ### Added

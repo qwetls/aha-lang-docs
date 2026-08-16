@@ -11,7 +11,7 @@ Setiap bahasa yang serius butuh peta jalan yang jujur. Ini dia roadmap AHA! Lang
 
 ## ✅ Sudah Terwujud
 
-Fondasi bahasa lengkap dan diuji oleh **404 test otomatis** di CI:
+Fondasi bahasa lengkap dan diuji oleh **417 test otomatis** di CI:
 
 - **Lexer & Pratt parser** dengan pelaporan error yang jelas
 - **Tipe `Int`, `Bool`, `String`** dengan type-checking pass di compile-time
@@ -43,27 +43,30 @@ Struct kini berfungsi penuh di runtime:
 - **Inferensi return type fungsi**: `fn greet() { "hello" }` mengembalikan String — `len(greet())` bekerja
 - **If-expression dengan cabang string** menghasilkan string sungguhan
 
+### Generics / Parametric Types (F3) — Selesai
+
+- **Fungsi generik**: `fn pick<T>(a: T, b: T) -> T` — tipe konkret di-infer dari tiap call site
+- **Monomorphization**: setiap kombinasi unik (nama, tipe konkret) menjadi fungsi LLVM terpisah — nol biaya runtime
+- **Banyak type params**: `fn first<A, B>(a: A, b: B) -> A`
+- **Anotasi return type**: `-> T`, `-> int`
+
 ## 🚧 Sedang dalam Pengerjaan (Phase 2)
 
 Inilah yang paling menarik — arah besar bahasa ke depan:
 
-### 1. Generics / Parametric Types (F3)
-
-Menulis kode sekali, bekerja untuk banyak tipe: fungsi generik dan koleksi yang aman tipenya.
-
-### 2. Module System & Package Manager (F4)
+### 1. Module System & Package Manager (F4)
 
 `aha install` — ekosistem paket untuk membagikan dan memakai pustaka. Pintu gerbang menuju proyek berskala besar.
 
-### 3. Resource Lifetimes (F5) — Dibekukan Sementara
+### 2. Resource Lifetimes (F5) — Dibekukan Sementara
 
 Manajemen memori manual yang aman — tanpa garbage collector, tanpa kebocoran memori. **F5 sengaja dibekukan** sampai F1–F4 stabil: stabilkan dulu, lalu melangkah sedikit demi sedikit.
 
-### 4. Actor-Model Concurrency (F6)
+### 3. Actor-Model Concurrency (F6)
 
 Konkurensi dengan message passing — memanfaatkan banyak inti prosesor tanpa sakit kepala.
 
-### 5. Self-Hosting (F7)
+### 4. Self-Hosting (F7)
 
 Tujuan akhir: **kompiler AHA! Lang ditulis dalam AHA! Lang sendiri**. Saat tercapai, bahasa ini membuktikan kedewasaannya.
 

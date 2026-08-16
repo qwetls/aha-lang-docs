@@ -149,6 +149,21 @@ fn add(a, b) {
 
 Fungsi juga bisa mengembalikan ekspresi terakhirnya secara implisit (lihat bawah).
 
+### Fungsi generik
+
+Fungsi dapat memiliki **tipe parameter generik** — tipe konkret di-infer dari call site:
+
+```rust
+fn id<T>(x: T) -> T { x }
+fn pick<T>(a: T, b: T) -> T { if a > b { a } else { b } }
+fn first<A, B>(a: A, b: B) -> A { a }
+```
+
+- Tipe parameter ditulis dalam kurung sudut `<T, U>` setelah nama fungsi
+- Parameter bisa memakai hint tipe: `fn max<T>(a: T, b: T) -> T`
+- Anotasi return type memakai `-> T` atau tipe konkret `-> int`
+- Setiap kombinasi unik (nama, tipe konkret) menjadi fungsi LLVM terpisah saat kompilasi — nol biaya runtime
+
 ### Definisi struct
 
 ```rust

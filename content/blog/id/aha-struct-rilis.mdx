@@ -58,7 +58,7 @@ let q = shifted(p);              // mutasi hanya copy lokal, caller tak berubah
 - String field ikut bekerja di dalam fungsi: `len(p.name)` + `p.age`
 - Sistem inferensi tipe di-pre-pass kini mengenali `StructLiteral` dan `FieldAccess`, dengan fixpoint agar tipe parameter stabil walau call site muncul belakangan
 
-## Kualitas: 404 Test Otomatis
+## Kualitas: 417 Test Otomatis
 
 | Rilis | Test | Fitur |
 |-------|------|-------|
@@ -66,25 +66,28 @@ let q = shifted(p);              // mutasi hanya copy lokal, caller tak berubah
 | 1.4.1 | 363 | Struct codegen |
 | 1.4.2 | 373 | Mutasi field |
 | 1.4.3 | 384 | Struct param/return |
-| 1.4.4 | **404** | **Anotasi & inferensi tipe** |
+| 1.4.4 | 404 | Anotasi & inferensi tipe |
+| 1.4.5 | **417** | **Fungsi generik** |
 
 Semua diverifikasi via CI di branch `development` — `cargo check`, `cargo test --test-threads=1`, `cargo build --release` — dan hasilnya deterministik.
 
-## Baru di 1.4.4: Anotasi & Inferensi Tipe
+## Baru di 1.4.5: Fungsi Generik
 
-`let x: int = 5` — deklarasi variabel dapat membawa anotasi tipe eksplisit:
+`fn pick<T>(a: T, b: T) -> T` — fungsi dengan tipe parameter generik, tipe konkret di-infer dari tiap call site:
 
 ```rust
-let x: int = 5;
-let s: string = "hello";
-let b: bool = true;
-let p: Point = Point { x: 1, y: 2 };
+fn id<T>(x: T) -> T { x }
+fn pick<T>(a: T, b: T) -> T { if a > b { a } else { b } }
+fn first<A, B>(a: A, b: B) -> A { a }
+
+pick(3, 7);            // 7  — di-instantiate sebagai pick_Int
+len(id("hello"));      // 5  — di-instantiate sebagai id_String
 ```
 
-Nilai diperiksa tipenya saat kompilasi — `let x: int = "hi"` adalah error kompilasi. Variabel tanpa anotasi tipenya di-infer dari ekspresi. Fungsi juga meng-infer return type: `fn greet() { "hello" }` mengembalikan String, sehingga `len(greet())` bekerja.
+Setiap kombinasi unik (nama, tipe konkret) menjadi fungsi LLVM terpisah saat kompilasi — **monomorphization** dengan nol biaya runtime. Return type bisa dianotasi (`-> T`, `-> int`), dan fungsi generik bisa memanggil fungsi generik lain.
 
 ## Stabilkan Dulu, Lalu Melangkah
 
-Setelah F1 (struct) dan F2 (anotasi tipe) stabil, roadmap berlanjut ke **F3 — Generics**. Resource lifetimes (F5) tetap dibekukan sampai fondasi stabil — sesuai prinsip *stabilkan lalu melangkah sedikit demi sedikit*.
+Setelah F1 (struct), F2 (anotasi tipe), dan F3 (generics) stabil, roadmap berlanjut ke **F4 — Module System & Package Manager** (`aha install`). Resource lifetimes (F5) tetap dibekukan sampai fondasi stabil — sesuai prinsip *stabilkan lalu melangkah sedikit demi sedikit*.
 
 Ikuti perkembangan di [repo GitHub](https://github.com/qwetls/aha-lang) dan lihat [Referensi Sintaks](/id/syntax) terbaru yang terverifikasi dari compiler.

@@ -149,6 +149,21 @@ fn add(a, b) {
 
 Functions may also implicitly return their last expression (see below).
 
+### Generic functions
+
+Functions can have **generic type parameters** — the concrete type is inferred from the call site:
+
+```rust
+fn id<T>(x: T) -> T { x }
+fn pick<T>(a: T, b: T) -> T { if a > b { a } else { b } }
+fn first<A, B>(a: A, b: B) -> A { a }
+```
+
+- Type parameters are listed in angle brackets `<T, U>` after the function name
+- Parameters can use type hints: `fn max<T>(a: T, b: T) -> T`
+- Return type annotation uses `-> T` or a concrete type `-> int`
+- Each unique combination of (name, concrete types) becomes a separate LLVM function at compile time — zero runtime cost
+
 ### struct definition
 
 ```rust

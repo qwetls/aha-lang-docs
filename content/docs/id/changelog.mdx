@@ -8,6 +8,27 @@ icon: ListTodo
 
 Semua perubahan penting pada AHA! Lang didokumentasikan dalam berkas ini. Anda selalu dapat membangun versi terbaru dari kode sumber — lihat [Getting Started](/id/getting-started).
 
+## 1.4.5 — 2026-08-16
+
+### Ditambahkan
+
+- **Fungsi generik (F3):** `fn pick<T>(a: T, b: T) -> T { if a > b { a } else { b } }` — fungsi dengan tipe parameter generik.
+- **Monomorphization via LLVM:** Setiap kombinasi unik (nama generik, tipe konkret) menjadi fungsi LLVM terpisah (`pick_Int`, `pick_String`, ...), dikompilasi lazy di call site pertama dan di-cache. Nol biaya runtime — generics resolve sepenuhnya saat kompilasi.
+- **Banyak type params:** `fn first<A, B>(a: A, b: B) -> A` — binding konkret di-infer dari argumen call site.
+- **Anotasi return type:** `-> T` atau `-> int` — return type generik atau konkret.
+- **Monomorphization bersarang:** Fungsi generik bisa memanggil fungsi generik lain (`fn twice<U>(x: U) -> U { id(x) }`).
+- **Rangkaian Pengujian:** 417 pengujian lulus (sebelumnya 404; +13 pengujian generics: identity int/string/bool/struct, pick, dua type params, panggilan bersarang, bentuk IR).
+
+### Diubah
+
+- `predeclare_functions` menyimpan fungsi generik di `generic_defs` (tanpa pre-deklarasi langsung); body dikompilasi saat monomorphization.
+- `compile_function` me-skip body fungsi generik di top-level (hanya di-instantiate saat dipanggil).
+- Fixpoint loop me-skip fungsi generik (return type hanya ada per instantiation).
+
+### Keamanan
+
+- Generics tidak menambah jalur unsafe: semua tipe tetap diverifikasi saat kompilasi; monomorphization murni duplikasi codegen per tipe.
+
 ## 1.4.4 — 2026-08-16
 
 ### Ditambahkan
