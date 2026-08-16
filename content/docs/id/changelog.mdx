@@ -12,6 +12,7 @@ Semua perubahan penting pada AHA! Lang didokumentasikan dalam berkas ini. Anda s
 
 ### Ditambahkan
 
+- **Halaman Referensi Sintaks:** Referensi lengkap seluruh sintaks AHA! yang terverifikasi dari compiler — 13 kata kunci, identifier, literal, tipe, operator dengan tabel precedence, statement, ekspresi, alur kontrol, komentar, builtin, dan ringkasan grammar EBNF. Tersedia di [/id/syntax](/id/syntax) (ID) dan [/en/syntax](/en/syntax) (EN).
 - **Struct sebagai parameter fungsi (F1):** Struct dapat dioper by-value ke fungsi. Parameter dialokasikan dengan tipe LLVM struct yang benar; akses field di dalam fungsi bekerja normal.
 - **Struct sebagai return value fungsi (F1):** Fungsi dapat mengembalikan struct literal. Caller menyimpan hasilnya ke binding `let` dan membaca field-nya.
 - **Struct literal langsung sebagai argumen:** `sum(Point { x: 1, y: 2 })` — tanpa variabel perantara.
@@ -23,6 +24,7 @@ Semua perubahan penting pada AHA! Lang didokumentasikan dalam berkas ini. Anda s
 
 - `infer_expr_type` & `infer_expr_type_with_scope` kini mengenali `StructLiteral` dan `FieldAccess` untuk inferensi tipe pre-pass yang akurat.
 - `scan_call_sites` melacak binding variabel struct (`struct_var_types`) agar inferensi tipe bisa resolve struct variable sebagai argumen fungsi.
+- **Language Tour:** Memperbaiki sintaks `for` dari `for i 0..10` menjadi `for i in 0..10` — kata kunci `in` wajib menurut parser. Juga menambahkan "Referensi Sintaks" ke navigasi docs.
 
 ## 1.4.2 — 2026-08-16
 

@@ -12,6 +12,7 @@ All notable changes to AHA! Lang are documented in this file. You can always bui
 
 ### Added
 
+- **Syntax Reference page:** A complete, compiler-verified reference of all AHA! syntax — 13 keywords, identifiers, literals, types, operators with precedence table, statements, expressions, control flow, comments, builtins, and an EBNF grammar summary. Available at [/en/syntax](/en/syntax) (EN) and [/id/syntax](/id/syntax) (ID).
 - **Struct as function parameter (F1):** Structs can now be passed by value into functions. Parameters are allocated with the correct LLVM struct type, so field access inside the function works normally.
 - **Struct as function return value (F1):** Functions can return struct literals. The caller stores the result in a `let` binding and reads its fields.
 - **Struct literal passed directly as an argument:** `sum(Point { x: 1, y: 2 })` — no intermediate variable needed.
@@ -23,6 +24,7 @@ All notable changes to AHA! Lang are documented in this file. You can always bui
 
 - `infer_expr_type` & `infer_expr_type_with_scope` now recognize `StructLiteral` and `FieldAccess` for accurate pre-pass type inference.
 - `scan_call_sites` tracks struct variable bindings (`struct_var_types`) so type inference can resolve struct variables passed as function arguments.
+- **Language Tour:** Fixed `for` loop syntax from `for i 0..10` to `for i in 0..10` — the `in` keyword is required by the parser. Also added "Syntax Reference" to the docs navigation.
 
 ## 1.4.2 — 2026-08-16
 
