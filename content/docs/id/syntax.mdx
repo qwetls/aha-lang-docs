@@ -67,6 +67,7 @@ let myVar2 = 3;
 | `String` | `"..."` — disimpan sebagai struct `{pointer, length}` |
 | `void` | Type hint untuk fungsi tanpa return (hanya hint) |
 | `StructName` | Struct buatan user (hint tipe field: `name: string`, `age: int`) |
+| `List<T>` | Array dinamis generik di heap — `List<int>`, `List<string>` (hanya hint; dibuat via `list_new`/`list_new_string`) |
 
 Type hint di deklarasi field dan anotasi masa depan memakai bentuk huruf kecil: `int`, `i64`, `bool`, `string`, `str`, `void`.
 
@@ -184,6 +185,35 @@ struct Person {
 
 Tipe field diperiksa saat kompilasi: menugaskan literal string ke field `int` adalah error kompilasi.
 
+### Builtin list & tipe
+
+`List<T>` adalah array dinamis generik di heap (lihat [Lists](/id/lists)):
+
+```rust
+let xs = list_new();            // List<Int>
+let names = list_new_string();  // List<String>
+
+list_push(xs, 10);
+let x = list_get(xs, 0);        // baca elemen
+let n = list_len(xs);           // jumlah elemen
+list_free(xs);                  // bebaskan buffer heap
+```
+
+List memakai sintaks indeks yang sama dengan array — baca dan tulis:
+
+```rust
+xs[0]        // baca
+xs[1] = 42;  // tulis
+```
+
+Fungsi generik mengikat parameter tipenya dari hint `List<T>`:
+
+```rust
+fn first<T>(xs: List<T>) -> T {
+    xs[0]
+}
+```
+
 ## Ekspresi
 
 ### Struct literal
@@ -299,6 +329,12 @@ for i in 0..100 {
 | `abs(x)` | Nilai absolut |
 | `min(a, b)` | Angka terkecil dari dua |
 | `max(a, b)` | Angka terbesar dari dua |
+| `list_new()` | Buat `List<Int>` |
+| `list_new_string()` | Buat `List<String>` |
+| `list_push(list, elem)` | Tambah elemen |
+| `list_get(list, index)` | Baca elemen |
+| `list_len(list)` | Jumlah elemen |
+| `list_free(list)` | Bebaskan buffer heap |
 
 ## Ringkasan Grammar
 

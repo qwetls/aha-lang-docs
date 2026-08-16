@@ -8,7 +8,24 @@ icon: ListTodo
 
 All notable changes to AHA! Lang are documented in this file. You can always build the latest from source — see [Getting Started](/en/getting-started).
 
-## 1.4.5 — 2026-08-16
+## 1.4.6 — 2026-08-17 (experimental/list)
+
+### Added
+
+- **List<T> (F3e):** generic, heap-allocated dynamic array — `list_new()`, `list_new_string()`, `list_push`, `list_get`, `list_get_string`, `list_len`, `list_free`, index read `xs[i]` and write `xs[i] = v`. Backed by a heap header struct `{data, len, cap, elem_size}` with `malloc`/`realloc` growth.
+- **List<String> full support:** string elements store the full `{i8*, i64}` struct — push/get/index/concat/`len()` all work on string lists.
+- **Generic functions over lists:** `fn first<T>(xs: List<T>) -> T { xs[0] }` — type parameter `T` binds to the element type from the `List<T>` hint; monomorphization instantiates `first_Int`/`first_String` per call site with zero runtime cost.
+- **New docs page:** [Lists](/en/lists) (EN) and [/id/lists](/id/lists) (ID) — full reference with memory model and examples.
+- **Test Suite:** 440 tests passing (was 417; +23 lists tests: Int/String lists, growth, index read/write, generic `first<T>` over lists, IR shape).
+
+### Changed
+
+- **Scan pass tracks list bindings:** `let xs = list_new()` → `List<Int>` and `list_new_string()` → `List<String>` — function parameters (`fn sum_list(xs) { ... }`) now infer as lists instead of the default `Int`.
+- **Main entry point returns `i64`:** when the last expression is a String or struct, main returns `0` — fixing the LLVM verify abort `ret { i8*, i64 } %listidx / i64` (previously SIGABRT at JIT startup).
+
+### Security
+
+- Lists add no unsafe paths: element access is bounds-checked against `len` (out-of-range reads return `0`), and all types are still verified at compile time.
 
 ### Added
 

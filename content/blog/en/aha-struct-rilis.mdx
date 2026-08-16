@@ -58,7 +58,7 @@ let q = shifted(p);              // mutation only touches the local copy
 - String fields work inside functions too: `len(p.name)` + `p.age`
 - The pre-pass type inference now recognizes `StructLiteral` and `FieldAccess`, with a fixpoint so parameter types stabilize even when call sites appear later in the source
 
-## Quality: 417 Automated Tests
+## Quality: 440 Automated Tests
 
 | Release | Tests | Feature |
 |---------|-------|---------|
@@ -67,7 +67,8 @@ let q = shifted(p);              // mutation only touches the local copy
 | 1.4.2 | 373 | Field mutation |
 | 1.4.3 | 384 | Struct param/return |
 | 1.4.4 | 404 | Type annotations & inference |
-| 1.4.5 | **417** | **Generic functions** |
+| 1.4.5 | 417 | Generic functions |
+| 1.4.6 | **440** | **List\<T\>** |
 
 All verified via CI on the `development` branch — `cargo check`, `cargo test --test-threads=1`, `cargo build --release` — and the results are deterministic.
 

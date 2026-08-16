@@ -67,6 +67,7 @@ let myVar2 = 3;
 | `String` | `"..."` — stored as `{pointer, length}` struct |
 | `void` | Type hint for functions returning nothing (hint only) |
 | `StructName` | User-defined struct (field type hint: `name: string`, `age: int`) |
+| `List<T>` | Generic heap-allocated dynamic array — `List<int>`, `List<string>` (type hint only; constructed via `list_new`/`list_new_string`) |
 
 Type hints in field declarations and future annotations use the lowercase forms: `int`, `i64`, `bool`, `string`, `str`, `void`.
 
@@ -184,6 +185,35 @@ struct Person {
 
 Field types are checked at compile time: assigning a string literal to an `int` field is a compile error.
 
+### List builtins & type
+
+`List<T>` is a generic heap-allocated dynamic array (see [Lists](/en/lists)):
+
+```rust
+let xs = list_new();            // List<Int>
+let names = list_new_string();  // List<String>
+
+list_push(xs, 10);
+let x = list_get(xs, 0);        // element read
+let n = list_len(xs);           // element count
+list_free(xs);                  // release heap buffer
+```
+
+Lists use the same index syntax as arrays — read and write:
+
+```rust
+xs[0]        // read
+xs[1] = 42;  // write
+```
+
+Generic functions bind their type parameter from the `List<T>` hint:
+
+```rust
+fn first<T>(xs: List<T>) -> T {
+    xs[0]
+}
+```
+
 ## Expressions
 
 ### Struct literal
@@ -299,6 +329,12 @@ for i in 0..100 {
 | `abs(x)` | Absolute value |
 | `min(a, b)` | Smaller of two numbers |
 | `max(a, b)` | Larger of two numbers |
+| `list_new()` | Create `List<Int>` |
+| `list_new_string()` | Create `List<String>` |
+| `list_push(list, elem)` | Append element |
+| `list_get(list, index)` | Read element |
+| `list_len(list)` | Element count |
+| `list_free(list)` | Free heap buffer |
 
 ## Grammar Summary
 

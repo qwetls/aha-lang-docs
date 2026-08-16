@@ -1,0 +1,149 @@
+---
+title: Lists
+description: List<T> — heap-allocated dynamic arrays with generics, index read/write, and zero-runtime-cost monomorphization
+icon: List
+---
+
+# Lists
+
+AHA! provides **`List<T>`** — a generic, heap-allocated dynamic array that grows on demand. Unlike array literals (fixed stack storage), a list owns its buffer on the heap and can be passed into functions, returned from functions, and used with generic functions.
+
+## Creating a List
+
+Two constructors exist, one per supported element family:
+
+| Constructor | Element type |
+|-------------|--------------|
+| `list_new()` | `List<Int>` |
+| `list_new_string()` | `List<String>` |
+
+```rust
+let ints = list_new();        // List<Int>
+let names = list_new_string(); // List<String>
+```
+
+An explicit type annotation is also accepted:
+
+```rust
+let xs: List<int> = list_new();
+```
+
+## Push, Read, and Length
+
+Elements are appended with `list_push` and read back with `list_get`. `list_len` returns the number of elements in O(1):
+
+```rust
+let xs = list_new();
+list_push(xs, 10);
+list_push(xs, 20);
+list_push(xs, 30);
+
+print(list_get(xs, 0)); // 10
+print(list_get(xs, 2)); // 30
+print(list_len(xs));    // 3
+```
+
+Reading an index past the end returns `0` — the list does not trap on out-of-bounds access.
+
+## Index Syntax
+
+Lists support the same index syntax as arrays — both reads and writes:
+
+```rust
+let xs = list_new();
+list_push(xs, 5);
+list_push(xs, 6);
+
+xs[1]        // read  → 6
+xs[0] = 99;  // write — mutates element 0
+print(xs[0]); // 99
+```
+
+Index writes go through the same bounds policy: writing out of range is ignored.
+
+## Lists of Strings
+
+String lists store the full `{i8*, i64}` struct per element, so string operations compose directly:
+
+```rust
+let words = list_new_string();
+list_push(words, "foo");
+list_push(words, "bar");
+
+len(list_get(words, 0))        // 3
+len(list_get(words, 0) + list_get(words, 1)) // 6
+len(words[0])                  // 3 — index read returns a string
+words[0] = "hello";            // index write works too
+```
+
+## Generic Functions over Lists
+
+`List<T>` integrates with generic functions: the type parameter `T` binds to the element type from the `List<T>` hint, and monomorphization produces a dedicated LLVM function per concrete element type — zero runtime cost:
+
+```rust
+fn first<T>(xs: List<T>) -> T {
+    xs[0]
+}
+
+let nums = list_new();
+list_push(nums, 99);
+print(first(nums)); // 99 — instantiates first_Int
+
+let words = list_new_string();
+list_push(words, "abcd");
+len(first(words))   // 4 — instantiates first_String
+```
+
+Lists also flow through ordinary functions; the scan pass tracks `let xs = list_new()` bindings so parameters infer as `List<Int>` / `List<String>` rather than the default `Int`:
+
+```rust
+fn sum_list(xs) {
+    list_get(xs, 0) + list_get(xs, 1)
+}
+
+let xs = list_new();
+list_push(xs, 40);
+list_push(xs, 2);
+print(sum_list(xs)); // 42
+```
+
+## Freeing a List
+
+`list_free(list)` releases the heap buffer and returns `0`:
+
+```rust
+let xs = list_new();
+list_push(xs, 1);
+let r = list_free(xs);
+print(r); // 0
+```
+
+## Memory Model
+
+A list is an `i64` handle to a heap header struct:
+
+| Field | Type | Purpose |
+|-------|------|---------|
+| `data` | `i8*` | Heap buffer of elements |
+| `len` | `i64` | Number of elements stored |
+| `cap` | `i64` | Allocated capacity (elements) |
+| `elem_size` | `i64` | Byte size of one element (`8` for Int, `16` for String) |
+
+- `list_new` starts at capacity 0; the first push allocates a batch, and growth uses `realloc` with geometric doubling — pushing 8+ elements forces reallocation, verified by tests.
+- Element access computes the address as `data + index * elem_size` (GEP) and loads/stores with the element's concrete LLVM type (`i64` or `{i8*, i64}`).
+- The `elem_size` stride is what lets one list implementation serve both `Int` and `String` element families.
+
+## Summary
+
+| Builtin | Signature | Returns |
+|---------|-----------|---------|
+| `list_new` | `()` | `List<Int>` |
+| `list_new_string` | `()` | `List<String>` |
+| `list_push` | `(list, elem)` | `list` |
+| `list_get` | `(list, index)` | element |
+| `list_len` | `(list)` | `Int` |
+| `list_free` | `(list)` | `Int` (0) |
+| `xs[i]` | read | element |
+| `xs[i] = v` | write | element |
+
+See the [Language Tour](/en/language-tour) for the full set of language constructs, or [Arrays](/en/arrays) for fixed-size stack arrays.

@@ -11,7 +11,7 @@ Every serious language needs an honest map. Here is the AHA! Lang roadmap — wh
 
 ## ✅ Already Built
 
-The language foundation is complete and verified by **417 automated tests** in CI:
+The language foundation is complete and verified by **440 automated tests** in CI:
 
 - **Lexer & Pratt parser** with clear error reporting
 - **`Int`, `Bool`, `String` types** with compile-time type checking
@@ -43,12 +43,13 @@ Structs work fully at runtime:
 - **Function return type inference**: `fn greet() { "hello" }` returns a String — callers can do `let s = greet(); len(s)`
 - **If-expressions with string branches** produce real strings
 
-### Generics / Parametric Types (F3) — Complete
+### Generics / Parametric Types (F3) — Mostly Complete
 
 - **Generic functions**: `fn pick<T>(a: T, b: T) -> T` — concrete types inferred from each call site
 - **Monomorphization**: each unique (name, concrete types) becomes a separate LLVM function — zero runtime cost
 - **Multiple type params**: `fn first<A, B>(a: A, b: B) -> A`
 - **Return type annotations**: `-> T`, `-> int`
+- **`List<T>` (F3e)**: generic heap-allocated dynamic arrays — `list_new`, `list_new_string`, `list_push`, `list_get`, `list_len`, `list_free`, index read/write `xs[i]`. Generic functions bind `T` from the `List<T>` hint (`fn first<T>(xs: List<T>) -> T { xs[0] }`), instantiating `first_Int`/`first_String` per call site. **Stable on `experimental/list` — 440 tests green.**
 
 ## 🚧 In Progress (Phase 2)
 
@@ -58,15 +59,19 @@ This is the most exciting part — the big direction of the language:
 
 `aha install` — a package ecosystem for sharing and using libraries. The gateway to large-scale projects.
 
-### 2. Resource Lifetimes (F5) — Temporarily Frozen
+### 2. Map<K,V> (F3e remainder)
+
+After `List<T>` stabilizes and merges into `development`, the next generic data structure is `Map<K,V>`.
+
+### 3. Resource Lifetimes (F5) — Temporarily Frozen
 
 Safe manual memory management — no garbage collector, no memory leaks. **F5 is deliberately frozen** until F1–F4 are stable: stabilize first, then move step by step.
 
-### 3. Actor-Model Concurrency (F6)
+### 4. Actor-Model Concurrency (F6)
 
 Concurrency with message passing — using many CPU cores without headaches.
 
-### 4. Self-Hosting (F7)
+### 5. Self-Hosting (F7)
 
 The ultimate goal: **the AHA! Lang compiler written in AHA! Lang itself**. Once achieved, the language proves its maturity.
 

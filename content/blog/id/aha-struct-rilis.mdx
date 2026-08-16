@@ -58,7 +58,7 @@ let q = shifted(p);              // mutasi hanya copy lokal, caller tak berubah
 - String field ikut bekerja di dalam fungsi: `len(p.name)` + `p.age`
 - Sistem inferensi tipe di-pre-pass kini mengenali `StructLiteral` dan `FieldAccess`, dengan fixpoint agar tipe parameter stabil walau call site muncul belakangan
 
-## Kualitas: 417 Test Otomatis
+## Kualitas: 440 Test Otomatis
 
 | Rilis | Test | Fitur |
 |-------|------|-------|
@@ -67,7 +67,8 @@ let q = shifted(p);              // mutasi hanya copy lokal, caller tak berubah
 | 1.4.2 | 373 | Mutasi field |
 | 1.4.3 | 384 | Struct param/return |
 | 1.4.4 | 404 | Anotasi & inferensi tipe |
-| 1.4.5 | **417** | **Fungsi generik** |
+| 1.4.5 | 417 | Fungsi generik |
+| 1.4.6 | **440** | **List\<T\>** |
 
 Semua diverifikasi via CI di branch `development` — `cargo check`, `cargo test --test-threads=1`, `cargo build --release` — dan hasilnya deterministik.
 

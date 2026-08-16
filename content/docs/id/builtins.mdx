@@ -16,6 +16,12 @@ Setiap program AHA! mendapatkan seperangkat kecil builtin standar:
 | `abs(x)` | Nilai absolut |
 | `min(a, b)` | Yang lebih kecil dari dua bilangan |
 | `max(a, b)` | Yang lebih besar dari dua bilangan |
+| `list_new()` | Buat `List<Int>` kosong |
+| `list_new_string()` | Buat `List<String>` kosong |
+| `list_push(list, elem)` | Tambah elemen; mengembalikan list |
+| `list_get(list, index)` | Baca elemen di indeks |
+| `list_len(list)` | Jumlah elemen dalam O(1) |
+| `list_free(list)` | Bebaskan buffer heap; mengembalikan 0 |
 
 ## Contoh
 
@@ -26,9 +32,16 @@ print(len("hello")); // 5
 print(abs(-7));      // 7
 print(min(3, 9));    // 3
 print(max(3, 9));    // 9
+
+let xs = list_new();
+list_push(xs, 10);
+list_push(xs, 20);
+print(list_get(xs, 1)); // 20
+print(list_len(xs));    // 2
 ```
 
 ## Catatan
 
 - `print` menerima bilangan bulat; `print_str` menerima string. `print("hi")` adalah kesalahan tipe saat kompilasi — string melalui `print_str`.
 - `len` mengembalikan panjang tersimpan dari struct string, sehingga bersifat O(1) tanpa memandang ukuran string.
+- List builtins beroperasi pada handle `List<T>`; lihat [Lists](/id/lists) untuk referensi lengkap.

@@ -1,0 +1,149 @@
+---
+title: Daftar (Lists)
+description: List<T> — array dinamis heap-allocated dengan generics, index read/write, dan monomorphization tanpa biaya runtime
+icon: List
+---
+
+# Daftar (Lists)
+
+AHA! menyediakan **`List<T>`** — array dinamis generik yang dialokasikan di heap dan tumbuh sesuai kebutuhan. Tidak seperti array literal (penyimpanan stack tetap), list memiliki buffer sendiri di heap dan bisa dikirim ke fungsi, dikembalikan dari fungsi, serta digunakan dengan fungsi generik.
+
+## Membuat List
+
+Dua konstruktor tersedia, satu untuk setiap keluarga elemen:
+
+| Konstruktor | Tipe elemen |
+|-------------|-------------|
+| `list_new()` | `List<Int>` |
+| `list_new_string()` | `List<String>` |
+
+```rust
+let ints = list_new();        // List<Int>
+let names = list_new_string(); // List<String>
+```
+
+Anotasi tipe eksplisit juga diterima:
+
+```rust
+let xs: List<int> = list_new();
+```
+
+## Push, Baca, dan Panjang
+
+Elemen ditambahkan dengan `list_push` dan dibaca kembali dengan `list_get`. `list_len` mengembalikan jumlah elemen dalam O(1):
+
+```rust
+let xs = list_new();
+list_push(xs, 10);
+list_push(xs, 20);
+list_push(xs, 30);
+
+print(list_get(xs, 0)); // 10
+print(list_get(xs, 2)); // 30
+print(list_len(xs));    // 3
+```
+
+Membaca indeks di luar panjang mengembalikan `0` — list tidak men-trap pada akses di luar batas.
+
+## Sintaks Indeks
+
+List mendukung sintaks indeks yang sama dengan array — untuk baca maupun tulis:
+
+```rust
+let xs = list_new();
+list_push(xs, 5);
+list_push(xs, 6);
+
+xs[1]        // baca  → 6
+xs[0] = 99;  // tulis — memutasi elemen 0
+print(xs[0]); // 99
+```
+
+Penulisan indeks mengikuti kebijakan batas yang sama: menulis di luar jangkauan diabaikan.
+
+## List of Strings
+
+List string menyimpan struct `{i8*, i64}` penuh per elemen, jadi operasi string langsung terkomposisi:
+
+```rust
+let words = list_new_string();
+list_push(words, "foo");
+list_push(words, "bar");
+
+len(list_get(words, 0))        // 3
+len(list_get(words, 0) + list_get(words, 1)) // 6
+len(words[0])                  // 3 — index read mengembalikan string
+words[0] = "hello";            // index write juga berfungsi
+```
+
+## Fungsi Generik atas List
+
+`List<T>` terintegrasi dengan fungsi generik: parameter tipe `T` ter-bind ke tipe elemen dari hint `List<T>`, dan monomorphization menghasilkan fungsi LLVM khusus per tipe elemen konkret — nol biaya runtime:
+
+```rust
+fn first<T>(xs: List<T>) -> T {
+    xs[0]
+}
+
+let nums = list_new();
+list_push(nums, 99);
+print(first(nums)); // 99 — instantiasi first_Int
+
+let words = list_new_string();
+list_push(words, "abcd");
+len(first(words))   // 4 — instantiasi first_String
+```
+
+List juga mengalir melalui fungsi biasa; scan pass melacak binding `let xs = list_new()` sehingga parameter ter-infer sebagai `List<Int>` / `List<String>` alih-alih `Int` default:
+
+```rust
+fn sum_list(xs) {
+    list_get(xs, 0) + list_get(xs, 1)
+}
+
+let xs = list_new();
+list_push(xs, 40);
+list_push(xs, 2);
+print(sum_list(xs)); // 42
+```
+
+## Membebaskan List
+
+`list_free(list)` melepas buffer heap dan mengembalikan `0`:
+
+```rust
+let xs = list_new();
+list_push(xs, 1);
+let r = list_free(xs);
+print(r); // 0
+```
+
+## Model Memori
+
+List adalah handle `i64` ke struct header di heap:
+
+| Field | Tipe | Tujuan |
+|-------|------|--------|
+| `data` | `i8*` | Buffer elemen di heap |
+| `len` | `i64` | Jumlah elemen tersimpan |
+| `cap` | `i64` | Kapasitas teralokasi (elemen) |
+| `elem_size` | `i64` | Ukuran byte satu elemen (`8` untuk Int, `16` untuk String) |
+
+- `list_new` mulai dengan kapasitas 0; push pertama mengalokasikan satu batch, dan pertumbuhan memakai `realloc` dengan penggandaan geometrik — push 8+ elemen memaksa realokasi, terverifikasi oleh pengujian.
+- Akses elemen menghitung alamat sebagai `data + index * elem_size` (GEP) lalu load/store dengan tipe LLVM konkret elemen (`i64` atau `{i8*, i64}`).
+- Stride `elem_size` inilah yang membuat satu implementasi list melayani keluarga elemen `Int` dan `String` sekaligus.
+
+## Ringkasan
+
+| Builtin | Signature | Mengembalikan |
+|---------|-----------|---------------|
+| `list_new` | `()` | `List<Int>` |
+| `list_new_string` | `()` | `List<String>` |
+| `list_push` | `(list, elem)` | `list` |
+| `list_get` | `(list, index)` | elemen |
+| `list_len` | `(list)` | `Int` |
+| `list_free` | `(list)` | `Int` (0) |
+| `xs[i]` | baca | elemen |
+| `xs[i] = v` | tulis | elemen |
+
+Lihat [Language Tour](/id/language-tour) untuk seluruh konstruksi bahasa, atau [Arrays](/id/arrays) untuk array stack berukuran tetap.
