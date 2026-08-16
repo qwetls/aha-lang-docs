@@ -1,0 +1,76 @@
+---
+title: "AHA! Lang 1.4.1–1.4.3: Struct Lengkap, 384 Test"
+description: "Tiga rilis berurutan membawa struct dari literal hingga parameter dan return value fungsi — dengan 384 test otomatis."
+icon: Rocket
+date: 2026-08-16
+---
+
+# AHA! Lang 1.4.1–1.4.3: Struct Lengkap
+
+Tiga rilis berurutan — 1.4.1, 1.4.2, 1.4.3 — menyelesaikan pilar pertama roadmap Phase 2: **struct yang berfungsi penuh di runtime**. Dimulai dari codegen literal, lalu mutasi field, dan akhirnya struct sebagai parameter serta return value fungsi.
+
+## 1.4.1 — Struct Codegen
+
+`struct Point { x, y }` kini menghasilkan tipe struct LLVM yang sesungguhnya:
+
+```rust
+struct Point { x, y }
+
+let p = Point { x: 3, y: 4 };
+let total = p.x + p.y;   // 7
+```
+
+- Literal `Point { x: 1, y: 2 }` dibangun via `insertvalue` LLVM
+- Akses field `p.x` dibaca via `extractvalue`
+- **Field bertipe**: `name: string, age: int` dihormati saat runtime — field `string` memakai layout `{i8*, i64}`, field `int` memakai `i64`
+- Tipe diperiksa saat kompilasi: menugaskan string ke field `int` adalah error
+- Akses field mempertahankan tipe, sehingga `len(p.name)` dan `p.first + p.last` bekerja
+
+## 1.4.2 — Mutasi Field
+
+`p.x = value` menjadi lvalue sejati:
+
+```rust
+p.x = 9;             // load struct → insertvalue → store kembali
+p.name = "baru";     // field string juga bisa dimutasi
+```
+
+- Parser kini memperlakukan `=` sebagai operator infix — `AssignmentExpression` punya `target` generik, membuka jalan ke penugasan array `arr[0] = x` di masa depan
+- Diperbaiki: `Assign` yang hilang dari tabel precedence
+- 373 test lulus
+
+## 1.4.3 — Struct sebagai Parameter & Return Value
+
+Fungsi kini menerima struct **by-value** dan mengembalikannya:
+
+```rust
+fn sum(p) { p.x + p.y }
+sum(Point { x: 40, y: 2 });      // 42 — literal langsung sebagai argumen
+
+fn make(x, y) { Point { x: x, y: y } }
+sum(make(20, 22));               // 42 — chained: return value langsung dioper
+
+fn shifted(p) { p.x = p.x + 100; p }
+let q = shifted(p);              // mutasi hanya copy lokal, caller tak berubah
+```
+
+- `sum(make(20, 22))` — return value struct langsung mengalir ke fungsi lain
+- String field ikut bekerja di dalam fungsi: `len(p.name)` + `p.age`
+- Sistem inferensi tipe di-pre-pass kini mengenali `StructLiteral` dan `FieldAccess`, dengan fixpoint agar tipe parameter stabil walau call site muncul belakangan
+
+## Kualitas: 384 Test Otomatis
+
+| Rilis | Test |
+|-------|------|
+| 1.4.0 | 84 |
+| 1.4.1 | 363 |
+| 1.4.2 | 373 |
+| 1.4.3 | **384** |
+
+Semua diverifikasi via CI di branch `development` — `cargo check`, `cargo test --test-threads=1`, `cargo build --release` — dan hasilnya deterministik.
+
+## Stabilkan Dulu, Lalu Melangkah
+
+Setelah F1 (struct) stabil, roadmap berlanjut ke **F2 — Type Inference & Annotations**: `let x: int = 5`, inferensi return type yang lebih cerdas. Resource lifetimes (F5) tetap dibekukan sampai fondasi stabil — sesuai prinsip *stabilkan lalu melangkah sedikit demi sedikit*.
+
+Ikuti perkembangan di [repo GitHub](https://github.com/qwetls/aha-lang) dan lihat [Referensi Sintaks](/id/syntax) terbaru yang terverifikasi dari compiler.

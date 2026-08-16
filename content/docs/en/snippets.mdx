@@ -92,7 +92,7 @@ Arrays pair naturally with a ranged `for` loop:
 ```rust
 let data = [4, 8, 15, 16, 23, 42];
 let sum = 0;
-for i 0..6 {
+for i in 0..6 {
     sum = sum + data[i];
 }
 print(sum); // 108
@@ -112,7 +112,7 @@ fn is_odd(n) {
 }
 
 let odds = 0;
-for i 0..10 {
+for i in 0..10 {
     if is_odd(i) {
         odds = odds + 1;
     }

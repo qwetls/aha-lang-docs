@@ -1,72 +1,63 @@
 ---
-title: "AHA! Lang vs Python: Two Styles, One Goal"
-description: "The same code written in Python and AHA! Lang — and what makes each of them unique as a learning language."
-icon: Code2
-date: 2026-08-12
+title: "Why AHA! Lang: The Philosophy Behind the Design"
+description: "AHA! Lang is designed on its own principles — not as a copy of any other language. Here's what shapes it."
+icon: Lightbulb
+date: 2026-08-16
 ---
 
-# AHA! Lang vs Python: Two Styles, One Goal
+# Why AHA! Lang: The Philosophy Behind the Design
 
-Python is the most popular first language in the world — and for good reason: simple, friendly, a huge ecosystem. So why consider AHA! Lang? Because the two have different philosophies, and both are worth learning.
+Every language has a reason it is designed the way it is. AHA! Lang was not born from a desire to imitate other languages, but from the need for a different approach.
 
-## Same Code, Different Style
+## if as an Expression, Not a Statement
 
-Let's compare the same program — deciding whether someone passes:
-
-**Python:**
-
-```python
-nilai = 85
-if nilai >= 70:
-    status = "Lulus"
-else:
-    status = "Tidak lulus"
-print(status)
-```
-
-**AHA! Lang:**
+In AHA! Lang, `if` is an expression — it produces a value:
 
 ```rust
-let nilai = 85;
 let status = if nilai >= 70 { "Lulus" } else { "Tidak lulus" };
 print_str(status);
 ```
 
-Both programs print `Lulus`. But notice the differences:
+This is not just style. It's consistency: if functions return their last expression, then `if` must be able to be that last expression. There is no gap between "code that computes" and "code that branches" — everything is an expression.
 
-| Aspect | Python | AHA! Lang |
-|-------|--------|-----------|
-| `if` | Statement (does something) | Expression (produces a value) |
-| Boolean | `True`/`False` | `Int` `1`/`0` |
-| Variables | Optional-style declaration | Explicit `let` |
-| Execution | Interpretation | JIT compilation via LLVM |
+## Logic Is Numbers
 
-## The Most Interesting Difference: Booleans
-
-This is the design difference you feel the most. In Python, `True` and `False` are special types. In AHA! Lang, the result of a logical operation is an ordinary number:
+In AHA! Lang, the result of comparisons and logic is an ordinary number (`Int` 0 or 1):
 
 ```rust
 let x = 5;
-print((x > 3) * 100);     // 100 — logic can be computed directly
-print((x > 3) == 1);      // 1 — and can be compared
+print((x > 3) * 100);     // 100
+print((x > 3) == 1);      // 1
 ```
 
-In Python, writing `(x > 3) * 100` would error — multiplying `True` by a number doesn't make sense. In AHA! Lang, that's exactly its strength: **logic flows into arithmetic**. It's a style closer to C, but without C's complexity.
+The consequence: logic can flow directly into arithmetic. No casting, no conversion — it's all `Int`. This makes code shorter and more direct.
 
-## Execution Speed
+## Minimal, Not Minimalist
 
-Python is interpreted; AHA! Lang is compiled to machine code via LLVM and then executed JIT. For large programs doing heavy computation, the performance difference is significant — close to C speed.
+AHA! Lang has only **13 keywords** — no more. Every keyword exists because it is truly needed:
 
-But to be honest: for learning concepts, speed is rarely an issue. Speed starts to matter when you build a compiler, a simulator, or a game.
+- `let` for binding, not declaration-style
+- `fn` for functions, no `def`/`func`/`function`
+- `struct` for structured data, no classes, no inheritance
 
-## Which Should You Learn?
+But minimal does not mean weak. Structs have typed fields, functions are first-class calls, control flow is complete — all without increasing the keyword count.
 
-**Choose Python if:** you want to jump straight into data science, web backends, or automation — and want the largest library ecosystem.
+## Compilation, Not Interpretation
 
-**Choose AHA! Lang if:** you're curious about how a language works from the inside, want to experience a real compiler, or love minimal syntax that "reads like prose".
+AHA! Lang compiles to machine code via LLVM and executes JIT. This means:
 
-**Or learn both!** Many institutions teach Python as a first language and C as a second to understand the machine. AHA! Lang can fill both roles at once: friendly like Python, fast like C.
+- Speed close to native
+- No heavy runtime
+- The language can run anywhere LLVM can — from servers to embedded
+
+## No Garbage Collector
+
+AHA! Lang has no GC — and this is deliberate. GC brings unpredictable pauses and wasteful memory allocation. Instead, AHA! aims for *deterministic* and *leak-free* memory management — but this is still under development (F5, temporarily frozen until the foundation is stable).
+
+## A Language That Defines Itself
+
+AHA! Lang does not try to be "a fast Python" or "an easier C." It has its own goal: a language that is *easy to read, powerful to wield* — from web to embedded, without forcing developers to choose between speed and simplicity.
 
 ## Get Started
 
-You can try AHA! Lang right away through [Getting Started](/en/getting-started) and our progressive [Course](/en/course) — even without any prior programming experience.
+You can try AHA! Lang right away through [Getting Started](/en/getting-started) and our [Course](/en/course).

@@ -1,72 +1,63 @@
 ---
-title: "AHA! Lang vs Python: Dua Gaya, Satu Tujuan"
-description: "Kode yang sama ditulis dalam Python dan AHA! Lang — dan apa yang membuat keduanya unik sebagai bahasa pembelajaran."
-icon: Code2
-date: 2026-08-12
+title: "Mengapa AHA! Lang: Filosofi di Balik Desain"
+description: "AHA! Lang dirancang dengan prinsipnya sendiri — bukan tiruan bahasa lain. Inilah yang membentuknya."
+icon: Lightbulb
+date: 2026-08-16
 ---
 
-# AHA! Lang vs Python: Dua Gaya, Satu Tujuan
+# Mengapa AHA! Lang: Filosofi di Balik Desain
 
-Python adalah bahasa pertama paling populer di dunia — dan untuk alasan yang bagus: sederhana, ramah, ekosistem raksasa. Jadi mengapa mempertimbangkan AHA! Lang? Karena keduanya punya filosofi berbeda, dan keduanya valid untuk dipelajari.
+Setiap bahasa punya alasan mengapa ia dirancang dengan cara tertentu. AHA! Lang tidak lahir dari keinginan meniru bahasa lain, tapi dari kebutuhan akan pendekatan yang berbeda.
 
-## Kode yang Sama, Gaya Berbeda
+## if sebagai Ekspresi, Bukan Statement
 
-Mari bandingkan program yang sama — menentukan kelulusan:
-
-**Python:**
-
-```python
-nilai = 85
-if nilai >= 70:
-    status = "Lulus"
-else:
-    status = "Tidak lulus"
-print(status)
-```
-
-**AHA! Lang:**
+Di AHA! Lang, `if` adalah ekspresi — ia menghasilkan nilai:
 
 ```rust
-let nilai = 85;
 let status = if nilai >= 70 { "Lulus" } else { "Tidak lulus" };
 print_str(status);
 ```
 
-Kedua program mencetak `Lulus`. Tapi perhatikan perbedaannya:
+Ini bukan sekadar gaya. Ini konsistensi: jika fungsi mengembalikan ekspresi terakhir, maka `if` pun harus bisa menjadi ekspresi terakhir itu. Tidak ada jurang antara "kode yang menghitung" dan "kode yang bercabang" — semuanya ekspresi.
 
-| Aspek | Python | AHA! Lang |
-|-------|--------|-----------|
-| `if` | Statement (menjalankan) | Ekspresi (menghasilkan nilai) |
-| Boolean | `True`/`False` | `Int` `1`/`0` |
-| Variabel | Deklarasi opsional gaya | `let` eksplisit |
-| Eksekusi | Interpretasi | Kompilasi JIT via LLVM |
+## Logika adalah Angka
 
-## Perbedaan Paling Menarik: Boolean
-
-Ini perbedaan desain yang paling terasa. Di Python, `True` dan `False` adalah tipe khusus. Di AHA! Lang, hasil logika adalah bilangan biasa:
+Di AHA! Lang, hasil perbandingan dan logika adalah bilangan biasa (`Int` 0 atau 1):
 
 ```rust
 let x = 5;
-print((x > 3) * 100);     // 100 — logika bisa langsung dihitung
-print((x > 3) == 1);      // 1 — dan bisa dibandingkan
+print((x > 3) * 100);     // 100
+print((x > 3) == 1);      // 1
 ```
 
-Di Python, menulis `(x > 3) * 100` akan error — `True` dikalikan angka tidak masuk akal. Di AHA! Lang, justru itulah kekuatannya: **logika mengalir ke dalam aritmetika**. Ini gaya yang lebih dekat ke C, tapi tanpa kerumitan C.
+Konsekuensinya: logika bisa langsung mengalir ke aritmetika. Tidak ada casting, tidak ada konversi — semuanya `Int`. Ini membuat kode lebih pendek dan lebih langsung.
 
-## Kecepatan Eksekusi
+## Minimal, Bukan Minimalis
 
-Python diinterpretasikan; AHA! Lang dikompilasi ke kode mesin via LLVM lalu dieksekusi JIT. Untuk program besar yang menghitung berat, perbedaan performanya signifikan — mendekati kecepatan C.
+AHA! Lang hanya punya **13 kata kunci** — tidak lebih. Setiap kata kunci hadir karena benar-benar diperlukan:
 
-Namun jujur saja: untuk belajar konsep, kecepatan jarang jadi masalah. Kecepatan mulai terasa saat kamu membangun kompiler, simulator, atau game.
+- `let` untuk binding, bukan deklarasi gaya
+- `fn` untuk fungsi, tanpa `def`/`func`/`function`
+- `struct` untuk data terstruktur, tanpa kelas, tanpa pewarisan
 
-## Mana yang Harus Kamu Pelajari?
+Tapi minimal bukan berarti lemah. Struct punya field bertipe, fungsi punya first-class call, kontrol alur lengkap — semua tanpa menambah jumlah kata kunci.
 
-**Pilih Python jika:** kamu ingin langsung masuk ke data science, web backend, atau otomasi — dan ingin ekosistem pustaka terbesar.
+## Kompilasi, Bukan Interpretasi
 
-**Pilih AHA! Lang jika:** kamu penasaran bagaimana bahasa bekerja dari dalam, ingin merasakan kompiler beneran, atau menyukai sintaks minimal yang "bisa dibaca seperti prosa".
+AHA! Lang dikompilasi ke kode mesin via LLVM dan dieksekusi JIT. Ini berarti:
 
-**Atau pelajari keduanya!** Banyak institusi mengajarkan Python sebagai bahasa pertama dan C sebagai bahasa kedua untuk memahami mesin. AHA! Lang bisa mengisi peran keduanya sekaligus: ramah seperti Python, cepat seperti C.
+- Kecepatan mendekati native
+- Tidak ada runtime yang berat
+- Bahasa ini bisa berjalan di mana LLVM bisa — dari server hingga embedded
+
+## Tanpa Garbage Collector
+
+AHA! Lang tidak punya GC — dan ini sengaja. GC membawa pause tak terduga dan alokasi memori yang boros. Sebagai gantinya, AHA! mengincar manajemen memori yang *deterministik* dan *tanpa kebocoran* — tapi ini masih dalam pengembangan (F5, dibekukan sementara sampai fondasi stabil).
+
+## Bahasa yang Mendefinisikan Dirinya Sendiri
+
+AHA! Lang tidak berusaha menjadi "Python versi cepat" atau "C yang lebih mudah." Ia punya tujuannya sendiri: bahasa yang *easy to read, powerful to wield* — dari web hingga embedded, tanpa memaksa pengembang memilih antara kecepatan dan kesederhanaan.
 
 ## Mulai
 
-Kamu bisa langsung mencoba AHA! Lang lewat [Getting Started](/id/getting-started) dan [Course](/id/course) kami yang bertahap — bahkan tanpa pengalaman pemrograman sebelumnya.
+Kamu bisa langsung mencoba AHA! Lang lewat [Getting Started](/id/getting-started) dan [Course](/id/course) kami.
