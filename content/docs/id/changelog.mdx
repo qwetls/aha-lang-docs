@@ -8,7 +8,23 @@ icon: ListTodo
 
 Semua perubahan penting pada AHA! Lang didokumentasikan dalam berkas ini. Anda selalu dapat membangun versi terbaru dari kode sumber — lihat [Getting Started](/id/getting-started).
 
-## 1.6.0 — 2026-08-16
+## 1.4.3 — 2026-08-16
+
+### Ditambahkan
+
+- **Struct sebagai parameter fungsi (F1):** Struct dapat dioper by-value ke fungsi. Parameter dialokasikan dengan tipe LLVM struct yang benar; akses field di dalam fungsi bekerja normal.
+- **Struct sebagai return value fungsi (F1):** Fungsi dapat mengembalikan struct literal. Caller menyimpan hasilnya ke binding `let` dan membaca field-nya.
+- **Struct literal langsung sebagai argumen:** `sum(Point { x: 1, y: 2 })` — tanpa variabel perantara.
+- **Rantai fungsi struct:** `sum(make(20, 22))` — return value struct langsung dioper ke fungsi lain.
+- **`unify_with()` pada AhaType:** Menyatukan tipe parameter dari beberapa call site (String dan nama struct meng-override default Int).
+- **Rangkaian Pengujian:** 385 pengujian lulus (sebelumnya 373; +12 pengujian struct param/return).
+
+### Diubah
+
+- `infer_expr_type` & `infer_expr_type_with_scope` kini mengenali `StructLiteral` dan `FieldAccess` untuk inferensi tipe pre-pass yang akurat.
+- `scan_call_sites` melacak binding variabel struct (`struct_var_types`) agar inferensi tipe bisa resolve struct variable sebagai argumen fungsi.
+
+## 1.4.2 — 2026-08-16
 
 ### Ditambahkan
 
@@ -28,7 +44,7 @@ Semua perubahan penting pada AHA! Lang didokumentasikan dalam berkas ini. Anda s
 
 - Menugaskan nilai dengan tipe yang salah ke field bertipe menghasilkan kesalahan saat kompilasi.
 
-## 1.5.0 — 2026-08-16
+## 1.4.1 — 2026-08-16
 
 ### Ditambahkan
 

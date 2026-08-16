@@ -8,7 +8,23 @@ icon: ListTodo
 
 All notable changes to AHA! Lang are documented in this file. You can always build the latest from source — see [Getting Started](/en/getting-started).
 
-## 1.6.0 — 2026-08-16
+## 1.4.3 — 2026-08-16
+
+### Added
+
+- **Struct as function parameter (F1):** Structs can now be passed by value into functions. Parameters are allocated with the correct LLVM struct type, so field access inside the function works normally.
+- **Struct as function return value (F1):** Functions can return struct literals. The caller stores the result in a `let` binding and reads its fields.
+- **Struct literal passed directly as an argument:** `sum(Point { x: 1, y: 2 })` — no intermediate variable needed.
+- **Chained struct calls:** `sum(make(20, 22))` — a struct return value feeds directly into another function.
+- **`unify_with()` on AhaType:** Merges parameter types from multiple call sites (String and struct names override the Int default).
+- **Test Suite:** 385 tests passing (was 373; +12 struct param/return tests).
+
+### Changed
+
+- `infer_expr_type` & `infer_expr_type_with_scope` now recognize `StructLiteral` and `FieldAccess` for accurate pre-pass type inference.
+- `scan_call_sites` tracks struct variable bindings (`struct_var_types`) so type inference can resolve struct variables passed as function arguments.
+
+## 1.4.2 — 2026-08-16
 
 ### Added
 
@@ -28,7 +44,7 @@ All notable changes to AHA! Lang are documented in this file. You can always bui
 
 - Assigning a value of the wrong type to a typed field produces a compile-time error.
 
-## 1.5.0 — 2026-08-16
+## 1.4.1 — 2026-08-16
 
 ### Added
 
