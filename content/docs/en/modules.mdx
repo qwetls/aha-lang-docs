@@ -11,7 +11,7 @@ AHA! Lang supports multi-file compilation via the `use` keyword. Split your prog
 ## Basic Usage
 
 **math.aha**
-```aha
+```rust
 fn add(a, b) {
     a + b
 }
@@ -22,7 +22,7 @@ fn multiply(a, b) {
 ```
 
 **main.aha**
-```aha
+```rust
 use "math"
 
 let x = add(3, 4)
@@ -54,14 +54,14 @@ When you write `use "math"`, the compiler looks for:
 Files can import other files:
 
 **base.aha**
-```aha
+```rust
 fn inc(x) {
     x + 1
 }
 ```
 
 **utils.aha**
-```aha
+```rust
 use "base"
 
 fn double_inc(x) {
@@ -70,7 +70,7 @@ fn double_inc(x) {
 ```
 
 **main.aha**
-```aha
+```rust
 use "utils"
 
 double_inc(5)
@@ -82,7 +82,7 @@ The compiler resolves imports recursively — `main.aha` imports `utils.aha`, wh
 
 You can import from multiple files:
 
-```aha
+```rust
 use "math"
 use "strings"
 
