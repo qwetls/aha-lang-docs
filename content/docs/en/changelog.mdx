@@ -38,8 +38,8 @@ All notable changes to AHA! Lang are documented in this file. You can always bui
 
 ### Added
 
-- **List<T> (F3e):** generic, heap-allocated dynamic array — `list_new()`, `list_new_string()`, `list_push`, `list_get`, `list_get_string`, `list_len`, `list_free`, index read `xs[i]` and write `xs[i] = v`. Backed by a heap header struct `{data, len, cap, elem_size}` with `malloc`/`realloc` growth.
-- **List<String> full support:** string elements store the full `{i8*, i64}` struct — push/get/index/concat/`len()` all work on string lists.
+- **List\<T\> (F3e):** generic, heap-allocated dynamic array — `list_new()`, `list_new_string()`, `list_push`, `list_get`, `list_get_string`, `list_len`, `list_free`, index read `xs[i]` and write `xs[i] = v`. Backed by a heap header struct `{data, len, cap, elem_size}` with `malloc`/`realloc` growth.
+- **List\<String\> full support:** string elements store the full `{i8*, i64}` struct — push/get/index/concat/`len()` all work on string lists.
 - **Generic functions over lists:** `fn first<T>(xs: List<T>) -> T { xs[0] }` — type parameter `T` binds to the element type from the `List<T>` hint; monomorphization instantiates `first_Int`/`first_String` per call site with zero runtime cost.
 - **New docs page:** [Lists](/en/lists) (EN) and [/id/lists](/id/lists) (ID) — full reference with memory model and examples.
 - **Test Suite:** 440 tests passing (was 417; +23 lists tests: Int/String lists, growth, index read/write, generic `first<T>` over lists, IR shape).

@@ -39,7 +39,7 @@ Semua perubahan penting pada AHA! Lang didokumentasikan dalam berkas ini. Anda s
 ### Ditambahkan
 
 - **List\<T\> (F3e):** array dinamis generik yang dialokasikan di heap — `list_new()`, `list_new_string()`, `list_push`, `list_get`, `list_get_string`, `list_len`, `list_free`, index read `xs[i]` dan write `xs[i] = v`. Didukung struct header heap `{data, len, cap, elem_size}` dengan pertumbuhan `malloc`/`realloc`.
-- **Dukungan penuh List<String>:** elemen string menyimpan struct `{i8*, i64}` penuh — push/get/index/concat/`len()` semua berfungsi pada list string.
+- **Dukungan penuh List\<String\>:** elemen string menyimpan struct `{i8*, i64}` penuh — push/get/index/concat/`len()` semua berfungsi pada list string.
 - **Fungsi generik atas list:** `fn first<T>(xs: List<T>) -> T { xs[0] }` — parameter tipe `T` ter-bind ke tipe elemen dari hint `List<T>`; monomorphization meng-instantiasi `first_Int`/`first_String` per call site dengan nol biaya runtime.
 - **Halaman docs baru:** [Lists](/id/lists) (ID) dan [/en/lists](/en/lists) (EN) — referensi lengkap dengan model memori dan contoh.
 - **Rangkaian Pengujian:** 440 pengujian lulus (sebelumnya 417; +23 pengujian lists: list Int/String, pertumbuhan, index read/write, `first<T>` generik atas list, bentuk IR).
