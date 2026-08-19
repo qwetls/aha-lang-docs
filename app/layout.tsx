@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     siteName: "AHA! Lang",
     images: [
       {
-        url: `${siteUrl}logo.png`,
+        url: `${siteUrl}og.png`,
         width: 1200,
         height: 630,
         alt: "AHA! Lang - Easy to read. Powerful to wield.",
@@ -78,7 +78,7 @@ export const metadata: Metadata = {
     title: "AHA! Lang - Easy to read. Powerful to wield.",
     description:
       "A modern programming language with an LLVM backend. Lexer, Pratt parser, type system, LLVM IR codegen, and JIT execution — compiled in Rust.",
-    images: [`${siteUrl}logo.png`],
+    images: [`${siteUrl}og.png`],
   },
   robots: {
     index: true,

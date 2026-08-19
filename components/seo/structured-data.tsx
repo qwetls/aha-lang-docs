@@ -27,7 +27,7 @@ export function OrganizationStructuredData() {
     '@type': 'Organization',
     name: 'AHA! Lang',
     url: siteUrl,
-    logo: `${siteUrl}logo.png`,
+    logo: `${siteUrl}logo.svg`,
     sameAs: [
       'https://github.com/qwetls/aha-lang',
     ],

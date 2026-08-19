@@ -6,7 +6,7 @@ export const baseOptions: BaseLayoutProps = {
     title: (
       <div className="flex items-center gap-2">
         <Image
-          src="/logo.png"
+          src="/logo.svg"
           width={32}
           height={32}
           alt="AHA! Lang"

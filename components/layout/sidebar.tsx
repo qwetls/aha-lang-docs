@@ -141,7 +141,7 @@ export function Sidebar() {
       {/* logo */}
       <div className="pt-12 md:pt-16 pb-8">
         <Link href={homeHref} className="flex items-center gap-2.5">
-          <Image src="/logo.png" width={28} height={28} alt="AHA! Lang" />
+          <Image src="/logo.svg" width={28} height={28} alt="AHA! Lang" />
           <span className="text-[15px] font-semibold text-[#1c1917] dark:text-white/90 transition-colors">AHA! Lang</span>
         </Link>
       </div>
@@ -194,7 +194,7 @@ export function Sidebar() {
       {/* mobile topbar */}
       <div className="fixed top-0 left-0 right-0 z-50 md:hidden flex items-center justify-between px-6 h-14 bg-[#fafaf9]/90 dark:bg-[#0a0a0c]/90 backdrop-blur-md border-b border-stone-200/60 dark:border-white/5 transition-colors">
         <Link href={homeHref} className="flex items-center gap-2">
-          <Image src="/logo.png" width={24} height={24} alt="AHA! Lang" />
+          <Image src="/logo.svg" width={24} height={24} alt="AHA! Lang" />
           <span className="text-[14px] font-semibold text-[#1c1917] dark:text-white/90">AHA! Lang</span>
         </Link>
         <div className="flex items-center gap-2">
