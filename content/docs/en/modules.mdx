@@ -1,6 +1,6 @@
 ---
 title: Modules
-description: Multi-file compilation with `use` imports
+description: Multi-file compilation with `use` imports and namespace access
 icon: FolderOpen
 ---
 
@@ -12,11 +12,11 @@ AHA! Lang supports multi-file compilation via the `use` keyword. Split your prog
 
 **math.aha**
 ```rust
-fn add(a, b) {
+pub fn add(a, b) {
     a + b
 }
 
-fn multiply(a, b) {
+pub fn multiply(a, b) {
     a * b
 }
 ```
@@ -42,6 +42,39 @@ aha run main.aha
 - Import statements must be at the top of the file (before any code)
 - You can use a semicolon: `use "math";` (optional)
 
+## `pub` Keyword
+
+Mark functions and structs as public with `pub`:
+
+```rust
+// math.aha
+pub fn add(a, b) { a + b }
+pub struct Point { x, y }
+```
+
+`pub` indicates that an item is intended for external use. Currently, all imported items are accessible regardless of `pub` — the flag is stored for future visibility enforcement.
+
+## Qualified Access (`module::name`)
+
+Access items from a specific module using `module::name` syntax:
+
+```rust
+use "math"
+
+let x = math::add(3, 4)
+let y = math::multiply(5, 6)
+```
+
+This is useful when multiple modules export items with the same name — the qualifier disambiguates which one you mean.
+
+Flat access (without `module::`) still works for backward compatibility:
+
+```rust
+use "math"
+
+let x = add(3, 4)  // same as math::add(3, 4)
+```
+
 ## Path Resolution
 
 When you write `use "math"`, the compiler looks for:
@@ -55,7 +88,7 @@ Files can import other files:
 
 **base.aha**
 ```rust
-fn inc(x) {
+pub fn inc(x) {
     x + 1
 }
 ```
@@ -64,7 +97,7 @@ fn inc(x) {
 ```rust
 use "base"
 
-fn double_inc(x) {
+pub fn double_inc(x) {
     inc(inc(x))
 }
 ```
@@ -99,4 +132,5 @@ The compiler detects circular imports and reports an error. If file A imports B 
 
 - Only function and struct definitions are imported (not variables or expressions)
 - No namespace prefix needed — imported names are available directly
+- Visibility filtering (enforcing `pub` for cross-file access) is planned for a future release
 - Package manager (dependency management) is planned for a future release

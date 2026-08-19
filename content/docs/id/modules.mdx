@@ -1,6 +1,6 @@
 ---
 title: Modul
-description: Kompilasi multi-file dengan import `use`
+description: Kompilasi multi-file dengan import `use` dan akses namespace
 icon: FolderOpen
 ---
 
@@ -12,11 +12,11 @@ AHA! Lang mendukung kompilasi multi-file melalui keyword `use`. Bagi program And
 
 **math.aha**
 ```rust
-fn add(a, b) {
+pub fn add(a, b) {
     a + b
 }
 
-fn multiply(a, b) {
+pub fn multiply(a, b) {
     a * b
 }
 ```
@@ -42,6 +42,39 @@ aha run main.aha
 - Pernyataan import harus di atas file (sebelum kode apapun)
 - Bisa menggunakan titik koma: `use "math";` (opsional)
 
+## Keyword `pub`
+
+Tandai fungsi dan struct sebagai publik dengan `pub`:
+
+```rust
+// math.aha
+pub fn add(a, b) { a + b }
+pub struct Point { x, y }
+```
+
+`pub` menandakan bahwa item ditujukan untuk penggunaan eksternal. Saat ini, semua item dari import tetap accessible terlepas dari `pub` — flag disimpan untuk enforce visibility di masa depan.
+
+## Akses Qualified (`module::name`)
+
+Akses item dari modul tertentu menggunakan sintaks `module::name`:
+
+```rust
+use "math"
+
+let x = math::add(3, 4)
+let y = math::multiply(5, 6)
+```
+
+ Berguna saat beberapa modul mengekspor item dengan nama yang sama — qualifier membedakan mana yang Anda maksud.
+
+Akses flat (tanpa `module::`) masih berfungsi untuk backward compatibility:
+
+```rust
+use "math"
+
+let x = add(3, 4)  // sama dengan math::add(3, 4)
+```
+
 ## Resolusi Path
 
 Ketika Anda menulis `use "math"`, compiler mencari:
@@ -55,7 +88,7 @@ File bisa mengimport file lain:
 
 **base.aha**
 ```rust
-fn inc(x) {
+pub fn inc(x) {
     x + 1
 }
 ```
@@ -64,7 +97,7 @@ fn inc(x) {
 ```rust
 use "base"
 
-fn double_inc(x) {
+pub fn double_inc(x) {
     inc(inc(x))
 }
 ```
@@ -99,4 +132,5 @@ Compiler mendeteksi import sirkular dan melaporkan error. Jika file A mengimport
 
 - Hanya definisi fungsi dan struct yang di-import (bukan variabel atau ekspresi)
 - Tidak perlu prefix namespace — nama yang di-import langsung tersedia
+- Filtering visibility (enforce `pub` untuk akses lintas file) direncanakan untuk rilis mendatang
 - Package manager (manajemen dependensi) direncanakan untuk rilis mendatang
