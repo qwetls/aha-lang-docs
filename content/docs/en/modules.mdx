@@ -1,0 +1,102 @@
+---
+title: Modules
+description: Multi-file compilation with `use` imports
+icon: FolderOpen
+---
+
+# Modules
+
+AHA! Lang supports multi-file compilation via the `use` keyword. Split your program into multiple `.aha` files and import functions/structs from one file into another.
+
+## Basic Usage
+
+**math.aha**
+```aha
+fn add(a, b) {
+    a + b
+}
+
+fn multiply(a, b) {
+    a * b
+}
+```
+
+**main.aha**
+```aha
+use "math"
+
+let x = add(3, 4)
+let y = multiply(5, 6)
+x + y
+```
+
+Run it:
+```bash
+aha run main.aha
+```
+
+## How It Works
+
+- `use "filename"` imports all function definitions and struct definitions from `filename.aha`
+- The imported definitions are available in the current file's scope
+- Import statements must be at the top of the file (before any code)
+- You can use a semicolon: `use "math";` (optional)
+
+## Path Resolution
+
+When you write `use "math"`, the compiler looks for:
+
+1. `math.aha` in the same directory as the current file
+2. `math/mod.aha` (directory module)
+
+## Chain Imports
+
+Files can import other files:
+
+**base.aha**
+```aha
+fn inc(x) {
+    x + 1
+}
+```
+
+**utils.aha**
+```aha
+use "base"
+
+fn double_inc(x) {
+    inc(inc(x))
+}
+```
+
+**main.aha**
+```aha
+use "utils"
+
+double_inc(5)
+```
+
+The compiler resolves imports recursively — `main.aha` imports `utils.aha`, which imports `base.aha`. All functions end up in a single compilation unit.
+
+## Multiple Imports
+
+You can import from multiple files:
+
+```aha
+use "math"
+use "strings"
+
+let x = add(10, 20)
+let s = shout("hello")
+x + len(s)
+```
+
+## Cycle Detection
+
+The compiler detects circular imports and reports an error. If file A imports B and B imports A, compilation fails with a clear error message.
+
+## Limitations
+
+- Only function and struct definitions are imported (not variables or expressions)
+- No namespace prefix needed — imported names are available directly
+- Package manager (dependency management) is planned for a future release

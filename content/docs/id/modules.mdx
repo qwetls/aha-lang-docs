@@ -1,0 +1,102 @@
+---
+title: Modul
+description: Kompilasi multi-file dengan import `use`
+icon: FolderOpen
+---
+
+# Modul
+
+AHA! Lang mendukung kompilasi multi-file melalui keyword `use`. Bagi program Anda menjadi beberapa file `.aha` dan import fungsi/struct dari satu file ke file lainnya.
+
+## Dasar Penggunaan
+
+**math.aha**
+```aha
+fn add(a, b) {
+    a + b
+}
+
+fn multiply(a, b) {
+    a * b
+}
+```
+
+**main.aha**
+```aha
+use "math"
+
+let x = add(3, 4)
+let y = multiply(5, 6)
+x + y
+```
+
+Jalankan:
+```bash
+aha run main.aha
+```
+
+## Cara Kerja
+
+- `use "filename"` mengimport semua definisi fungsi dan definisi struct dari `filename.aha`
+- Definisi yang di-import tersedia dalam scope file saat ini
+- Pernyataan import harus di atas file (sebelum kode apapun)
+- Bisa menggunakan titik koma: `use "math";` (opsional)
+
+## Resolusi Path
+
+Ketika Anda menulis `use "math"`, compiler mencari:
+
+1. `math.aha` di direktori yang sama dengan file saat ini
+2. `math/mod.aha` (modul direktori)
+
+## Chain Import
+
+File bisa mengimport file lain:
+
+**base.aha**
+```aha
+fn inc(x) {
+    x + 1
+}
+```
+
+**utils.aha**
+```aha
+use "base"
+
+fn double_inc(x) {
+    inc(inc(x))
+}
+```
+
+**main.aha**
+```aha
+use "utils"
+
+double_inc(5)
+```
+
+Compiler meresolusi import secara rekursif — `main.aha` mengimport `utils.aha`, yang mengimport `base.aha`. Semua fungsi akhirnya menjadi satu unit kompilasi.
+
+## Multiple Import
+
+Anda bisa import dari beberapa file:
+
+```aha
+use "math"
+use "strings"
+
+let x = add(10, 20)
+let s = shout("hello")
+x + len(s)
+```
+
+## Deteksi Siklus
+
+Compiler mendeteksi import sirkular dan melaporkan error. Jika file A mengimport B dan B mengimport A, kompilasi gagal dengan pesan error yang jelas.
+
+## Keterbatasan
+
+- Hanya definisi fungsi dan struct yang di-import (bukan variabel atau ekspresi)
+- Tidak perlu prefix namespace — nama yang di-import langsung tersedia
+- Package manager (manajemen dependensi) direncanakan untuk rilis mendatang
