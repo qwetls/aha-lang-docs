@@ -8,6 +8,24 @@ icon: ListTodo
 
 Semua perubahan penting pada AHA! Lang didokumentasikan dalam berkas ini. Anda selalu dapat membangun versi terbaru dari kode sumber — lihat [Getting Started](/id/getting-started).
 
+## 1.4.9 — 2026-08-19
+
+### Diperbaiki
+
+- **Map\<K,V\> grow-on-load-factor:** `_set` sekarang menumbuhkan hash table saat `len >= cap`, mencegah kehilangan data secara diam-diam. Sebelumnya map tetap di 4 slot — entri terjatuh secara diam-diam saat penuh. Pertumbuhan: alokasi buffer 2× lipat, rehash entri terisi, bebaskan buffer lama, perbarui header.
+- **Kast pointer string pada rehash:** jalur rehash memuat kunci/nilai string melalui pointer `i8*`, mengembalikan `i8` (byte) alih-alih `i8*` (pointer). Diperbaiki pada 6 situs kast sehingga `build_load` mengembalikan nilai pointer yang benar. Memperbaiki panic inkwell: `Found IntValue but expected PointerValue variant`.
+
+## 1.4.8 — 2026-08-18
+
+### Diperbaiki
+
+- **Map\<K,V\> SIGSEGV (signal 11):** 5 bug diperbaiki di `codegen.rs` `emit_map_combo` — 21 test map sekarang lulus di CI.
+  - Akses flag occupied menggunakan `build_int_to_ptr` menghasilkan alamat absolut → diperbaiki dengan `build_gep` pada `i8*` data ptr + `build_pointer_cast` ke `i64*`.
+  - `store_val`/`load_val` menggunakan `build_gep(i64*, [byte_offset])` yang mengalikan sizeof(i64)=8 → corrupt heap. Diperbaiki dengan `build_int_to_ptr(ptr_to_int(slot_base) + byte_offset, i64*)`.
+  - Probe loop `_set` dimulai dari counter=1, melewati slot awal → overwrite gagal secara diam-diam. Diperbaiki dengan menambahkan blok `init_check` dengan `key_cmp` sebelum loop overflow.
+  - `key_cmp` untuk kunci String membandingkan alamat pointer mentah, bukan konten → gunakan `memcmp`.
+  - Fungsi test `length(s)` diubah nama menjadi `len(s)` sesuai builtin AHA!.
+
 ## 1.4.7 — 2026-08-17
 
 ### Ditambahkan

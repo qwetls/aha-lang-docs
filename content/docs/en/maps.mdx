@@ -110,7 +110,7 @@ Each Map handle is an `i64` pointer to a heap-allocated header struct:
 | `key_size` | `i64` | Bytes per key (8 for Int, 16 for String) |
 | `val_size` | `i64` | Bytes per value (8 for Int, 16 for String) |
 
-Each slot contains: `[key_bytes | value_bytes | occupied_flag(i64)]`. The initial capacity is 4 slots. Growth happens on the first `map_set` when `cap == 0`.
+Each slot contains: `[key_bytes | value_bytes | occupied_flag(i64)]`. The initial capacity is 4 slots. When `len >= cap`, `map_set` allocates a new buffer at 2× size, rehashes all occupied entries into it, frees the old buffer, and updates the header. This prevents silent data loss when the map is full.
 
 ## Deterministic Hashing
 

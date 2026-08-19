@@ -11,7 +11,7 @@ Setiap bahasa yang serius butuh peta jalan yang jujur. Ini dia roadmap AHA! Lang
 
 ## ✅ Sudah Terwujud
 
-Fondasi bahasa lengkap dan diuji oleh **440 test otomatis** di CI:
+Fondasi bahasa lengkap dan diuji oleh **441+ test otomatis** di CI:
 
 - **Lexer & Pratt parser** dengan pelaporan error yang jelas
 - **Tipe `Int`, `Bool`, `String`** dengan type-checking pass di compile-time
@@ -49,7 +49,17 @@ Struct kini berfungsi penuh di runtime:
 - **Monomorphization**: setiap kombinasi unik (nama, tipe konkret) menjadi fungsi LLVM terpisah — nol biaya runtime
 - **Banyak type params**: `fn first<A, B>(a: A, b: B) -> A`
 - **Anotasi return type**: `-> T`, `-> int`
-- **`List<T>` (F3e)**: array dinamis generik di heap — `list_new`, `list_new_string`, `list_push`, `list_get`, `list_len`, `list_free`, index read/write `xs[i]`. Fungsi generik mengikat `T` dari hint `List<T>` (`fn first<T>(xs: List<T>) -> T { xs[0] }`), meng-instantiasi `first_Int`/`first_String` per call site. **Stabil di `experimental/list` — 440 test hijau.**
+- **`List<T>` (F3e)**: array dinamis generik di heap — `list_new`, `list_new_string`, `list_push`, `list_get`, `list_len`, `list_free`, index read/write `xs[i]`. Fungsi generik mengikat `T` dari hint `List<T>` (`fn first<T>(xs: List<T>) -> T { xs[0] }`), meng-instantiasi `first_Int`/`first_String` per call site. **Stabil di `experimental/list` — 441+ test hijau.**
+
+### Map\<K,V\> (F3e) — Selesai
+
+Hash table deterministik dengan open addressing dan linear probing:
+
+- **4 kombinasi**: `Map<Int,Int>`, `Map<String,Int>`, `Map<Int,String>`, `Map<String,String>` — masing-masing dengan prefix tersendiri (`map_`, `map_string_key_`, `map_string_val_`, `map_strings_`)
+- **Builtins**: `map_new`, `map_set`, `map_get`, `map_contains`, `map_remove`, `map_len`, `map_free`
+- **Hashing deterministik**: `splitmix64` (kunci Int), FNV-1a (kunci String) — tanpa keacakan, tanpa GC pause
+- **Grow-on-load-factor**: map tumbuh otomatis saat `len >= cap`, rehash ke buffer 2× lipat, bebaskan buffer lama
+- **Stabil di `development` — 441+ test hijau.**
 
 ## 🚧 Sedang dalam Pengerjaan (Phase 2)
 
@@ -59,19 +69,15 @@ Inilah yang paling menarik — arah besar bahasa ke depan:
 
 `aha install` — ekosistem paket untuk membagikan dan memakai pustaka. Pintu gerbang menuju proyek berskala besar.
 
-### 2. Map<K,V> (sisa F3e)
-
-Setelah `List<T>` stabil dan digabung ke `development`, struktur data generik berikutnya adalah `Map<K,V>`.
-
-### 3. Resource Lifetimes (F5) — Dibekukan Sementara
+### 2. Resource Lifetimes (F5) — Dibekukan Sementara
 
 Manajemen memori manual yang aman — tanpa garbage collector, tanpa kebocoran memori. **F5 sengaja dibekukan** sampai F1–F4 stabil: stabilkan dulu, lalu melangkah sedikit demi sedikit.
 
-### 4. Actor-Model Concurrency (F6)
+### 3. Actor-Model Concurrency (F6)
 
 Konkurensi dengan message passing — memanfaatkan banyak inti prosesor tanpa sakit kepala.
 
-### 5. Self-Hosting (F7)
+### 4. Self-Hosting (F7)
 
 Tujuan akhir: **kompiler AHA! Lang ditulis dalam AHA! Lang sendiri**. Saat tercapai, bahasa ini membuktikan kedewasaannya.
 

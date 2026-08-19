@@ -110,7 +110,7 @@ Setiap handle Map adalah pointer `i64` ke struct header yang dialokasikan di hea
 | `key_size` | `i64` | Byte per kunci (8 untuk Int, 16 untuk String) |
 | `val_size` | `i64` | Byte per nilai (8 untuk Int, 16 untuk String) |
 
-Setiap slot berisi: `[key_bytes | value_bytes | occupied_flag(i64)]`. Kapasitas awal adalah 4 slot. Pertumbuhan terjadi pada `map_set` pertama ketika `cap == 0`.
+Setiap slot berisi: `[key_bytes | value_bytes | occupied_flag(i64)]`. Kapasitas awal adalah 4 slot. Saat `len >= cap`, `map_set` mengalokasikan buffer baru berukuran 2× lipat, memindahkan semua entri yang terisi (rehash), membebaskan buffer lama, dan memperbarui header. Strategi ini mencegah kehilangan data secara diam-diam ketika map penuh.
 
 ## Hashing Deterministik
 
