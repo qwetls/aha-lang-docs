@@ -22,6 +22,7 @@ import {
   Brackets,
   SquareTerminal,
   FileCode,
+  FolderOpen,
 } from "lucide-react";
 
 export type Locale = "en" | "id";
@@ -43,6 +44,7 @@ const icons = {
   Brackets,
   SquareTerminal,
   FileCode,
+  FolderOpen,
 };
 
 export function icon(icon?: string) {
