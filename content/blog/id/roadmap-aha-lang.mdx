@@ -61,6 +61,15 @@ Hash table deterministik dengan open addressing dan linear probing:
 - **Grow-on-load-factor**: map tumbuh otomatis saat `len >= cap`, rehash ke buffer 2× lipat, bebaskan buffer lama
 - **Stabil di `development` — 441+ test hijau.**
 
+### AutoFree (Manajemen Memori) — Fase 1 Selesai
+
+Manajemen memori otomatis khusus compiler AHA!. Tanpa GC, tanpa reference counting — compiler menyisipkan panggilan `free` di scope exit untuk variabel heap (`Map`, `List`).
+
+- **Fase 1 (diimplementasi):** scope-based free — semua variabel heap di-free saat return fungsi
+- **Fase 2 (rencana):** last-use analysis — free di titik last use, bukan scope exit
+- **Fase 3 (rencana):** escape analysis — lewati free yang tidak perlu, aktifkan stack allocation
+- **Lihat:** [Manajemen Memori](/id/memory-management) untuk referensi lengkap
+
 ## 🚧 Sedang dalam Pengerjaan (Phase 2)
 
 Inilah yang paling menarik — arah besar bahasa ke depan:
@@ -71,7 +80,7 @@ Inilah yang paling menarik — arah besar bahasa ke depan:
 
 ### 2. Resource Lifetimes (F5) — Dibekukan Sementara
 
-Manajemen memori manual yang aman — tanpa garbage collector, tanpa kebocoran memori. **F5 sengaja dibekukan** sampai F1–F4 stabil: stabilkan dulu, lalu melangkah sedikit demi sedikit.
+Semantik ownership dan pelacakan lifetime di atas AutoFree — tanpa garbage collector, tanpa kebocoran memori. **F5 sengaja dibekukan** sampai F1–F4 stabil. AutoFree Fase 1 (scope-based free) sudah menangani manajemen memori dasar; F5 akan menambahkan transfer ownership, borrowing, dan verifikasi lifetime di compile-time.
 
 ### 3. Actor-Model Concurrency (F6)
 

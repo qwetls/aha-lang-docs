@@ -1,0 +1,133 @@
+---
+title: Manajemen Memori
+description: AutoFree — manajemen memori otomatis khusus compiler AHA!, zero GC, zero leak
+icon: Shield
+---
+
+# Manajemen Memori: AutoFree
+
+AHA! menggunakan **AutoFree** — sistem manajemen memori otomatis yang disisipkan oleh compiler. Tanpa garbage collector, tanpa reference counting, tanpa jeda runtime. Compiler menganalisis kode kamu dan menyisipkan panggilan `free` di tempat yang tepat agar data heap dilepaskan secara deterministik.
+
+Ini menjadikan AHA! cocok untuk workload yang membutuhkan latensi prediktif: aerospace, game engine, sistem real-time.
+
+## Cara Kerja
+
+Ketika kamu menulis:
+
+```rust
+let m = map_new();
+let m2 = map_set(m, 1, 100);
+```
+
+Compiler melacak bahwa `m` dan `m2` adalah handle `Map` yang dialokasikan di heap. Di akhir scope (keluar fungsi), compiler secara otomatis menyisipkan:
+
+```rust
+map_free(m);
+map_free(m2);
+```
+
+Kamu tidak perlu menulis `free` secara manual — compiler melakukannya untukmu.
+
+## Apa yang di-Auto-Freed
+
+AutoFree berlaku untuk tiga tipe heap-allocated:
+
+| Tipe | Fungsi free | Apa yang dilepaskan |
+|------|-------------|---------------------|
+| `Map<K,V>` | `map_free(m)` | Struct header + buffer slot |
+| `List<T>` | `list_free(xs)` | Struct header + buffer elemen |
+| `String` | *(dalam rencana)* | Buffer struct `{i8*, i64}` |
+
+## Tiga Fase AutoFree
+
+AutoFree dirancang dalam tiga fase, masing-masing membangun yang sebelumnya:
+
+### Fase 1: Scope-Based Free *(sudah diimplementasi)*
+
+Pendekatan paling sederhana dan konservatif. Di setiap keluar scope (return fungsi, akhir blok), compiler menghasilkan panggilan `free` untuk **semua** variabel lokal heap-allocated yang belum di-free.
+
+**Yang dilakukan:**
+- Melacak variabel mana yang heap-allocated (`Map`, `List`, `String`) di scope stack
+- Mengecualikan parameter fungsi (dimiliki oleh caller)
+- Melewati variabel yang sudah di-free oleh kode user (mencegah double-free)
+- Menyisipkan panggilan `free` inline tepat sebelum return terminator
+
+**Keterbatasan:** Semua di-free di scope exit, bahkan variabel yang masih dibutuhkan nanti (mis. nilai return atau nilai yang dipindahkan ke struct). Ini aman tapi tidak optimal — mungkin me-free data yang bisa digunakan kembali.
+
+```rust
+fn contoh() {
+    let m = map_new();
+    let m2 = map_set(m, 1, 100);
+    // compiler menyisipkan: map_free(m); map_free(m2); sebelum return
+}
+```
+
+### Fase 2: Last-Use Analysis *(dalam rencana)*
+
+Alih-alih free di scope exit, compiler menganalisis **di mana variabel terakhir kali digunakan** dan menyisipkan panggilan free tepat setelah titik tersebut.
+
+**Yang diaktifkan:**
+- Deallocation lebih awal → penggunaan memori puncak lebih kecil
+- Memori yang bebas bisa digunakan kembali dalam scope yang sama
+- Pelacakan lifetime yang lebih presisi
+
+**Contoh:**
+
+```rust
+fn proses() {
+    let m = map_new();          // dialokasikan di sini
+    let m2 = map_set(m, 1, 100);
+    print(map_get(m2, 1));      // last use of m → free m di sini
+    let m3 = map_new();         // menggunakan memori yang dilepaskan dari m
+    map_free(m3);
+}
+```
+
+Dengan Fase 1, `m` di-free di scope exit (setelah `m3` dibuat). Dengan Fase 2, `m` di-free tepat setelah `print(...)`, mengurangi penggunaan memori puncak.
+
+### Fase 3: Escape Analysis *(dalam rencana)*
+
+Compiler menganalisis apakah sebuah nilai heap-allocated **melarikan diri** dari scope saat ini (mis. dikembalikan dari fungsi, disimpan di global, diberikan ke callback). Jika tidak melarikan diri, compiler tahu aman untuk free — dan bisa melewati panggilan free sama sekali untuk nilai yang tidak perlu dialokasikan di heap.
+
+**Yang diaktifkan:**
+- Menghilangkan alokasi yang tidak perlu (nilai yang bisa stack-allocated tetap di stack)
+- Melewati panggilan free untuk nilai yang tidak membutuhkannya
+- Mengaktifkan optimasi lebih lanjut: inlining, scalar replacement
+
+**Contoh:**
+
+```rust
+fn buat_point() -> Point {
+    Point { x: 1, y: 2 }  // escape analysis: Point melarikan diri (dikembalikan)
+                           // → JANGAN auto-free, caller yang memiliki
+}
+
+fn proses() {
+    let tmp = map_new();   // tmp TIDAK melarikan diri → free di scope exit
+    let v = map_get(tmp, 1);
+    map_free(tmp);         // atau compiler-inserted jika user lupa
+    return v;
+}
+```
+
+## Filosofi Desain
+
+| Prinsip | Mengapa |
+|---------|---------|
+| **Tanpa GC** | Nol jeda runtime — kritis untuk sistem real-time |
+| **Tanpa reference counting** | Tanpa operasi atomik, tanpa leak siklik |
+| **Disisipkan compiler** | Deterministik — kamu bisa melihat tepat kapan memori di-free |
+| **Deterministik** | Kode yang sama, pola alokasi yang sama, setiap run |
+| **Progresif** | Fase 1 sudah jalan; Fase 2–3 adalah optimasi, bukan perbaikan korektif |
+
+## Keterbatasan Saat Ini
+
+- **Hanya Fase 1:** free terjadi di scope exit, bukan di last use — penggunaan memori puncak sedikit lebih tinggi dari yang diperlukan
+- **Belum ada string free:** auto-free `String` belum diimplementasi (string adalah struct `{i8*, i64}` tapi belum punya builtin `string_free`)
+- **Belum ada pelacakan ownership:** F5 (Resource Lifetimes) dibekukan sampai F1–F4 stabil — ini akan menambahkan semantik ownership di atas AutoFree
+
+## Terkait
+
+- [Lists](/id/lists) — alokasi heap `List<T>` dan `list_free`
+- [Maps](/id/maps) — alokasi heap `Map<K,V>` dan `map_free`
+- [Changelog](/id/changelog) — riwayat perubahan AutoFree

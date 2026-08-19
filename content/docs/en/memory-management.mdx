@@ -1,0 +1,133 @@
+---
+title: Memory Management
+description: AutoFree — AHA!'s compiler-inserted automatic memory management, zero GC, zero leaks
+icon: Shield
+---
+
+# Memory Management: AutoFree
+
+AHA! uses **AutoFree** — a compiler-inserted automatic memory management system. No garbage collector, no reference counting, no runtime pauses. The compiler analyzes your code and inserts `free` calls at the right places so heap-allocated data is released deterministically.
+
+This makes AHA! suitable for workloads where latency must be predictable: aerospace, game engines, real-time systems.
+
+## How It Works
+
+When you write:
+
+```rust
+let m = map_new();
+let m2 = map_set(m, 1, 100);
+```
+
+The compiler tracks that `m` and `m2` are heap-allocated `Map` handles. At the end of the scope (function exit), it automatically inserts:
+
+```rust
+map_free(m);
+map_free(m2);
+```
+
+You never write `free` manually — the compiler does it for you.
+
+## What Gets Auto-Freed
+
+AutoFree applies to three heap-allocated types:
+
+| Type | Free function | What is released |
+|------|---------------|------------------|
+| `Map<K,V>` | `map_free(m)` | Header struct + slot buffer |
+| `List<T>` | `list_free(xs)` | Header struct + element buffer |
+| `String` | *(planned)* | `{i8*, i64}` struct buffer |
+
+## The Three Phases of AutoFree
+
+AutoFree is designed in three phases, each building on the previous one:
+
+### Phase 1: Scope-Based Free *(implemented)*
+
+The simplest and most conservative approach. At every scope exit (function return, block end), the compiler emits `free` calls for **all** heap-allocated local variables that haven't been freed yet.
+
+**What it does:**
+- Tracks which variables are heap-allocated (`Map`, `List`, `String`) in the scope stack
+- Excludes function parameters (owned by the caller)
+- Skips variables already freed by user code (prevents double-free)
+- Inserts `free` calls inline just before the return terminator
+
+**Limitation:** It frees everything at scope exit, even variables that are still needed later (e.g., returned values or values moved into a struct). This is safe but not optimal — it may free data that could have been reused.
+
+```rust
+fn example() {
+    let m = map_new();
+    let m2 = map_set(m, 1, 100);
+    // compiler inserts: map_free(m); map_free(m2); before return
+}
+```
+
+### Phase 2: Last-Use Analysis *(planned)*
+
+Instead of freeing at scope exit, the compiler analyzes **where each variable is last used** and inserts the free call right after that point.
+
+**What it enables:**
+- Earlier deallocation → smaller peak memory usage
+- Free memory can be reused within the same scope
+- More precise lifetime tracking
+
+**Example:**
+
+```rust
+fn process() {
+    let m = map_new();          // allocated here
+    let m2 = map_set(m, 1, 100);
+    print(map_get(m2, 1));      // last use of m → free m here
+    let m3 = map_new();         // reuses memory freed from m
+    map_free(m3);
+}
+```
+
+With Phase 1, `m` is freed at scope exit (after `m3` is created). With Phase 2, `m` is freed right after `print(...)`, reducing peak memory.
+
+### Phase 3: Escape Analysis *(planned)*
+
+The compiler analyzes whether a heap-allocated value **escapes** the current scope (e.g., returned from a function, stored in a global, passed to a callback). If it doesn't escape, the compiler knows it's safe to free — and can skip the free entirely for values that are never heap-allocated in the first place.
+
+**What it enables:**
+- Eliminate unnecessary allocations (stack-allocatable values stay on stack)
+- Skip free calls for values that don't need them
+- Enable further optimizations: inlining, scalar replacement
+
+**Example:**
+
+```rust
+fn create_point() -> Point {
+    Point { x: 1, y: 2 }  // escape analysis: Point escapes (returned)
+                           // → do NOT auto-free, caller owns it
+}
+
+fn process() {
+    let tmp = map_new();   // tmp does NOT escape → free it at scope exit
+    let v = map_get(tmp, 1);
+    map_free(tmp);         // or compiler-inserted if user forgets
+    return v;
+}
+```
+
+## Design Philosophy
+
+| Principle | Why |
+|-----------|-----|
+| **No GC** | Zero runtime pauses — critical for real-time systems |
+| **No reference counting** | No atomic operations, no cyclic reference leaks |
+| **Compiler-inserted** | Deterministic — you can see exactly when memory is freed |
+| **Deterministic** | Same code, same allocation pattern, every run |
+| **Progressive** | Phase 1 works now; Phase 2–3 are optimizations, not correctness fixes |
+
+## Current Limitations
+
+- **Phase 1 only:** free happens at scope exit, not at last use — slightly higher peak memory than necessary
+- **No string free:** `String` auto-free is not yet implemented (strings are `{i8*, i64}` structs but lack a `string_free` builtin)
+- **No ownership tracking:** F5 (Resource Lifetimes) is frozen until F1–F4 are stable — this will add ownership semantics on top of AutoFree
+
+## Related
+
+- [Lists](/en/lists) — `List<T>` heap allocation and `list_free`
+- [Maps](/en/maps) — `Map<K,V>` heap allocation and `map_free`
+- [Changelog](/en/changelog) — version history of AutoFree changes

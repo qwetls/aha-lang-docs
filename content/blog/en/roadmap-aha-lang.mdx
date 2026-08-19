@@ -61,6 +61,15 @@ Deterministic hash table with open addressing and linear probing:
 - **Grow-on-load-factor**: map grows automatically when `len >= cap`, rehashes into 2× buffer, frees old buffer
 - **Stable on `development` — 441+ tests green.**
 
+### AutoFree (Memory Management) — Phase 1 Complete
+
+AHA!'s compiler-inserted automatic memory management. No GC, no reference counting — the compiler inserts `free` calls at scope exit for heap-allocated locals (`Map`, `List`).
+
+- **Phase 1 (implemented):** scope-based free — all heap locals freed at function return
+- **Phase 2 (planned):** last-use analysis — free at last use point, not scope exit
+- **Phase 3 (planned):** escape analysis — skip unnecessary frees, enable stack allocation
+- **See:** [Memory Management](/en/memory-management) for full reference
+
 ## 🚧 In Progress (Phase 2)
 
 This is the most exciting part — the big direction of the language:
@@ -71,7 +80,7 @@ This is the most exciting part — the big direction of the language:
 
 ### 2. Resource Lifetimes (F5) — Temporarily Frozen
 
-Safe manual memory management — no garbage collector, no memory leaks. **F5 is deliberately frozen** until F1–F4 are stable: stabilize first, then move step by step.
+Ownership semantics and lifetime tracking on top of AutoFree — no garbage collector, no memory leaks. **F5 is deliberately frozen** until F1–F4 are stable. AutoFree Phase 1 (scope-based free) already handles basic memory management; F5 will add ownership transfer, borrowing, and compile-time lifetime verification.
 
 ### 3. Actor-Model Concurrency (F6)
 
