@@ -13,6 +13,8 @@ icon: Braces
 | `Int` | 64-bit integer — the universal numeric type |
 | `Bool` | `true` / `false` literals; produced by `!` |
 | `String` | `"..."` with escape sequences (`\n`, `\t`, `\\`, `\"`, `\r`, `\0`) |
+| `Enum` | `enum Name { A, B(int), C(int, int) }` — unit or tuple variants |
+| `Struct` | `struct Name { field: type }` — named fields |
 
 ## Operators
 
@@ -96,6 +98,76 @@ for i in 0..100 {
     total = total + i;
 }
 total // 0 + 1 + 2 + 3 + 4 = 10
+```
+
+## Enums & Pattern Matching
+
+### Defining enums
+
+Enums have **unit variants** (no data) and **tuple variants** (typed payload):
+
+```rust
+enum Day { Mon, Tue, Wed, Thu, Fri, Sat, Sun }
+enum Op { Add(int, int), Sub(int, int) }
+enum Option { Some(int), None }
+```
+
+### Constructing enum values
+
+Unit variants are called like functions with no arguments. Tuple variants take typed arguments:
+
+```rust
+let d = Sat()
+let op = Add(10, 20)
+let x = Some(42)
+```
+
+### Matching
+
+`match` dispatches on the variant tag. Every match must cover all variants or include a wildcard `_`:
+
+```rust
+fn is_weekend(d: Day) -> int {
+    match d {
+        Sat => 1,
+        Sun => 1,
+        _ => 0,
+    }
+}
+```
+
+### Destructuring
+
+Tuple variants bind their payload to local variables:
+
+```rust
+fn calc(op: Op) -> int {
+    match op {
+        Add(a, b) => a + b,
+        Sub(a, b) => a - b,
+        _ => 0,
+    }
+}
+
+calc(Add(10, 20)) // 30
+```
+
+### Nested enums
+
+Enums can hold other enum values:
+
+```rust
+enum Inner { A(int), B }
+enum Outer { X(Inner), Y }
+
+let o = X(A(7))
+match o {
+    X(inner) => match inner {
+        A(v) => v * 3,
+        B => 0,
+    },
+    Y => -1,
+}
 ```
 
 ## Comments
