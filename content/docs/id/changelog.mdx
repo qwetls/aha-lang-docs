@@ -8,6 +8,18 @@ icon: ListTodo
 
 Semua perubahan penting pada AHA! Lang didokumentasikan dalam berkas ini. Anda selalu dapat membangun versi terbaru dari kode sumber — lihat [Getting Started](/id/getting-started).
 
+## 1.6.3 — 2026-08-21
+
+### Ditambahkan
+
+- **Penanganan Error (F9):** Tipe `Result<T, E>` bawaan — tagged union `{i64 tag, i64 payload}`, tag 0=Ok, tag 1=Err.
+- **Konstruktor `ok(val)` dan `err("msg")`** — membuat nilai Result tanpa kata kunci baru. Ditangani sebagai builtin di compiler.
+- **Operator postfix `?`** — mengecek tag, membuka payload pada Ok, early-returns pada Err. Menghormati tipe kembalian fungsi.
+- **Inferensi tipe:** `ok()`/`err()` secara tepat menginfer sebagai `Result<T, string>` untuk pengecekan tipe kembalian.
+- **Parser:** `parse_type_hint` membedakan `Result<T, E>` dari `Map<K, V>` menggunakan nama identifier.
+- **Test:** 6 test baru (2 runtime, 4 compile-only) mencakup `?` unwrap, chaining, Result sebagai tipe kembalian, dan propagasi error.
+- **PRD v0.4:** Milestone penanganan error didokumentasikan.
+
 ## 1.5.0 — 2026-08-19
 
 ### Ditambahkan

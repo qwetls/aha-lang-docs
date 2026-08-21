@@ -8,6 +8,18 @@ icon: ListTodo
 
 All notable changes to AHA! Lang are documented in this file. You can always build the latest from source — see [Getting Started](/en/getting-started).
 
+## 1.6.3 — 2026-08-21
+
+### Added
+
+- **Error Handling (F9):** `Result<T, E>` built-in type — tagged union `{i64 tag, i64 payload}`, tag 0=Ok, tag 1=Err.
+- **`ok(val)` and `err("msg")` constructors** — create Result values without new keywords. Handled as builtins in the compiler.
+- **`?` postfix operator** — checks tag, unwraps payload on Ok, early-returns on Err. Respects function return type.
+- **Type inference:** `ok()`/`err()` properly infer as `Result<T, string>` for return type checking.
+- **Parser:** `parse_type_hint` distinguishes `Result<T, E>` from `Map<K, V>` using the identifier name.
+- **Tests:** 6 new tests (2 runtime, 4 compile-only) covering `?` unwrap, chaining, Result as return type, and error propagation.
+- **PRD v0.4:** Error handling milestone documented.
+
 ## 1.6.0 — 2026-08-20
 
 ### Added

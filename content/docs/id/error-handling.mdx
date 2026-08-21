@@ -1,0 +1,118 @@
+---
+title: Penanganan Error
+description: Tipe Result<T, E>, konstruktor ok/err, dan operator ? untuk propagasi error yang ergonomis
+icon: ShieldAlert
+---
+
+# Penanganan Error
+
+AHA! menyediakan **`Result<T, E>`** — tipe tagged union bawaan untuk propagasi error tanpa exception atau panic. Error adalah nilai, bukan kejutan kontrol alur.
+
+## Tipe Result
+
+`Result<T, E>` adalah tagged union dengan dua varian:
+
+| Varian | Tag | Payload |
+|--------|-----|---------|
+| `Ok(T)` | 0 | Nilai sukses bertipe `T` |
+| `Err(E)` | 1 | Nilai error bertipe `E` |
+
+Di level LLVM, Result berupa `{i64 tag, i64 payload}` — alokasi heap nol, layout yang sama dengan sistem enum AHA!.
+
+## Membuat Result
+
+Gunakan konstruktor `ok()` dan `err()` — tanpa kata kunci baru:
+
+```rust
+fn divide(a: int, b: int) -> Result<int, string> {
+    if b == 0 {
+        return err("division by zero")
+    }
+    return ok(a / b)
+}
+```
+
+- `ok(val)` — membungkus `val` dalam varian Ok. Tipe inner disimpulkan dari argumen.
+- `err("msg")` — membungkus pesan string dalam varian Err.
+
+## Operator ?
+
+Operator postfix `?` membuka nilai `Result` atau early-returns pada error:
+
+```rust
+fn double(x: int) -> Result<int, string> {
+    return ok(x * 2)
+}
+
+fn main() -> int {
+    let v = double(21)?    // membuka ke 42 pada Ok, early-returns pada Err
+    v
+}
+```
+
+Cara kerja `?`:
+1. Mengekstrak tag dari struct Result
+2. Jika tag == 1 (Err) → langsung return dari fungsi saat ini
+3. Jika tag == 0 (Ok) → membuka payload dan melanjutkan
+
+### Chaining ?
+
+Anda bisa men chaining beberapa panggilan `?` — setiap satu membuka atau propagasi:
+
+```rust
+fn add_one(x: int) -> Result<int, string> {
+    return ok(x + 1)
+}
+
+fn main() -> int {
+    let a = add_one(10)?    // 11
+    let b = add_one(a)?     // 12
+    b
+}
+```
+
+### ? pada Fungsi Non-Result
+
+Saat digunakan pada fungsi yang mengembalikan tipe non-Result (seperti `int`), `?` mengembalikan tag error (1) pada kegagalan:
+
+```rust
+fn main() -> int {
+    let v = always_err()?   // mengembalikan 1 (tag error) pada Err
+    v
+}
+```
+
+## Anotasi Tipe
+
+Gunakan `Result<T, E>` pada anotasi tipe kembalian:
+
+```rust
+fn parse(s: int) -> Result<int, string> {
+    return ok(s)
+}
+```
+
+Tipe inner bisa berupa tipe AHA! apa pun:
+
+```rust
+fn find_user(id: int) -> Result<User, string> { ... }
+fn read_config() -> Result<Config, string> { ... }
+```
+
+## Contoh Compile-Only
+
+Fungsi yang mengembalikan `Result` dan menggunakan `?` untuk propagasi:
+
+```rust
+fn divide(a: int, b: int) -> Result<int, string> {
+    if b == 0 {
+        return err("division by zero")
+    }
+    return ok(a / b)
+}
+
+fn compute() -> Result<int, string> {
+    let result = divide(10, 2)?   // membuka ke 5
+    ok(result * 100)              // mengembalikan Ok(500)
+}
+```

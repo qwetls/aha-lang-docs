@@ -1,0 +1,118 @@
+---
+title: Error Handling
+description: Result<T, E> type, ok/err constructors, and the ? operator for ergonomic error propagation
+icon: ShieldAlert
+---
+
+# Error Handling
+
+AHA! provides **`Result<T, E>`** — a built-in tagged union type for propagating errors without exceptions or panics. Errors are values, not control flow surprises.
+
+## Result Type
+
+`Result<T, E>` is a tagged union with two variants:
+
+| Variant | Tag | Payload |
+|---------|-----|---------|
+| `Ok(T)` | 0 | The success value of type `T` |
+| `Err(E)` | 1 | The error value of type `E` |
+
+At the LLVM level, Result is `{i64 tag, i64 payload}` — zero heap allocation, same layout as AHA!'s enum system.
+
+## Creating Results
+
+Use the `ok()` and `err()` constructors — no new keywords needed:
+
+```rust
+fn divide(a: int, b: int) -> Result<int, string> {
+    if b == 0 {
+        return err("division by zero")
+    }
+    return ok(a / b)
+}
+```
+
+- `ok(val)` — wraps `val` in an Ok variant. The inner type is inferred from the argument.
+- `err("msg")` — wraps a string message in an Err variant.
+
+## The ? Operator
+
+The `?` postfix operator unwraps a `Result` value or early-returns on error:
+
+```rust
+fn double(x: int) -> Result<int, string> {
+    return ok(x * 2)
+}
+
+fn main() -> int {
+    let v = double(21)?    // unwraps to 42 on Ok, early-returns on Err
+    v
+}
+```
+
+How `?` works:
+1. Extracts the tag from the Result struct
+2. If tag == 1 (Err) → immediately returns from the current function
+3. If tag == 0 (Ok) → unwraps the payload and continues
+
+### Chaining ?
+
+You can chain multiple `?` calls — each one unwraps or propagates:
+
+```rust
+fn add_one(x: int) -> Result<int, string> {
+    return ok(x + 1)
+}
+
+fn main() -> int {
+    let a = add_one(10)?    // 11
+    let b = add_one(a)?     // 12
+    b
+}
+```
+
+### ? in Non-Result Functions
+
+When used in a function that returns a non-Result type (like `int`), `?` returns the error tag (1) on failure:
+
+```rust
+fn main() -> int {
+    let v = always_err()?   // returns 1 (error tag) on Err
+    v
+}
+```
+
+## Type Annotations
+
+Use `Result<T, E>` in return type annotations:
+
+```rust
+fn parse(s: int) -> Result<int, string> {
+    return ok(s)
+}
+```
+
+The inner types can be any AHA! type:
+
+```rust
+fn find_user(id: int) -> Result<User, string> { ... }
+fn read_config() -> Result<Config, string> { ... }
+```
+
+## Compile-Only Example
+
+A function that returns `Result` and uses `?` for propagation:
+
+```rust
+fn divide(a: int, b: int) -> Result<int, string> {
+    if b == 0 {
+        return err("division by zero")
+    }
+    return ok(a / b)
+}
+
+fn compute() -> Result<int, string> {
+    let result = divide(10, 2)?   // unwraps to 5
+    ok(result * 100)              // returns Ok(500)
+}
+```
