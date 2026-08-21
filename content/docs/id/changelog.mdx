@@ -20,6 +20,24 @@ Semua perubahan penting pada AHA! Lang didokumentasikan dalam berkas ini. Anda s
 - **Test:** 6 test baru (2 runtime, 4 compile-only) mencakup `?` unwrap, chaining, Result sebagai tipe kembalian, dan propagasi error.
 - **PRD v0.4:** Milestone penanganan error didokumentasikan.
 
+## 1.6.2 — 2026-08-21
+
+### Ditambahkan
+
+- **FFI — auto-coercion string ke pointer:** Saat memanggil extern fn dengan param pointer (`*void`), literal string `{i8*, i64}` di-auto-coerce — field pointer `i8*` diekstrak dan dilewatkan langsung. Memungkinkan `atoi("42")`, `strlen("hello")`, `atol("12345")` via JIT.
+- **Test:** 5 test JIT end-to-end: atoi, atoi-negative, atol, atoi-combined, strlen.
+
+## 1.6.1 — 2026-08-21
+
+### Ditambahkan
+
+- **FFI — deklarasi extern fn (Roadmap Phase 8):** `extern fn name(params) -> RetType;` mendeklarasi fungsi asing yang bisa dipanggil dari kode AHA!.
+- **Tipe `RawPtr`:** tipe pointer `*void`, `*int`, `*string` untuk parameter FFI.
+- **Resolusi simbol JIT** via `dlsym` di runtime; AOT via linker.
+- **Opsi CLI `--ldflags`** untuk flag linker tambahan.
+- **Auto-coercion `inttoptr`** — argumen integer otomatis dikonversi saat memanggil extern fn dengan param pointer.
+- **Test:** 12 test mencakup parse, compile, JIT, dan kasus error.
+
 ## 1.5.0 — 2026-08-19
 
 ### Ditambahkan

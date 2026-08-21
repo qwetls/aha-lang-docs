@@ -20,6 +20,24 @@ All notable changes to AHA! Lang are documented in this file. You can always bui
 - **Tests:** 6 new tests (2 runtime, 4 compile-only) covering `?` unwrap, chaining, Result as return type, and error propagation.
 - **PRD v0.4:** Error handling milestone documented.
 
+## 1.6.2 — 2026-08-21
+
+### Added
+
+- **FFI — string-to-pointer auto-coercion:** When calling an extern fn with a pointer param (`*void`), string literals `{i8*, i64}` are auto-coerced — the `i8*` pointer field is extracted and passed directly. Enables `atoi("42")`, `strlen("hello")`, `atol("12345")` via JIT.
+- **Tests:** 5 end-to-end JIT tests: atoi, atoi-negative, atol, atoi-combined, strlen.
+
+## 1.6.1 — 2026-08-21
+
+### Added
+
+- **FFI — extern fn declarations (Roadmap Phase 8):** `extern fn name(params) -> RetType;` declares foreign functions callable from AHA! code.
+- **`RawPtr` type:** `*void`, `*int`, `*string` pointer types for FFI parameters.
+- **JIT symbol resolution** via `dlsym` at runtime; AOT via linker.
+- **`--ldflags` CLI option** for extra linker flags.
+- **`inttoptr` auto-coercion** — integer args automatically converted when calling extern fn with pointer params.
+- **Tests:** 12 tests covering parse, compile, JIT, and error cases.
+
 ## 1.6.0 — 2026-08-20
 
 ### Added
