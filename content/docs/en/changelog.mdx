@@ -8,6 +8,26 @@ icon: ListTodo
 
 All notable changes to AHA! Lang are documented in this file. You can always build the latest from source — see [Getting Started](/en/getting-started).
 
+## 1.6.0 — 2026-08-20
+
+### Added
+
+- **Enum keyword (F7):** `enum Day { Mon, Tue, Wed, Thu, Fri, Sat, Sun }` — unit variants and tuple variants `enum Op { Add(int, int), Sub(int, int) }`. Each variant becomes a unique i64 tag at runtime.
+- **Pattern matching (`match`):** `match x { Mon => ..., Tue => ..., _ => ... }` — exhaustive pattern matching on enums. Supports destructuring of tuple variants: `Add(a, b) => a + b`. Compiled to LLVM `switch` + `phi` for native-speed dispatch.
+- **`enum` type hint on parameters:** `fn foo(d: Day) { ... }` — enum types are first-class in the type system. Type-checked: passing `Int` to a `Day` parameter produces a compile-time error.
+- **PRD v0.4:** Roadmap revision — web backend is now the priority path (FFI → error handling → TCP/UDP → HTTP → JSON → async I/O). Self-hosting moved to long-term.
+- **Test suite:** 17 enum/pattern-matching tests (unit enums, tuple enums, match with wildcard, enum parameter types, type errors). All 581 tests passing.
+
+### Fixed
+
+- **Dead block terminator ordering:** Match expressions without a wildcard arm created a dead basic block that accumulated unreachable terminators — fixed by saving and restoring the builder position after creating the dead block.
+- **Type hint preservation in call-site inference:** Explicit type hints (`d: Day`) were overridden by call-site type inference. Fixed: enum/struct hints now take precedence over inferred `Int` types.
+- **Pre-declaration type mismatch:** `predeclare_functions` used raw `param_type_map` instead of respecting type hints, causing `store i64` into `{ i64 }*` pointers. Fixed: pre-declaration now uses `infer_param_types` which honors explicit hints.
+
+### Changed
+
+- **PRD v0.4** — Roadmap revision: self-hosting moved to long-term. Web backend is now priority (F8–F13: FFI, error handling, TCP/UDP, HTTP, JSON, async I/O), followed by game engine (F14) and package manager (F15).
+
 ## 1.5.0 — 2026-08-19
 
 ### Added
